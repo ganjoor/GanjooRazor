@@ -1,0 +1,39 @@
+﻿@page
+@model IndexModel
+@{
+    Layout = "Shared/_HomePage";
+}
+
+<div class="actionbox">
+    <form action="https://ganjoor.net/index.php" method="get" id="searchhorm">
+        <label for="s">جستجو:</label>
+        <input type="text" name="s" id="s" class="inputText" size="35" value="" />
+        <select name="author" id="author">
+            <option value="0" selected="selected">در آثار همه شاعران</option>
+            @{
+                foreach (RMuseum.Models.Ganjoor.ViewModels.GanjoorPoetViewModel poet in Model.Potes)
+                {
+                    <option value="@poet.Id">@Html.Raw(poet.Name)</option>
+                }
+            }
+        </select>
+        <input type="submit" value="بیاب" />
+    </form>
+</div>
+
+
+<div id="main">
+    <div id="guides">
+        <div class="spacer">&nbsp;</div>
+        @{
+            foreach (RMuseum.Models.Ganjoor.ViewModels.GanjoorPoetViewModel poet in Model.Potes)
+            {
+                <div class="poet"><a href="@poet.FullUrl" title="@poet.Name"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(poet.Id).png" alt="@poet.Name" /></a><div class="caption"><a href="@poet.FullUrl">@poet.Name</a></div></div>
+            }
+        }
+
+
+        <div class="spacer">&nbsp;</div>
+    </div>
+
+</div>
