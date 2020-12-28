@@ -24,7 +24,7 @@ namespace GanjooRazor.Pages
         {
             using (HttpClient client = new HttpClient())
             {
-                var response = await client.GetAsync("https://ganjgah.ir/api/ganjoor/poets");
+                var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poets");
                 response.EnsureSuccessStatusCode();
 
                 _poets = JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoetViewModel>>();
