@@ -7,7 +7,7 @@
 
 
 @{
-    ViewData["Title"] = "گنجور &raquo; رضی‌الدین آرتیمانی";
+    ViewData["Title"] = $"گنجور &raquo; {Html.Raw(Model.Poet.Poet.Name)}";
     ViewData["BrearCrumpList"] =
         "{" +
 "\"@context\": \"http://schema.org\"," +
@@ -17,8 +17,8 @@
         "\"@type\": \"ListItem\"," +
 "\"position\": 1," +
 "\"item\": {" +
-            "\"@id\": \"https://ganjoor.net/razi/\"," +
-"\"name\": \"رضی‌الدین آرتیمانی\"," +
+            $"\"@id\": \"https://ganjoor.net{Html.Raw(Model.Poet.Poet.FullUrl)}/\"," +
+$"\"name\": \"{Html.Raw(Model.Poet.Poet.Name)}\"," +
 "\"image\": \"https://i.ganjoor.net/poem.png\"" +
 "}" +
     "}" +
@@ -34,91 +34,31 @@
     <h1><a href="https://ganjoor.net" title="گنجور"><img src="https://ganjoor.net/img/ganjadabk.gif" alt="گنجور" /></a></h1>
 
     <div class="actionbox">
-        <form action="https://ganjoor.net/index.php" method="get" id="searchform">
-            <input type="text" name="s" id="s" class="inputText" value="" placeholder="جستجو" />
+        <form action="https://ganjoor.net/index.php" method="get" id="searchhorm">
+            <label for="s">جستجو:</label>
+            <input type="text" name="s" id="s" class="inputText" size="35" value="" />
             <select name="author" id="author">
-                <option value="0">در آثار همه شاعران</option>
-                <option value="57">ابن حسام خوسفی</option>
-                <option value="26">ابوسعید ابوالخیر</option>
-                <option value="63">ازرقی هروی</option>
-                <option value="52">اسدی توسی</option>
-                <option value="42">اقبال لاهوری</option>
-                <option value="64">امیر معزی</option>
-                <option value="34">امیرخسرو دهلوی</option>
-                <option value="18">انوری</option>
-                <option value="19">اوحدی</option>
-                <option value="56">باباافضل کاشانی</option>
-                <option value="28">باباطاهر</option>
-                <option value="43">بیدل دهلوی</option>
-                <option value="24">جامی</option>
-                <option value="2">حافظ</option>
-                <option value="76">حزین لاهیجی</option>
-                <option value="65">حکیم نزاری</option>
-                <option value="16">خاقانی</option>
-                <option value="48">خلیل‌الله خلیلی</option>
-                <option value="72">خواجه عبدالله انصاری</option>
-                <option value="20">خواجوی کرمانی</option>
-                <option value="3">خیام</option>
-                <option value="36">رشحه</option>
-                <option value="60">رشیدالدین میبدی</option>
-                <option value="58">رشیدالدین وطواط</option>
-                <option value="47" selected="selected">رضی‌الدین آرتیمانی</option>
-                <option value="41">رهی معیری</option>
-                <option value="12">رودکی</option>
-                <option value="66">سعدالدین وراوینی</option>
-                <option value="7">سعدی</option>
-                <option value="40">سلمان ساوجی</option>
-                <option value="10">سنایی</option>
-                <option value="31">سیف فرغانی</option>
-                <option value="55">شاطرعباس صبوحی</option>
-                <option value="51">شاه نعمت‌الله ولی</option>
-                <option value="78">شمس مغربی</option>
-                <option value="35">شهریار</option>
-                <option value="30">شیخ بهایی</option>
-                <option value="23">شیخ محمود شبستری</option>
-                <option value="22">صائب تبریزی</option>
-                <option value="74">صامت بروجردی</option>
-                <option value="69">ظهیر فاریابی</option>
-                <option value="68">عارف قزوینی</option>
-                <option value="70">عبدالقادر گیلانی</option>
-                <option value="37">عبدالواسع جبلی</option>
-                <option value="33">عبید زاکانی</option>
-                <option value="21">عراقی</option>
-                <option value="46">عرفی</option>
-                <option value="9">عطار</option>
-                <option value="59">عمان سامانی</option>
-                <option value="62">عنصری</option>
-                <option value="77">غبار همدانی</option>
-                <option value="61">فایز</option>
-                <option value="38">فخرالدین اسعد گرگانی</option>
-                <option value="15">فرخی سیستانی</option>
-                <option value="4">فردوسی</option>
-                <option value="32">فروغی بسطامی</option>
-                <option value="39">فیض کاشانی</option>
-                <option value="44">قاآنی</option>
-                <option value="71">قدسی مشهدی</option>
-                <option value="29">محتشم کاشانی</option>
-                <option value="17">مسعود سعد سلمان</option>
-                <option value="27">ملک‌الشعرای بهار</option>
-                <option value="14">منوچهری</option>
-                <option value="54">مهستی گنجوی</option>
-                <option value="5">مولوی</option>
-                <option value="13">ناصرخسرو</option>
-                <option value="49">نصرالله منشی</option>
-                <option value="6">نظامی</option>
-                <option value="25">هاتف اصفهانی</option>
-                <option value="53">هجویری</option>
-                <option value="50">هلالی جغتایی</option>
-                <option value="75">همام تبریزی</option>
-                <option value="11">وحشی</option>
-                <option value="8">پروین اعتصامی</option>
-                <option value="45">کسایی</option>
-                <option value="73">کمال خجندی</option>
-                <option value="67">کمال‌الدین اسماعیل</option>
+                <option value="0" selected="selected">در آثار همه شاعران</option>
+                @{
+                    foreach (RMuseum.Models.Ganjoor.ViewModels.GanjoorPoetViewModel poet in Model.Poets)
+                    {
+                        if (poet.Id == Model.Poet.Poet.Id)
+                        {
+                            <option value="@poet.Id" selected="selected">@Html.Raw(poet.Name)</option>
+                        }
+                        else
+                        {
+                            <option value="@poet.Id">@Html.Raw(poet.Name)</option>
+                        }
+
+                    }
+                }
             </select>
             <input type="submit" value="بیاب" />
         </form>
-    </div><!-- .actionbox -->
+    </div> <!-- .actionbox -->
+
+
 </div><!-- #hdr2 -->
 
 
@@ -127,29 +67,30 @@
 
         <div class="poem" id="post-43207">
             <h2>
-                <a href="https://ganjoor.net/razi/" rel="bookmark">
-                    رضی‌الدین آرتیمانی
+                <a href="@Html.Raw(Model.Poet.Poet.FullUrl)" rel="bookmark">
+                    @Html.Raw(Model.Poet.Poet.Name)
                 </a>
             </h2>
             <div class="spacer">&nbsp;</div>
             <div style="width:82px;margin:auto">
-                <a href="https://ganjoor.net/razi/"><img src="https://i.ganjoor.net/razi.gif" alt="رضی‌الدین آرتیمانی" /></a>
-            </div><div style="width:100%;margin:auto"><a href="https://ganjoor.net/razi/">رضی‌الدین آرتیمانی</a></div><div class="spacer">&nbsp;</div>
+                <a href="@Html.Raw(Model.Poet.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.Poet.Poet.Id).png" alt="@Html.Raw(Model.Poet.Poet.Name)" /></a>
+            </div><div style="width:100%;margin:auto"><a href="@Html.Raw(Model.Poet.Poet.FullUrl)">@Html.Raw(Model.Poet.Poet.Name)</a></div><div class="spacer">&nbsp;</div>
             <p>
-                میرزا محمد رضی معروف به میررضی آرتیمانی از شاعران و عارفان مشهور زمان صفویه است که در نیمه دوم قرن دهم هجری قمری در روستای آرتیمان از توابع تویسرکان به دنیا آمد. در ایام جوانی به همدان عزیمت و در آنجا مشغول تحصیل شد و در سلک شاگردان میرمرشد بروجردی درآمد. میررضی به علت شایستگی وافری که داشت زود مورد توجه شاه عباس صفوی  قرار گرفت و در جمع منشیان و میرزایان شاه در آمد و به همین دلیل بود که داماد خاندان بزرگ صفوی شد. او در سال ۱۰۳۷ هجری قمری دیده از جهان فرو بست. او را در محل خانقاهش در تویسرکان به خاک سپردند. از او حدود ۱۲۰۰بیت شعر به جا مانده که معروفترین آنها <a href="https://ganjoor.net/razi/saghiname/">ساقی نامهٔ</a> اوست.
+                @Html.Raw(Model.Poet.Poet.Description)
             </p>
-            <p>
-                آثار او در این مجموعه:
-            </p>
-            <p><a href="https://ganjoor.net/razi/saghiname/">ساقی‌نامه</a></p>
-            <p><a href="https://ganjoor.net/razi/sougandname/">سوگندنامه</a></p>
-            <p><a href="https://ganjoor.net/razi/gouhar-e-eshgh/">گوهر عشق</a></p>
-            <p><a href="https://ganjoor.net/razi/ghazalar/">غزلیات</a></p>
-            <p><a href="https://ganjoor.net/razi/ghasidear/">قصاید</a></p>
-            <p><a href="https://ganjoor.net/razi/robaeear/">رباعیات</a></p>
-            <p><a href="https://ganjoor.net/razi/tarjee-band/">ترجیع بند</a></p>
-            <p><a href="https://ganjoor.net/razi/ghatghaz/">مقطعات و غزلیات ناتمام</a></p>
-            <p><a href="https://ganjoor.net/razi/mofrar/">مفردات</a></p>
+
+            @{
+                foreach (var cat in Model.Poet.Cat.Children)
+                {
+                    <p><a href=" @Html.Raw(Model.Poet.Poet.FullUrl + "/" + cat.UrlSlug)"> @Html.Raw(cat.Title)</a></p>
+                }
+
+                foreach (var poem in Model.Poet.Cat.Poems)
+                {
+                    <p><a href=" @Html.Raw(Model.Poet.Poet.FullUrl + "/" + poem.UrlSlug)"> @Html.Raw(poem.Title)</a></p>
+                }
+            }
+            
 
             <div class="spacer">&nbsp;</div>
 
