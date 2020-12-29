@@ -14,15 +14,20 @@ namespace GanjooRazor.Pages
 
         public GanjoorPoetCompleteViewModel Cat { get; set; }
 
+        public GanjoorPoemCompleteViewModel Poem { get; set; }
+
         public bool PoetPage { get; set; }
 
         public bool CatPage { get; set; }
+
+        public bool PoemPage { get; set; }
 
 
         public async Task OnGet()
         {
             PoetPage = false;
             CatPage = false;
+            PoemPage = false;
             using (HttpClient client = new HttpClient())
             {
 
@@ -49,7 +54,16 @@ namespace GanjooRazor.Pages
                             Cat = JObject.Parse(await catQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPoetCompleteViewModel>();
                             CatPage = true;
                         }
+                        else
+                            if(catQuery.StatusCode == System.Net.HttpStatusCode.NotFound)
+                            {
+                                var poemQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem?url={Request.Path}");
+                                Poem = JObject.Parse(await poemQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPoemCompleteViewModel>();
+                                Cat = Poem.Category;
+                                PoemPage = true;
+                            }
                     }
+                
 
             }
         }
