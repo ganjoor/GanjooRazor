@@ -7,7 +7,7 @@
 
 
 @{
-    ViewData["Title"] = $"گنجور &raquo; {Html.Raw(Model.Poet.Poet.Name)}";
+    ViewData["Title"] = $"گنجور &raquo; {Html.Raw(Model.Cat.Poet.Name)}";
     ViewData["BrearCrumpList"] =
         "{" +
 "\"@context\": \"http://schema.org\"," +
@@ -17,8 +17,8 @@
         "\"@type\": \"ListItem\"," +
 "\"position\": 1," +
 "\"item\": {" +
-            $"\"@id\": \"https://ganjoor.net{Html.Raw(Model.Poet.Poet.FullUrl)}/\"," +
-$"\"name\": \"{Html.Raw(Model.Poet.Poet.Name)}\"," +
+            $"\"@id\": \"https://ganjoor.net{Html.Raw(Model.Cat.Poet.FullUrl)}/\"," +
+$"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
 "\"image\": \"https://i.ganjoor.net/poem.png\"" +
 "}" +
     "}" +
@@ -26,8 +26,6 @@ $"\"name\": \"{Html.Raw(Model.Poet.Poet.Name)}\"," +
 "}";
 }
 
-
-<div class="spacer" style="direction:ltr">@Model.Request.Path</div>
 
 
 <div id="hdr2" class="clearfix">
@@ -42,7 +40,7 @@ $"\"name\": \"{Html.Raw(Model.Poet.Poet.Name)}\"," +
                 @{
                     foreach (RMuseum.Models.Ganjoor.ViewModels.GanjoorPoetViewModel poet in Model.Poets)
                     {
-                        if (poet.Id == Model.Poet.Poet.Id)
+                        if (poet.Id == Model.Cat.Poet.Id)
                         {
                             <option value="@poet.Id" selected="selected">@Html.Raw(poet.Name)</option>
                         }
@@ -67,30 +65,47 @@ $"\"name\": \"{Html.Raw(Model.Poet.Poet.Name)}\"," +
 
         <div class="poem" id="post-43207">
             <h2>
-                <a href="@Html.Raw(Model.Poet.Poet.FullUrl)" rel="bookmark">
-                    @Html.Raw(Model.Poet.Poet.Name)
+                <a href="@Html.Raw(Model.Cat.Cat.FullUrl)" rel="bookmark">
+                    @Html.Raw(Model.Cat.Cat.Title)
                 </a>
             </h2>
             <div class="spacer">&nbsp;</div>
             <div style="width:82px;margin:auto">
-                <a href="@Html.Raw(Model.Poet.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.Poet.Poet.Id).png" alt="@Html.Raw(Model.Poet.Poet.Name)" /></a>
-            </div><div style="width:100%;margin:auto"><a href="@Html.Raw(Model.Poet.Poet.FullUrl)">@Html.Raw(Model.Poet.Poet.Name)</a></div><div class="spacer">&nbsp;</div>
-            <p>
-                @Html.Raw(Model.Poet.Poet.Description)
-            </p>
-
-            @{
-                foreach (var cat in Model.Poet.Cat.Children)
-                {
-                    <p><a href=" @Html.Raw(Model.Poet.Poet.FullUrl + "/" + cat.UrlSlug)"> @Html.Raw(cat.Title)</a></p>
+                <a href="@Html.Raw(Model.Cat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.Cat.Poet.Id).png" alt="@Html.Raw(Model.Cat.Poet.Name)" /></a>
+            </div>
+            <div style="width:100%;margin:auto">
+                @{
+                    foreach (var gran in Model.Cat.Cat.Ancestors)
+                    {
+                        <a href="@Html.Raw(gran.FullUrl)">@Html.Raw(gran.Title)</a><span> &raquo;</span>
+                    }
+                    <a href="@Html.Raw(Model.Cat.Cat.FullUrl)">@Html.Raw(Model.Cat.Cat.Title)</a>
                 }
 
-                foreach (var poem in Model.Poet.Cat.Poems)
+            </div>
+            <div class="spacer">&nbsp;</div>
+            @{
+                if (Model.PoetPage)
                 {
-                    <p><a href=" @Html.Raw(Model.Poet.Poet.FullUrl + "/" + poem.UrlSlug)"> @Html.Raw(poem.Title)</a></p>
+                    <p>
+                        @Html.Raw(Model.Cat.Poet.Description)
+                    </p>
                 }
             }
-            
+
+
+            @{
+                foreach (var cat in Model.Cat.Cat.Children)
+                {
+                    <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + cat.UrlSlug)"> @Html.Raw(cat.Title)</a></p>
+                }
+
+                foreach (var poem in Model.Cat.Cat.Poems)
+                {
+                    <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + poem.UrlSlug)"> @Html.Raw(poem.Title)</a></p>
+                }
+            }
+
 
             <div class="spacer">&nbsp;</div>
 
