@@ -167,13 +167,14 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
 
                 if (Model.PoemPage)
                 {
+
                     <nav>
                         <div class="spacer">&nbsp;</div>
                         <div class="navigation">
                             <div class="navleft">
                                 @if (Model.Poem.Next != null)
                                 {
-                                <a href="@Html.Raw(Model.Poem.Next.UrlSlug)">@Html.Raw(Model.Poem.Next.Title): @Html.Raw(Model.Poem.Next.Excerpt)</a><span> &raquo;</span>
+                                    <a href="@Html.Raw(Model.Poem.Next.UrlSlug)">@Html.Raw(Model.Poem.Next.Title): @Html.Raw(Model.Poem.Next.Excerpt)</a><span> &raquo;</span>
                                 }
                             </div>
                             <div class="navright">
@@ -184,7 +185,30 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
                             </div>
                         </div>
                     </nav>
+
+                    <div id="comments">
+                        <p>
+                            <small>🖰 با دو بار کلیک روی واژه‌ها یا انتخاب متن و کلیک روی آنها می‌توانید آنها را در لغتنامهٔ دهخدا جستجو کنید.</small>
+                        </p>
+                        <p>
+                            <small>🖐 <a href="#" onclick="javascript:btshmr()">شماره‌گذاری ابیات</a></small>
+                            | <small>منبع اولیه: <a href="https://ganjoor.net/sources/sj/">سیاوش جعفری</a></small> | <small><a href="http://www.facebook.com/sharer.php?u=https://ganjoor.net/onsori/oghat/sh9/&amp;t=%D8%B4%D9%85%D8%A7%D8%B1%D9%87%D9%94+%DB%B9/">ارسال به فیس‌بوک</a></small>
+                        </p>
+                        <h3>این شعر را چه کسی در کدام آهنگ خوانده است؟</h3>
+                        <p>🎜 <small><a href="https://ganjoor.net/spotify/?p=68936" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهایی که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
+                        <p>
+                            <small>📷 <a href="?pinterest_url=manual" onclick="wpopen(this.href); return false" class="comments-link">پیشنهاد تصاویر مرتبط از منابع اینترنتی</a>، 📖 <a href="http://blog.ganjoor.net/1398/07/12/mganjoor/" target="_blank">راهنمای نحوهٔ پیشنهاد تصاویر مرتبط از گنجینهٔ گنجور</a></small>
+                        </p>
+                        <h3>حاشیه‌ها</h3>
+                        <p>
+
+                            تا به حال حاشیه‌ای برای این شعر نوشته نشده است. <a href="https://ganjoor.net/?comments_popup=68936" onclick="wpopen(this.href); return false" class="comments-link" title="Comment on شمارهٔ ۹">💬 شما حاشیه بگذارید ...</a>
+                        </p>
+                    </div> <!-- <div id="comments"> -->
                 }
+
+
+
             }
 
 
