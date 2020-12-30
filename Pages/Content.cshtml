@@ -27,14 +27,11 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
 }
 
 
-
 <div id="hdr2" class="clearfix">
-    <h1><a href="/" title="گنجور"><img src="/image/ganjadabk.gif" alt="گنجور" /></a></h1>
-
+    <h1><a href="https://ganjoor.net" title="گنجور"><img src="/image/ganjadabk.gif" alt="گنجور" /></a></h1>
     <div class="actionbox">
-        <form action="https://ganjoor.net/index.php" method="get" id="searchhorm">
-            <label for="s">جستجو:</label>
-            <input type="text" name="s" id="s" class="inputText" size="35" value="" />
+        <form action="https://ganjoor.net/index.php" method="get" id="searchform">
+            <input type="text" name="s" id="s" class="inputText" value="" placeholder="جستجو" />
             <select name="author" id="author">
                 <option value="0" selected="selected">در آثار همه شاعران</option>
                 @{
@@ -54,9 +51,7 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
             </select>
             <input type="submit" value="بیاب" />
         </form>
-    </div> <!-- .actionbox -->
-
-
+    </div><!-- .actionbox -->
 </div><!-- #hdr2 -->
 
 
