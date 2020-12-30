@@ -6,33 +6,64 @@ Version:1.0
 Author:gozir.com
 */
 @font-face {
-  font-family: Samim;
-  src: url('Samim.eot');
-  src: url('Samim.eot?#iefix') format('embedded-opentype'),
-       url('Samim.woff2') format('woff2'),
-       url('Samim.woff') format('woff'),
-       url('Samim.ttf') format('truetype');
-  font-weight: normal;
+    font-family: Vazir;
+    src: url('Vazir-Regular.eot');
+    src: url('Vazir-Regular.eot?#iefix') format('embedded-opentype'),
+         url('Vazir-Regular.woff2') format('woff2'),
+         url('Vazir-Regular.woff') format('woff'),
+         url('Vazir-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
-
 @font-face {
-  font-family: Samim;
-  src: url('Samim-Bold.eot');
-  src: url('Samim-Bold.eot?#iefix') format('embedded-opentype'),
-       url('Samim-Bold.woff2') format('woff2'),
-       url('Samim-Bold.woff') format('woff'),
-       url('Samim-Bold.ttf') format('truetype');
-  font-weight: bold;
+    font-family: Vazir;
+    src: url('Vazir-Bold.eot');
+    src: url('Vazir-Bold.eot?#iefix') format('embedded-opentype'),
+         url('Vazir-Bold.woff2') format('woff2'),
+         url('Vazir-Bold.woff') format('woff'),
+         url('Vazir-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
 }
-
 @font-face {
-  font-family: Samim;
-  src: url('Samim-Medium.eot');
-  src: url('Samim-Medium.eot?#iefix') format('embedded-opentype'),
-       url('Samim-Medium.woff2') format('woff2'),
-       url('Samim-Medium.woff') format('woff'),
-       url('Samim-Medium.ttf') format('truetype');
-  font-weight: 500;
+    font-family: Vazir;
+    src: url('Vazir-Black.eot');
+    src: url('Vazir-Black.eot?#iefix') format('embedded-opentype'),
+         url('Vazir-Black.woff2') format('woff2'),
+         url('Vazir-Black.woff') format('woff'),
+         url('Vazir-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+@font-face {
+    font-family: Vazir;
+    src: url('Vazir-Medium.eot');
+    src: url('Vazir-Medium.eot?#iefix') format('embedded-opentype'),
+         url('Vazir-Medium.woff2') format('woff2'),
+         url('Vazir-Medium.woff') format('woff'),
+         url('Vazir-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: Vazir;
+    src: url('Vazir-Light.eot');
+    src: url('Vazir-Light.eot?#iefix') format('embedded-opentype'),
+         url('Vazir-Light.woff2') format('woff2'),
+         url('Vazir-Light.woff') format('woff'),
+         url('Vazir-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: Vazir;
+    src: url('Vazir-Thin.eot');
+    src: url('Vazir-Thin.eot?#iefix') format('embedded-opentype'),
+         url('Vazir-Thin.woff2') format('woff2'),
+         url('Vazir-Thin.woff') format('woff'),
+         url('Vazir-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
 }
 
 * {
@@ -79,7 +110,7 @@ h1 a img {
 
 #fa {
     direction: rtl;
-    font-family: Samim;font-weight: 300;font-size: 1em;
+    font-family: Vazir;font-weight: 300;font-size: 1em;
     background: transparent url(/image/bk.gif) top center repeat scroll;
 }
 
@@ -89,7 +120,7 @@ h1 a img {
 }
 
 h2 {
-    font-family: Samim;font-weight: bold;font-size: 1.2em;
+    font-family: Vazir;font-weight: bold;font-size: 1.2em;
     margin: 3px auto;
     color: #300
 }
@@ -112,7 +143,7 @@ form:after, form div:after {
 #hdr2 .actionbox {
     margin: 0;
     float: left;
-    font-family: Samim;font-weight: 300;font-size: 1em;
+    font-family: Vazir;font-weight: 300;font-size: 1em;
 }
 
 #main, .sitem, .poem {
@@ -172,7 +203,7 @@ label {
 }
 
 input, select, textarea {
-    font-family: Samim;font-weight: 300;font-size: 0.8em;
+    font-family: Vazir;font-weight: 300;font-size: 0.8em;
     padding: 2px;
     text-align: right;
     color: #7f7f7f;
@@ -205,7 +236,7 @@ select {
 #guides p {
     text-indent: 20px;
     margin: 5px 5px 5px 5px;
-    font-family: Samim;font-weight: 300;font-size: 1em;
+    font-family: Vazir;font-weight: 300;font-size: 1em;
     line-height: 24px
 }
 
@@ -219,7 +250,7 @@ select {
 .poet .caption {
     display: block;
     width: 100%;
-    font-family: Samim;font-weight: 300;font-size: 0.8em;
+    font-family: Vazir;font-weight: 300;font-size: 0.8em;
     text-align: center;
     margin-right: 1px;
 }
@@ -299,7 +330,7 @@ div.n {
 }
 
 .m1 p, .m2 p {
-    font-family: Samim;font-weight: 300;font-size: 0.9em;font-style:normal;
+    font-family: Vazir;font-weight: 300;font-size: 0.9em;font-style:normal;
     text-indent: 0;
     margin: 0;
     line-height: 30px;
@@ -351,7 +382,7 @@ div.n {
 }
 
 #commentsp h3, #comments h3 {
-    font-family: Samim;font-weight: 300;font-size: 0.9em;
+    font-family: Vazir;font-weight: 300;font-size: 0.9em;
     margin: 3px auto;
     color: #fff;
     text-align: center;
@@ -459,7 +490,7 @@ input[type="submit"] { padding:0px; text-align:center; background-color: #ccc}
 }
 
 table {
-    font-family: Samim;font-weight: 300;font-size: 0.8em;
+    font-family: Vazir;font-weight: 300;font-size: 0.8em;
     border-collapse: collapse;
     max-width: 600px;
     margin: auto;
@@ -597,7 +628,7 @@ margin: 1px;
 }
 
 .tooltip {
-        font-family: Samim;
+        font-family: Vazir;
     }
 
 .tooltip a {
