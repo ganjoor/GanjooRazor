@@ -255,6 +255,10 @@ select {
     margin-right: 1px;
 }
 
+.caption {
+    max-height: 20px;
+}
+
 #fa .caption a:hover {
     color: #300
 }

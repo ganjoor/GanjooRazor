@@ -12,7 +12,7 @@
         {
             get
             {
-                return "http://localhost:3439";
+                return "https://ganjgah.ir";
             }
         }
     }
