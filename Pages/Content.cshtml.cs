@@ -22,6 +22,27 @@ namespace GanjooRazor.Pages
 
         public bool PoemPage { get; set; }
 
+        private void _preparePoemExcerpt(GanjoorPoemSummaryViewModel poem)
+        {
+            if(poem == null)
+            {
+                return;
+            }
+            if (poem.Excerpt.Length > 100)
+            {
+                poem.Excerpt = poem.Excerpt.Substring(0, 50);
+                int n = poem.Excerpt.LastIndexOf(' ');
+                if (n >= 0)
+                {
+                    poem.Excerpt = poem.Excerpt.Substring(0, n) + " ...";
+                }
+                else
+                {
+                    poem.Excerpt += "...";
+                }
+            }
+        }
+
 
         public async Task OnGet()
         {
@@ -43,6 +64,7 @@ namespace GanjooRazor.Pages
                 if(poetQuery.IsSuccessStatusCode)
                 {
                     Cat = JObject.Parse(await poetQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPoetCompleteViewModel>();
+                    
                     PoetPage = true;
                 }
                 else
@@ -60,10 +82,20 @@ namespace GanjooRazor.Pages
                                 var poemQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem?url={Request.Path}");
                                 Poem = JObject.Parse(await poemQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPoemCompleteViewModel>();
                                 Cat = Poem.Category;
+                                _preparePoemExcerpt(Poem.Next);
+                                _preparePoemExcerpt(Poem.Previous);
                                 PoemPage = true;
                             }
                     }
+                if(!PoemPage)
+                {
+                    foreach (var poem in Cat.Cat.Poems)
+                    {
+                        _preparePoemExcerpt(poem);
+                    }
+                }
                 
+
 
             }
         }

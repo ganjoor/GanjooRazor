@@ -173,13 +173,13 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
                             <div class="navleft">
                                 @if (Model.Poem.Next != null)
                                 {
-                                    <a href="@Html.Raw(Model.Poem.Next.UrlSlug)">@Html.Raw(Model.Poem.Next.Title)</a><span> &raquo;</span>
+                                <a href="@Html.Raw(Model.Poem.Next.UrlSlug)">@Html.Raw(Model.Poem.Next.Title): @Html.Raw(Model.Poem.Next.Excerpt)</a><span> &raquo;</span>
                                 }
                             </div>
                             <div class="navright">
                                 @if (Model.Poem.Previous != null)
                                 {
-                                    <span>&laquo; </span><a href="@Html.Raw(Model.Poem.Previous.UrlSlug)">@Html.Raw(Model.Poem.Previous.Title)</a>
+                                    <span>&laquo; </span><a href="@Html.Raw(Model.Poem.Previous.UrlSlug)">@Html.Raw(Model.Poem.Previous.Title) :@Html.Raw(Model.Poem.Previous.Excerpt)</a>
                                 }
                             </div>
                         </div>
