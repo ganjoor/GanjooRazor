@@ -128,6 +128,27 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
             }
 
             @{
+                if (Model.CatPage)
+                {
+                    <nav>
+                        <div class="spacer">&nbsp;</div>
+                        <div class="navigation">
+                            <div class="navleft">
+                                @if (Model.Cat.Cat.Next != null)
+                                {
+                                    <a href="@Html.Raw(Model.Cat.Cat.Next.UrlSlug)">@Html.Raw(Model.Cat.Cat.Next.Title)</a><span> &raquo;</span>
+                                }
+                            </div>
+                            <div class="navright">
+                                @if (Model.Cat.Cat.Previous != null)
+                                {
+                                    <span>&laquo; </span><a href="@Html.Raw(Model.Cat.Cat.Previous.UrlSlug)">@Html.Raw(Model.Cat.Cat.Previous.Title)</a>
+                                }
+                            </div>
+                        </div>
+                    </nav>
+                }
+
                 if (Model.PoemPage)
                 {
                     <nav>
@@ -142,7 +163,7 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
                             <div class="navright">
                                 @if (Model.Poem.Previous != null)
                                 {
-                                <span>&laquo; </span><a href="@Html.Raw(Model.Poem.Previous.UrlSlug)">@Html.Raw(Model.Poem.Previous.Title)</a>
+                                    <span>&laquo; </span><a href="@Html.Raw(Model.Poem.Previous.UrlSlug)">@Html.Raw(Model.Poem.Previous.Title)</a>
                                 }
                             </div>
                         </div>
