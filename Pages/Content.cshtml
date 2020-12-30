@@ -28,7 +28,7 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
 
 
 <div id="hdr2" class="clearfix">
-    <h1><a href="https://ganjoor.net" title="گنجور"><img src="/image/ganjadabk.gif" alt="گنجور" /></a></h1>
+    <h1><a href="/" title="گنجور"><img src="/image/ganjadabk.gif" alt="گنجور" /></a></h1>
     <div class="actionbox">
         <form action="https://ganjoor.net/index.php" method="get" id="searchform">
             <input type="text" name="s" id="s" class="inputText" value="" placeholder="جستجو" />
@@ -49,6 +49,27 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
                     }
                 }
             </select>
+            @{ 
+                if(!Model.PoetPage)
+                {
+                        <select name="cat" id="cat" style="width:150px">
+                            <option value="0">در همه بخشها</option>
+                            @{
+                                foreach (var gran in Model.Cat.Cat.Ancestors)
+                                {
+                                    <option value="@Html.Raw(gran.Id)">@Html.Raw(gran.Title)</option>
+                                }
+                                <option value="@Html.Raw(Model.Cat.Cat.Id)">@Html.Raw(Model.Cat.Cat.Title)</option>
+
+                                foreach (var child in Model.Cat.Cat.Children)
+                                {
+                                    <option value="@Html.Raw(child.Id)">@Html.Raw(child.Title)</option>
+                                }
+                            }
+                        </select>
+                }
+            }
+                
             <input type="submit" value="بیاب" />
         </form>
     </div><!-- .actionbox -->
@@ -116,7 +137,7 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
 
                     foreach (var poem in Model.Cat.Cat.Poems)
                     {
-                        <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + poem.UrlSlug)"> @Html.Raw(poem.Title)</a></p>
+                        <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + poem.UrlSlug)"> @Html.Raw(poem.Title): @Html.Raw(poem.Excerpt) </a></p>
                     }
                 }
 
