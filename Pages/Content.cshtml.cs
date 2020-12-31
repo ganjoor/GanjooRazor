@@ -1,9 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Ganjoor.ViewModels;
+using RMuseum.Models.GanjoorAudio.ViewModels;
 
 namespace GanjooRazor.Pages
 {
@@ -43,6 +44,39 @@ namespace GanjooRazor.Pages
             }
         }
 
+        public string getAudioDesc(PublicRecitationViewModel recitation, bool contributionLink = false)
+        {
+            string audiodesc = "به خوانش ";
+            if(!string.IsNullOrEmpty(recitation.AudioArtistUrl))
+            {
+                audiodesc += $"<a href='{recitation.AudioArtistUrl}'>{recitation.AudioArtist}</a>";
+            }
+            else
+            {
+                audiodesc += $"{recitation.AudioArtist}";
+            }
+
+            if(!string.IsNullOrEmpty(recitation.AudioSrc))
+            {
+                if (!string.IsNullOrEmpty(recitation.AudioSrcUrl))
+                {
+                    audiodesc += $" <a href='{recitation.AudioSrcUrl}'>{recitation.AudioSrc}</a>";
+                }
+                else
+                {
+                    audiodesc += $" {recitation.AudioSrc}";
+                }
+            }
+
+            audiodesc += $" <small><a href='https://ganjoor.net/audioclip/?a={recitation.Id}' onclick='wpopen(this.href); return false' class='comments-link' title='دریافت'>(دریافت)</a></small>";
+
+            if(contributionLink)
+            {
+                audiodesc += "<br /> <small>می‌خواهید شما بخوانید؟ <a href='http://ava.ganjoor.net/about/'>اینجا</a> را ببینید.</small>";
+            }
+
+            return audiodesc;
+        }
 
         public async Task OnGet()
         {

@@ -81,9 +81,9 @@ namespace RMuseum.Models.GanjoorAudio.ViewModels
         /// Mp3 Url
         /// </summary>
         public string Mp3Url { get; set; }
-
+      
         /// <summary>
-        /// Xml Url
+        /// Xml text
         /// </summary>
         public string XmlText { get; set; }
 

@@ -49,27 +49,27 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
                     }
                 }
             </select>
-            @{ 
-                if(!Model.PoetPage)
+            @{
+                if (!Model.PoetPage)
                 {
-                        <select name="cat" id="cat" style="width:150px">
-                            <option value="0">در همه بخشها</option>
-                            @{
-                                foreach (var gran in Model.Cat.Cat.Ancestors)
-                                {
-                                    <option value="@Html.Raw(gran.Id)">@Html.Raw(gran.Title)</option>
-                                }
-                                <option value="@Html.Raw(Model.Cat.Cat.Id)">@Html.Raw(Model.Cat.Cat.Title)</option>
-
-                                foreach (var child in Model.Cat.Cat.Children)
-                                {
-                                    <option value="@Html.Raw(child.Id)">@Html.Raw(child.Title)</option>
-                                }
+                    <select name="cat" id="cat" style="width:150px">
+                        <option value="0">در همه بخشها</option>
+                        @{
+                            foreach (var gran in Model.Cat.Cat.Ancestors)
+                            {
+                                <option value="@Html.Raw(gran.Id)">@Html.Raw(gran.Title)</option>
                             }
-                        </select>
+                            <option value="@Html.Raw(Model.Cat.Cat.Id)">@Html.Raw(Model.Cat.Cat.Title)</option>
+
+                            foreach (var child in Model.Cat.Cat.Children)
+                            {
+                                <option value="@Html.Raw(child.Id)">@Html.Raw(child.Title)</option>
+                            }
+                        }
+                    </select>
                 }
             }
-                
+
             <input type="submit" value="بیاب" />
         </form>
     </div><!-- .actionbox -->
@@ -317,3 +317,46 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
 
 
 </div>
+
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script src="/js/bd.js"></script>
+<script src="/js/vaabc.js"></script>
+
+@{
+    if(Model.PoemPage)
+    {
+        if(Model.Poem.Recitations.Length > 0 )
+        {
+            <script src="/dist/jplayer/jquery.jplayer.min.js"></script>
+            <script src="/dist/add-on/jplayer.playlist.min.js"></script>
+            <script>
+                //<![CDATA[
+                $(document).ready(function () {
+                    var jlist = prepaudio(
+                        "@Html.Raw($"https://ganjgah.ir/api/audio/file/{Model.Poem.Recitations[0].Id}.xml")",
+                        "@Html.Raw(Model.Poem.Recitations[0].AudioTitle)",
+                        "@Html.Raw(Model.getAudioDesc(Model.Poem.Recitations[0], true))",
+                        "",
+                        "@Html.Raw(Model.Poem.Recitations[0].Mp3Url)"
+                    );
+
+                    @for(int x = 1; x<Model.Poem.Recitations.Length; x++)
+                    {
+                        <text>
+                    addpaudio(@x, jlist,
+                        "@Html.Raw($"https://ganjgah.ir/api/audio/file/{Model.Poem.Recitations[x].Id}.xml")",
+                        "@Html.Raw(Model.Poem.Recitations[x].AudioTitle)",
+                        "@Html.Raw(Model.getAudioDesc(Model.Poem.Recitations[x], false))",
+                        "",
+                        "@Html.Raw(Model.Poem.Recitations[x].Mp3Url)"
+                    );
+                        </text>
+                    }
+
+                });
+                //]]>
+            </script>
+        }
+    }
+}
