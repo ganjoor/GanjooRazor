@@ -80,68 +80,131 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
     <div id="maincnt">
 
         <div class="poem" id="post-43207">
-            <h2>
+            <article>
+                <h2>
+                    @{
+                        if (Model.PoemPage)
+                        {
+                            <a href="@Html.Raw(Model.Poem.FullUrl)" rel="bookmark">
+                                @Html.Raw(Model.Poem.Title)
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Html.Raw(Model.Cat.Cat.FullUrl)" rel="bookmark">
+                                @Html.Raw(Model.Cat.Cat.Title)
+                            </a>
+                        }
+                    }
+
+                </h2>
+                <div class="spacer">&nbsp;</div>
+                <div style="width:82px;margin:auto">
+                    <a href="@Html.Raw(Model.Cat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.Cat.Poet.Id).png" alt="@Html.Raw(Model.Cat.Poet.Name)" /></a>
+                </div>
+                <div style="width:100%;margin:auto">
+                    @{
+                        foreach (var gran in Model.Cat.Cat.Ancestors)
+                        {
+                            <a href="@Html.Raw(gran.FullUrl)">@Html.Raw(gran.Title)</a><span> &raquo;</span>
+                        }
+                        <a href="@Html.Raw(Model.Cat.Cat.FullUrl)">@Html.Raw(Model.Cat.Cat.Title)</a>
+                    }
+
+                </div>
+                <div class="spacer">&nbsp;</div>
                 @{
+                    if (Model.PoetPage)
+                    {
+                        <p>
+                            @Html.Raw(Model.Cat.Poet.Description)
+                        </p>
+                    }
+
                     if (Model.PoemPage)
                     {
-                        <a href="@Html.Raw(Model.Poem.FullUrl)" rel="bookmark">
-                            @Html.Raw(Model.Poem.Title)
-                        </a>
-                    }
-                    else
-                    {
-                        <a href="@Html.Raw(Model.Cat.Cat.FullUrl)" rel="bookmark">
-                            @Html.Raw(Model.Cat.Cat.Title)
-                        </a>
+                        @Html.Raw(Model.Poem.HtmlText)
                     }
                 }
 
-            </h2>
-            <div class="spacer">&nbsp;</div>
-            <div style="width:82px;margin:auto">
-                <a href="@Html.Raw(Model.Cat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.Cat.Poet.Id).png" alt="@Html.Raw(Model.Cat.Poet.Name)" /></a>
-            </div>
-            <div style="width:100%;margin:auto">
+
                 @{
-                    foreach (var gran in Model.Cat.Cat.Ancestors)
+                    if (!Model.PoemPage)
                     {
-                        <a href="@Html.Raw(gran.FullUrl)">@Html.Raw(gran.Title)</a><span> &raquo;</span>
+                        foreach (var cat in Model.Cat.Cat.Children)
+                        {
+                            <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + cat.UrlSlug)"> @Html.Raw(cat.Title)</a></p>
+                        }
+
+                        foreach (var poem in Model.Cat.Cat.Poems)
+                        {
+                            <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + poem.UrlSlug)"> @Html.Raw(poem.Title): @Html.Raw(poem.Excerpt) </a></p>
+                        }
                     }
-                    <a href="@Html.Raw(Model.Cat.Cat.FullUrl)">@Html.Raw(Model.Cat.Cat.Title)</a>
+
                 }
 
-            </div>
-            <div class="spacer">&nbsp;</div>
+            </article>
+
             @{
-                if (Model.PoetPage)
-                {
-                    <p>
-                        @Html.Raw(Model.Cat.Poet.Description)
-                    </p>
-                }
-
                 if (Model.PoemPage)
                 {
-                    @Html.Raw(Model.Poem.HtmlText)
+                    if (Model.Poem.Recitations.Length > 0)
+                    {
+                        <div class="spacer">&nbsp;</div>
+                        <div style="width:95%;max-width:500px;margin:auto">
+                            <div id="jp_container_1" class="jp-video jp-video-270p">
+                                <div class="jp-type-playlist">
+                                    <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+                                    <div class="jp-gui">
+                                        <div class="jp-video-play">
+                                            <button class="jp-video-play-icon" tabindex="0">پخش</button>
+                                        </div>
+                                        <div class="jp-interface">
+                                            <div class="jp-progress">
+                                                <div class="jp-seek-bar">
+                                                    <div class="jp-play-bar"></div>
+                                                </div>
+                                            </div>
+                                            <div class="jp-current-time">&nbsp;</div>
+                                            <div class="jp-duration">&nbsp;</div>
+                                            <div class="jp-controls-holder" style="width:auto">
+                                                <div class="jp-controls">
+                                                    <button class="jp-previous" tabindex="0">قبلی</button>
+                                                    <button class="jp-play" tabindex="0">پخش</button>
+                                                    <button class="jp-next" tabindex="0">بعدی</button>
+                                                    <button class="jp-stop" tabindex="0">توقف</button>
+                                                </div>
+                                                <div class="jp-volume-controls">
+                                                    <button class="jp-mute" tabindex="0">بی‌صدا</button>
+                                                    <button class="jp-volume-max" tabindex="0">حداکثر صدا</button>
+                                                    <div class="jp-volume-bar">
+                                                        <div class="jp-volume-bar-value"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="jp-details">
+                                                <div class="jp-title">&nbsp;</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="jp-playlist">
+                                        <ul>
+                                            <!-- The method Playlist.displayPlaylist() uses this unordered list -->
+                                            <li>&nbsp;</li>
+                                        </ul>
+                                    </div>
+                                    <div class="jp-no-solution">
+                                        <span>نیاز به بروزآوری</span>
+                                        جهت خوانش شعر شما یا باید از مرورگر جدیدی همچون <a href="http://getfirefox.com/">فایرفاکس</a> استفاده کنید یا افزونه <a href="http://get.adobe.com/flashplayer/" target="_blank">فلش</a> مرورگرتان را بروزآوری کنید.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 }
             }
 
-
-            @{
-                if (!Model.PoemPage)
-                {
-                    foreach (var cat in Model.Cat.Cat.Children)
-                    {
-                        <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + cat.UrlSlug)"> @Html.Raw(cat.Title)</a></p>
-                    }
-
-                    foreach (var poem in Model.Cat.Cat.Poems)
-                    {
-                        <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + poem.UrlSlug)"> @Html.Raw(poem.Title): @Html.Raw(poem.Excerpt) </a></p>
-                    }
-                }
-
-            }
 
             @{
                 if (Model.CatPage)
