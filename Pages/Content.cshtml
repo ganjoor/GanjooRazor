@@ -259,9 +259,26 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
                         </p>
                         <h3>این شعر را چه کسی در کدام آهنگ خوانده است؟</h3>
                         <p>🎜 <small><a href="https://ganjoor.net/spotify/?p=68936" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهایی که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
-                        <p>
-                            <small>📷 <a href="?pinterest_url=manual" onclick="wpopen(this.href); return false" class="comments-link">پیشنهاد تصاویر مرتبط از منابع اینترنتی</a>، 📖 <a href="http://blog.ganjoor.net/1398/07/12/mganjoor/" target="_blank">راهنمای نحوهٔ پیشنهاد تصاویر مرتبط از گنجینهٔ گنجور</a></small>
-                        </p>
+
+                        @if (Model.Poem.Images.Length == 0)
+                        {
+                            <p>
+                                <small>📷 <a href="?pinterest_url=manual" onclick="wpopen(this.href); return false" class="comments-link">پیشنهاد تصاویر مرتبط از منابع اینترنتی</a>، 📖 <a href="http://blog.ganjoor.net/1398/07/12/mganjoor/" target="_blank">راهنمای نحوهٔ پیشنهاد تصاویر مرتبط از گنجینهٔ گنجور</a></small>
+                            </p>
+                        }
+                        else
+                        {
+                            <h3>تصاویر مرتبط در گنجینهٔ گنجور</h3>
+                            <div style="display: flex;clear: both;width:auto;margin:auto;flex-flow:wrap;text-align:center">
+                                @foreach (var image in Model.Poem.Images)
+                                {
+                                    <a target="_blank" style="text-align:center;margin:auto" href="@Html.Raw(image.EntityFriendlyUrl)">
+                                        <img src="@Html.Raw($"https://ganjgah.ir/api/images/thumb/{image.EntityImageId}.jpg")" alt="@Html.Raw($"{image.EntityName}")" width="200" style="width:200px;float: right;padding: 5px;">
+                                    </a>
+                                }
+                            </div>
+                        }
+
                         <h3>حاشیه‌ها</h3>
                         <p>
 
