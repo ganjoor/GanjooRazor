@@ -1,5 +1,4 @@
 ﻿using RMuseum.Models.GanjoorAudio.ViewModels;
-using RMuseum.Models.GanjoorIntegration.ViewModels;
 
 namespace RMuseum.Models.Ganjoor.ViewModels
 {
@@ -71,6 +70,6 @@ namespace RMuseum.Models.Ganjoor.ViewModels
         /// <summary>
         /// Images
         /// </summary>
-        public GanjoorLinkViewModel[] Images { get; set; }
+        public PoemRelatedImage[] Images { get; set; }
     }
 }

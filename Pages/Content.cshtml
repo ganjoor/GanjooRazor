@@ -272,8 +272,8 @@ $"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
                             <div style="display: flex;clear: both;width:auto;margin:auto;flex-flow:wrap;text-align:center">
                                 @foreach (var image in Model.Poem.Images)
                                 {
-                                    <a target="_blank" style="text-align:center;margin:auto" href="@Html.Raw(image.EntityFriendlyUrl)">
-                                        <img src="@Html.Raw($"https://ganjgah.ir/api/images/thumb/{image.EntityImageId}.jpg")" alt="@Html.Raw($"{image.EntityName}")" width="200" style="width:200px;float: right;padding: 5px;">
+                                    <a target="_blank" style="text-align:center;margin:auto" href="@Html.Raw(image.TargetPageUrl)">
+                                        <img src="@Html.Raw(image.ThumbnailImageUrl)" alt="@Html.Raw(image.AltText)" width="200" style="width:200px;float: right;padding: 5px;">
                                     </a>
                                 }
                             </div>
