@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
         @Html.Raw(ViewData["Title"])
-        
     </title>
     <script type="application/ld+json">
+        {
         @Html.Raw(@ViewData["BrearCrumpList"])
+        }
     </script>
 
     <link href="/dist/skin/blue.monday/css/jplayer.blue.monday.min.css" rel="stylesheet" type="text/css" />

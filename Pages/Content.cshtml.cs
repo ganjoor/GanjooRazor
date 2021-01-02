@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Ganjoor.ViewModels;
@@ -133,26 +134,44 @@ namespace GanjooRazor.Pages
 
             }
 
+            GoogleBreadCrumbList breadCrumbList = new GoogleBreadCrumbList();
+
             if (PoetPage)
             {
                 ViewData["Title"] = $"گنجور &raquo; {Cat.Poet.Name}";
+                breadCrumbList.AddItem(Cat.Poet.Name, Cat.Cat.UrlSlug, $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{Cat.Poet.Id}.png");
             }
             else
             if (CatPage)
             {
                 string title = $"گنجور &raquo; ";
+                bool poetCat = true;
                 foreach (var gran in Cat.Cat.Ancestors)
                 {
                     title += $"{gran.Title} &raquo; ";
+                    breadCrumbList.AddItem(gran.Title, gran.UrlSlug, poetCat ? $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{Cat.Poet.Id}.png" : "https://i.ganjoor.net/cat.png");
+                    poetCat = false;
                 }
+                breadCrumbList.AddItem(Cat.Cat.Title, Cat.Cat.UrlSlug, "https://i.ganjoor.net/cat.png");
                 title += Cat.Cat.Title;
                 ViewData["Title"] = title;
             }
             else
             if (PoemPage)
                 {
-                    ViewData["Title"] = $"گنجور &raquo; {Poem.FullTitle}";
+                ViewData["Title"] = $"گنجور &raquo; {Poem.FullTitle}";
+                bool poetCat = true;
+                foreach (var gran in Cat.Cat.Ancestors)
+                {
+                    breadCrumbList.AddItem(gran.Title, gran.UrlSlug, poetCat ? $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{Cat.Poet.Id}.png" : "https://i.ganjoor.net/cat.png");
+                    poetCat = false;
                 }
+                breadCrumbList.AddItem(Cat.Cat.Title, Cat.Cat.UrlSlug, "https://i.ganjoor.net/cat.png");
+                breadCrumbList.AddItem(Poem.Title, Poem.UrlSlug, "https://i.ganjoor.net/poem.png");
+
+            }
+
+            ViewData["BrearCrumpList"] = breadCrumbList.ToString();
         }
     }
 }

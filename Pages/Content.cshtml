@@ -5,30 +5,6 @@
 }
 
 
-
-@{
-   
-
-
-    ViewData["BrearCrumpList"] =
-        "{" +
-"\"@context\": \"http://schema.org\"," +
-"\"@type\": \"BreadcrumbList\"," +
-"\"itemListElement\": [" +
-"{" +
-        "\"@type\": \"ListItem\"," +
-"\"position\": 1," +
-"\"item\": {" +
-            $"\"@id\": \"https://ganjoor.net{Html.Raw(Model.Cat.Poet.FullUrl)}/\"," +
-$"\"name\": \"{Html.Raw(Model.Cat.Poet.Name)}\"," +
-"\"image\": \"https://i.ganjoor.net/poem.png\"" +
-"}" +
-    "}" +
-"]" +
-"}";
-}
-
-
 <div id="hdr2" class="clearfix">
     <h1><a href="/" title="گنجور"><img src="/image/ganjadabk.gif" alt="گنجور" /></a></h1>
     <div class="actionbox">
