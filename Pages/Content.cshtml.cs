@@ -132,6 +132,27 @@ namespace GanjooRazor.Pages
 
 
             }
+
+            if (PoetPage)
+            {
+                ViewData["Title"] = $"گنجور &raquo; {Cat.Poet.Name}";
+            }
+            else
+            if (CatPage)
+            {
+                string title = $"گنجور &raquo; ";
+                foreach (var gran in Cat.Cat.Ancestors)
+                {
+                    title += $"{gran.Title} &raquo; ";
+                }
+                title += Cat.Cat.Title;
+                ViewData["Title"] = title;
+            }
+            else
+            if (PoemPage)
+                {
+                    ViewData["Title"] = $"گنجور &raquo; {Poem.FullTitle}";
+                }
         }
     }
 }
