@@ -15,7 +15,7 @@
                 @{
                     foreach (RMuseum.Models.Ganjoor.ViewModels.GanjoorPoetViewModel poet in Model.Poets)
                     {
-                        if (poet.Id == Model.Cat.Poet.Id)
+                        if (poet.Id == Model.GanjoorPage.PoetOrCat.Poet.Id)
                         {
                             <option value="@poet.Id" selected="selected">@Html.Raw(poet.Name)</option>
                         }
@@ -33,13 +33,13 @@
                     <select name="cat" id="cat" style="width:150px">
                         <option value="0">در همه بخشها</option>
                         @{
-                            foreach (var gran in Model.Cat.Cat.Ancestors)
+                            foreach (var gran in Model.GanjoorPage.PoetOrCat.Cat.Ancestors)
                             {
                                 <option value="@Html.Raw(gran.Id)">@Html.Raw(gran.Title)</option>
                             }
-                            <option value="@Html.Raw(Model.Cat.Cat.Id)">@Html.Raw(Model.Cat.Cat.Title)</option>
+                            <option value="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Id)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)</option>
 
-                            foreach (var child in Model.Cat.Cat.Children)
+                            foreach (var child in Model.GanjoorPage.PoetOrCat.Cat.Children)
                             {
                                 <option value="@Html.Raw(child.Id)">@Html.Raw(child.Title)</option>
                             }
@@ -63,14 +63,14 @@
                     @{
                         if (Model.PoemPage)
                         {
-                            <a href="@Html.Raw(Model.Poem.FullUrl)" rel="bookmark">
-                                @Html.Raw(Model.Poem.Title)
+                            <a href="@Html.Raw(Model.GanjoorPage.Poem.FullUrl)" rel="bookmark">
+                                @Html.Raw(Model.GanjoorPage.Poem.Title)
                             </a>
                         }
                         else
                         {
-                            <a href="@Html.Raw(Model.Cat.Cat.FullUrl)" rel="bookmark">
-                                @Html.Raw(Model.Cat.Cat.Title)
+                            <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.FullUrl)" rel="bookmark">
+                                @Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)
                             </a>
                         }
                     }
@@ -78,15 +78,15 @@
                 </h2>
                 <div class="spacer">&nbsp;</div>
                 <div style="width:82px;margin:auto">
-                    <a href="@Html.Raw(Model.Cat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.Cat.Poet.Id).png" alt="@Html.Raw(Model.Cat.Poet.Name)" /></a>
+                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.GanjoorPage.PoetOrCat.Poet.Id).png" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" /></a>
                 </div>
                 <div style="width:100%;margin:auto">
                     @{
-                        foreach (var gran in Model.Cat.Cat.Ancestors)
+                        foreach (var gran in Model.GanjoorPage.PoetOrCat.Cat.Ancestors)
                         {
                             <a href="@Html.Raw(gran.FullUrl)">@Html.Raw(gran.Title)</a><span> &raquo;</span>
                         }
-                        <a href="@Html.Raw(Model.Cat.Cat.FullUrl)">@Html.Raw(Model.Cat.Cat.Title)</a>
+                        <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.FullUrl)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)</a>
                     }
 
                 </div>
@@ -95,13 +95,13 @@
                     if (Model.PoetPage)
                     {
                         <p>
-                            @Html.Raw(Model.Cat.Poet.Description)
+                            @Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Description)
                         </p>
                     }
 
                     if (Model.PoemPage)
                     {
-                        @Html.Raw(Model.Poem.HtmlText)
+                        @Html.Raw(Model.GanjoorPage.Poem.HtmlText)
                     }
                 }
 
@@ -109,14 +109,14 @@
                 @{
                     if (!Model.PoemPage)
                     {
-                        foreach (var cat in Model.Cat.Cat.Children)
+                        foreach (var cat in Model.GanjoorPage.PoetOrCat.Cat.Children)
                         {
-                            <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + cat.UrlSlug)"> @Html.Raw(cat.Title)</a></p>
+                            <p><a href=" @Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.UrlSlug + "/" + cat.UrlSlug)"> @Html.Raw(cat.Title)</a></p>
                         }
 
-                        foreach (var poem in Model.Cat.Cat.Poems)
+                        foreach (var poem in Model.GanjoorPage.PoetOrCat.Cat.Poems)
                         {
-                            <p><a href=" @Html.Raw(Model.Cat.Cat.UrlSlug + "/" + poem.UrlSlug)"> @Html.Raw(poem.Title): @Html.Raw(poem.Excerpt) </a></p>
+                            <p><a href=" @Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.UrlSlug + "/" + poem.UrlSlug)"> @Html.Raw(poem.Title): @Html.Raw(poem.Excerpt) </a></p>
                         }
                     }
 
@@ -127,7 +127,7 @@
             @{
                 if (Model.PoemPage)
                 {
-                    if (Model.Poem.Recitations.Length > 0)
+                    if (Model.GanjoorPage.Poem.Recitations.Length > 0)
                     {
                         <div class="spacer">&nbsp;</div>
                         <div style="width:95%;max-width:500px;margin:auto">
@@ -191,15 +191,15 @@
                         <div class="spacer">&nbsp;</div>
                         <div class="navigation">
                             <div class="navleft">
-                                @if (Model.Cat.Cat.Next != null)
+                                @if (Model.GanjoorPage.PoetOrCat.Cat.Next != null)
                                 {
-                                    <a href="@Html.Raw(Model.Cat.Cat.Next.UrlSlug)">@Html.Raw(Model.Cat.Cat.Next.Title)</a><span> &raquo;</span>
+                                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Next.UrlSlug)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Next.Title)</a><span> &raquo;</span>
                                 }
                             </div>
                             <div class="navright">
-                                @if (Model.Cat.Cat.Previous != null)
+                                @if (Model.GanjoorPage.PoetOrCat.Cat.Previous != null)
                                 {
-                                    <span>&laquo; </span><a href="@Html.Raw(Model.Cat.Cat.Previous.UrlSlug)">@Html.Raw(Model.Cat.Cat.Previous.Title)</a>
+                                    <span>&laquo; </span><a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Previous.UrlSlug)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Previous.Title)</a>
                                 }
                             </div>
                         </div>
@@ -213,15 +213,15 @@
                         <div class="spacer">&nbsp;</div>
                         <div class="navigation">
                             <div class="navleft">
-                                @if (Model.Poem.Next != null)
+                                @if (Model.GanjoorPage.Poem.Next != null)
                                 {
-                                    <a href="@Html.Raw(Model.Poem.Next.UrlSlug)">@Html.Raw(Model.Poem.Next.Title): @Html.Raw(Model.Poem.Next.Excerpt)</a><span> &raquo;</span>
+                                    <a href="@Html.Raw(Model.GanjoorPage.Poem.Next.UrlSlug)">@Html.Raw(Model.GanjoorPage.Poem.Next.Title): @Html.Raw(Model.GanjoorPage.Poem.Next.Excerpt)</a><span> &raquo;</span>
                                 }
                             </div>
                             <div class="navright">
-                                @if (Model.Poem.Previous != null)
+                                @if (Model.GanjoorPage.Poem.Previous != null)
                                 {
-                                    <span>&laquo; </span><a href="@Html.Raw(Model.Poem.Previous.UrlSlug)">@Html.Raw(Model.Poem.Previous.Title) :@Html.Raw(Model.Poem.Previous.Excerpt)</a>
+                                    <span>&laquo; </span><a href="@Html.Raw(Model.GanjoorPage.Poem.Previous.UrlSlug)">@Html.Raw(Model.GanjoorPage.Poem.Previous.Title) :@Html.Raw(Model.GanjoorPage.Poem.Previous.Excerpt)</a>
                                 }
                             </div>
                         </div>
@@ -238,7 +238,7 @@
                         <h3>این شعر را چه کسی در کدام آهنگ خوانده است؟</h3>
                         <p>🎜 <small><a href="https://ganjoor.net/spotify/?p=68936" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهایی که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
 
-                        @if (Model.Poem.Images.Length == 0)
+                        @if (Model.GanjoorPage.Poem.Images.Length == 0)
                         {
                             <p>
                                 <small>📷 <a href="?pinterest_url=manual" onclick="wpopen(this.href); return false" class="comments-link">پیشنهاد تصاویر مرتبط از منابع اینترنتی</a>، 📖 <a href="http://blog.ganjoor.net/1398/07/12/mganjoor/" target="_blank">راهنمای نحوهٔ پیشنهاد تصاویر مرتبط از گنجینهٔ گنجور</a></small>
@@ -248,7 +248,7 @@
                         {
                             <h3>تصاویر مرتبط در گنجینهٔ گنجور</h3>
                             <div style="display: flex;clear: both;width:auto;margin:auto;flex-flow:wrap;text-align:center">
-                                @foreach (var image in Model.Poem.Images)
+                                @foreach (var image in Model.GanjoorPage.Poem.Images)
                                 {
                                     <a target="_blank" style="text-align:center;margin:auto" href="@Html.Raw(image.TargetPageUrl)">
                                         <img src="@Html.Raw(image.ThumbnailImageUrl)" alt="@Html.Raw(image.AltText)" width="200" style="width:200px;float: right;padding: 5px;">
@@ -321,7 +321,7 @@
 @{
     if(Model.PoemPage)
     {
-        if(Model.Poem.Recitations.Length > 0 )
+        if(Model.GanjoorPage.Poem.Recitations.Length > 0 )
         {
             <script src="/dist/jplayer/jquery.jplayer.min.js"></script>
             <script src="/dist/add-on/jplayer.playlist.min.js"></script>
@@ -329,22 +329,22 @@
                 //<![CDATA[
                 $(document).ready(function () {
                     var jlist = prepaudio(
-                        "@Html.Raw($"https://ganjgah.ir/api/audio/file/{Model.Poem.Recitations[0].Id}.xml")",
-                        "@Html.Raw(Model.Poem.Recitations[0].AudioTitle)",
-                        "@Html.Raw(Model.getAudioDesc(Model.Poem.Recitations[0], true))",
+                        "@Html.Raw($"https://ganjgah.ir/api/audio/file/{Model.GanjoorPage.Poem.Recitations[0].Id}.xml")",
+                        "@Html.Raw(Model.GanjoorPage.Poem.Recitations[0].AudioTitle)",
+                        "@Html.Raw(Model.getAudioDesc(Model.GanjoorPage.Poem.Recitations[0], true))",
                         "",
-                        "@Html.Raw(Model.Poem.Recitations[0].Mp3Url)"
+                        "@Html.Raw(Model.GanjoorPage.Poem.Recitations[0].Mp3Url)"
                     );
 
-                    @for(int x = 1; x<Model.Poem.Recitations.Length; x++)
+                    @for(int x = 1; x<Model.GanjoorPage.Poem.Recitations.Length; x++)
                     {
                         <text>
                     addpaudio(@x, jlist,
-                        "@Html.Raw($"https://ganjgah.ir/api/audio/file/{Model.Poem.Recitations[x].Id}.xml")",
-                        "@Html.Raw(Model.Poem.Recitations[x].AudioTitle)",
-                        "@Html.Raw(Model.getAudioDesc(Model.Poem.Recitations[x], false))",
+                        "@Html.Raw($"https://ganjgah.ir/api/audio/file/{Model.GanjoorPage.Poem.Recitations[x].Id}.xml")",
+                        "@Html.Raw(Model.GanjoorPage.Poem.Recitations[x].AudioTitle)",
+                        "@Html.Raw(Model.getAudioDesc(Model.GanjoorPage.Poem.Recitations[x], false))",
                         "",
-                        "@Html.Raw(Model.Poem.Recitations[x].Mp3Url)"
+                        "@Html.Raw(Model.GanjoorPage.Poem.Recitations[x].Mp3Url)"
                     );
                         </text>
                     }

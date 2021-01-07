@@ -14,9 +14,7 @@ namespace GanjooRazor.Pages
         private List<GanjoorPoetViewModel> _poets;
         public List<GanjoorPoetViewModel> Poets { get { return _poets; } }
 
-        public GanjoorPoetCompleteViewModel Cat { get; set; }
-
-        public GanjoorPoemCompleteViewModel Poem { get; set; }
+        public GanjoorPageCompleteViewModel GanjoorPage { get; set; }
 
         public bool PoetPage { get; set; }
 
@@ -92,45 +90,26 @@ namespace GanjooRazor.Pages
 
                 _poets = JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoetViewModel>>();
 
-
-                var poetQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poet?url={Request.Path}");
-                
-
-                if(poetQuery.IsSuccessStatusCode)
+                var pageQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/page?url={Request.Path}");
+                if(pageQuery.IsSuccessStatusCode)
                 {
-                    Cat = JObject.Parse(await poetQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPoetCompleteViewModel>();
-                    
-                    PoetPage = true;
-                }
-                else
-                    if(poetQuery.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
+                    switch(GanjoorPage.GanjoorPageType)
                     {
-                        var catQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/cat?url={Request.Path}");
-                        if (catQuery.IsSuccessStatusCode)
-                        {
-                            Cat = JObject.Parse(await catQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPoetCompleteViewModel>();
+                        case GanjoorPageType.PoemPage:
+                            _preparePoemExcerpt(GanjoorPage.Poem.Next);
+                            _preparePoemExcerpt(GanjoorPage.Poem.Previous);
+                            GanjoorPage.PoetOrCat = GanjoorPage.Poem.Category;
+                            PoemPage = true;
+                            break;
+                        case GanjoorPageType.PoetPage:
+                            PoetPage = true;
+                            break;
+                        case GanjoorPageType.CatPage:
                             CatPage = true;
-                        }
-                        else
-                            if(catQuery.StatusCode == System.Net.HttpStatusCode.NotFound)
-                            {
-                                var poemQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem?url={Request.Path}");
-                                Poem = JObject.Parse(await poemQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPoemCompleteViewModel>();
-                                Cat = Poem.Category;
-                                _preparePoemExcerpt(Poem.Next);
-                                _preparePoemExcerpt(Poem.Previous);
-                                PoemPage = true;
-                            }
-                    }
-                if(!PoemPage)
-                {
-                    foreach (var poem in Cat.Cat.Poems)
-                    {
-                        _preparePoemExcerpt(poem);
+                            break;
                     }
                 }
-                
-
 
             }
 
@@ -138,36 +117,36 @@ namespace GanjooRazor.Pages
 
             if (PoetPage)
             {
-                ViewData["Title"] = $"گنجور &raquo; {Cat.Poet.Name}";
-                breadCrumbList.AddItem(Cat.Poet.Name, Cat.Cat.UrlSlug, $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{Cat.Poet.Id}.png");
+                ViewData["Title"] = $"گنجور &raquo; {GanjoorPage.PoetOrCat.Poet.Name}";
+                breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Poet.Name, GanjoorPage.PoetOrCat.Cat.UrlSlug, $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{GanjoorPage.PoetOrCat.Poet.Id}.png");
             }
             else
             if (CatPage)
             {
                 string title = $"گنجور &raquo; ";
                 bool poetCat = true;
-                foreach (var gran in Cat.Cat.Ancestors)
+                foreach (var gran in GanjoorPage.PoetOrCat.Cat.Ancestors)
                 {
                     title += $"{gran.Title} &raquo; ";
-                    breadCrumbList.AddItem(gran.Title, gran.UrlSlug, poetCat ? $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{Cat.Poet.Id}.png" : "https://i.ganjoor.net/cat.png");
+                    breadCrumbList.AddItem(gran.Title, gran.UrlSlug, poetCat ? $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{GanjoorPage.PoetOrCat.Poet.Id}.png" : "https://i.ganjoor.net/cat.png");
                     poetCat = false;
                 }
-                breadCrumbList.AddItem(Cat.Cat.Title, Cat.Cat.UrlSlug, "https://i.ganjoor.net/cat.png");
-                title += Cat.Cat.Title;
+                breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Cat.Title, GanjoorPage.PoetOrCat.Cat.UrlSlug, "https://i.ganjoor.net/cat.png");
+                title += GanjoorPage.PoetOrCat.Cat.Title;
                 ViewData["Title"] = title;
             }
             else
             if (PoemPage)
                 {
-                ViewData["Title"] = $"گنجور &raquo; {Poem.FullTitle}";
+                ViewData["Title"] = $"گنجور &raquo; {GanjoorPage.Poem.FullTitle}";
                 bool poetCat = true;
-                foreach (var gran in Cat.Cat.Ancestors)
+                foreach (var gran in GanjoorPage.Poem.Category.Cat.Ancestors)
                 {
-                    breadCrumbList.AddItem(gran.Title, gran.UrlSlug, poetCat ? $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{Cat.Poet.Id}.png" : "https://i.ganjoor.net/cat.png");
+                    breadCrumbList.AddItem(gran.Title, gran.UrlSlug, poetCat ? $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{GanjoorPage.Poem.Category.Poet.Id}.png" : "https://i.ganjoor.net/cat.png");
                     poetCat = false;
                 }
-                breadCrumbList.AddItem(Cat.Cat.Title, Cat.Cat.UrlSlug, "https://i.ganjoor.net/cat.png");
-                breadCrumbList.AddItem(Poem.Title, Poem.UrlSlug, "https://i.ganjoor.net/poem.png");
+                breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Cat.Title, GanjoorPage.PoetOrCat.Cat.UrlSlug, "https://i.ganjoor.net/cat.png");
+                breadCrumbList.AddItem(GanjoorPage.Poem.Title, GanjoorPage.Poem.UrlSlug, "https://i.ganjoor.net/poem.png");
 
             }
 
