@@ -8,14 +8,14 @@
 <div id="hdr2" class="clearfix">
     <h1><a href="/" title="گنجور"><img src="/image/ganjadabk.gif" alt="گنجور" /></a></h1>
     <div class="actionbox">
-        <form action="https://ganjoor.net/index.php" method="get" id="searchform">
+        <form action="/index.php" method="get" id="searchform">
             <input type="text" name="s" id="s" class="inputText" value="" placeholder="جستجو" />
             <select name="author" id="author">
                 <option value="0" selected="selected">در آثار همه شاعران</option>
                 @{
                     foreach (RMuseum.Models.Ganjoor.ViewModels.GanjoorPoetViewModel poet in Model.Poets)
                     {
-                        if (poet.Id == Model.GanjoorPage.PoetOrCat.Poet.Id)
+                        if (Model.GanjoorPage.PoetOrCat != null && poet.Id == Model.GanjoorPage.PoetOrCat.Poet.Id)
                         {
                             <option value="@poet.Id" selected="selected">@Html.Raw(poet.Name)</option>
                         }
@@ -28,7 +28,7 @@
                 }
             </select>
             @{
-                if (!Model.PoetPage)
+                if (!Model.PoetPage && Model.GanjoorPage.PoetOrCat != null)
                 {
                     <select name="cat" id="cat" style="width:150px">
                         <option value="0">در همه بخشها</option>
@@ -68,33 +68,46 @@
                             </a>
                         }
                         else
+                        if (Model.GanjoorPage.PoetOrCat != null)
                         {
                             <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.FullUrl)" rel="bookmark">
                                 @Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)
                             </a>
                         }
+                        else
+                        {
+                            <a href="@Html.Raw(Model.GanjoorPage.FullUrl)" rel="bookmark">
+                                @Html.Raw(Model.GanjoorPage.Title)
+                            </a>
+                        }
                     }
 
                 </h2>
-                <div class="spacer">&nbsp;</div>
-                <div style="width:82px;margin:auto">
-                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.GanjoorPage.PoetOrCat.Poet.Id).png" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" /></a>
-                </div>
-                <div style="width:100%;margin:auto">
-                    @{
-                        foreach (var gran in Model.GanjoorPage.PoetOrCat.Cat.Ancestors)
-                        {
-                            <a href="@Html.Raw(gran.FullUrl)">@Html.Raw(gran.Title)</a><span> &raquo;</span>
-                        }
-                        <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.FullUrl)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)</a>
-                    }
+                @{
+                    if (Model.GanjoorPage.PoetOrCat != null)
+                    {
+                        <div class="spacer">&nbsp;</div>
+                        <div style="width:82px;margin:auto">
+                            <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.GanjoorPage.PoetOrCat.Poet.Id).png" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" /></a>
+                        </div>
+                        <div style="width:100%;margin:auto">
+                            @{
+                                foreach (var gran in Model.GanjoorPage.PoetOrCat.Cat.Ancestors)
+                                {
+                                    <a href="@Html.Raw(gran.FullUrl)">@Html.Raw(gran.Title)</a><span> &raquo;</span>
+                                }
+                                <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.FullUrl)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)</a>
+                            }
 
-                </div>
+                        </div>
+                    }
+                }
+
                 <div class="spacer">&nbsp;</div>
                 @{
                     @Html.Raw(Model.GanjoorPage.HtmlText)
                 }
-                
+
 
             </article>
 
@@ -207,10 +220,10 @@
                         </p>
                         <p>
                             <small>🖐 <a href="#" onclick="javascript:btshmr()">شماره‌گذاری ابیات</a></small>
-                            | <small>منبع اولیه: <a href="https://ganjoor.net/sources/sj/">سیاوش جعفری</a></small> | <small><a href="http://www.facebook.com/sharer.php?u=https://ganjoor.net/onsori/oghat/sh9/&amp;t=%D8%B4%D9%85%D8%A7%D8%B1%D9%87%D9%94+%DB%B9/">ارسال به فیس‌بوک</a></small>
+                            | <small>منبع اولیه: <a href="/sources/sj/">سیاوش جعفری</a></small> | <small><a href="http://www.facebook.com/sharer.php?u=/onsori/oghat/sh9/&amp;t=%D8%B4%D9%85%D8%A7%D8%B1%D9%87%D9%94+%DB%B9/">ارسال به فیس‌بوک</a></small>
                         </p>
                         <h3>این شعر را چه کسی در کدام آهنگ خوانده است؟</h3>
-                        <p>🎜 <small><a href="https://ganjoor.net/spotify/?p=68936" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهایی که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
+                        <p>🎜 <small><a href="/spotify/?p=68936" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهایی که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
 
                         @if (Model.GanjoorPage.Poem.Images.Length == 0)
                         {
@@ -234,7 +247,7 @@
                         <h3>حاشیه‌ها</h3>
                         <p>
 
-                            تا به حال حاشیه‌ای برای این شعر نوشته نشده است. <a href="https://ganjoor.net/?comments_popup=68936" onclick="wpopen(this.href); return false" class="comments-link" title="Comment on شمارهٔ ۹">💬 شما حاشیه بگذارید ...</a>
+                            تا به حال حاشیه‌ای برای این شعر نوشته نشده است. <a href="/?comments_popup=68936" onclick="wpopen(this.href); return false" class="comments-link" title="Comment on شمارهٔ ۹">💬 شما حاشیه بگذارید ...</a>
                         </p>
                     </div> <!-- <div id="comments"> -->
                 }
@@ -266,21 +279,21 @@
 
     <div id="footer">
         <ul>
-            <li><a href="https://ganjoor.net">خانه</a> | </li>
-            <li><a href="http://ganjoor.net/random/">بیت تصادفی</a> | </li>
-            <li><a href="https://ganjoor.net/mundex/">نمایهٔ موسیقی</a> | </li>
+            <li><a href="/">خانه</a> | </li>
+            <li><a href="/random/">بیت تصادفی</a> | </li>
+            <li><a href="/mundex/">نمایهٔ موسیقی</a> | </li>
             <li><a href="http://blog.ganjoor.net/">تازه‌ها</a> | </li>
-            <li><a href="https://ganjoor.net/hashieha/">حاشیه‌ها</a> | </li>
+            <li><a href="/hashieha/">حاشیه‌ها</a> | </li>
             <li><a href="http://c.ganjoor.net">کدها</a> | </li>
             <li><a href="http://dg.ganjoor.net">رومیزی</a> | </li>
             <li><a href="http://pozh.org/saaghar/">ساغر</a> | </li>
             <li><a href="http://epub.ganjoor.net">کتابخانه</a> | </li>
             <li><a href="https://museum.ganjoor.net">گنجینه</a> | </li>
-            <li><a href="https://ganjoor.net/vazn/">آمار</a> | </li>
-            <li><a href="https://ganjoor.net/about/">معرفی</a> | </li>
-            <li><a href="https://ganjoor.net/sources/">منابع</a> | </li>
-            <li><a href="https://ganjoor.net/donate/">کمک</a> | </li>
-            <li><a href="https://ganjoor.net/contact/">تماس</a></li>
+            <li><a href="/vazn/">آمار</a> | </li>
+            <li><a href="/about/">معرفی</a> | </li>
+            <li><a href="/sources/">منابع</a> | </li>
+            <li><a href="/donate/">کمک</a> | </li>
+            <li><a href="/contact/">تماس</a></li>
         </ul>
     </div>
 
