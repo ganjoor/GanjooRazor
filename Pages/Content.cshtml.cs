@@ -150,6 +150,16 @@ namespace GanjooRazor.Pages
                 breadCrumbList.AddItem(GanjoorPage.Poem.Title, GanjoorPage.Poem.UrlSlug, "https://i.ganjoor.net/poem.png");
 
             }
+            else
+            {
+                ViewData["Title"] = $"گنجور &raquo; {GanjoorPage.FullTitle}";
+
+                if(GanjoorPage.PoetOrCat != null)
+                {
+                    breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Poet.Name, GanjoorPage.PoetOrCat.Cat.UrlSlug, $"https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/{GanjoorPage.PoetOrCat.Poet.Id}.png");
+                }
+                breadCrumbList.AddItem(GanjoorPage.Title, GanjoorPage.FullUrl, "https://i.ganjoor.net/cat.png");
+            }
 
             ViewData["BrearCrumpList"] = breadCrumbList.ToString();
         }
