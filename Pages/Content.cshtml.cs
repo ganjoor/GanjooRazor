@@ -94,7 +94,8 @@ namespace GanjooRazor.Pages
                 if(pageQuery.IsSuccessStatusCode)
                 {
                     GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
-                    switch(GanjoorPage.GanjoorPageType)
+                    GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/");
+                    switch (GanjoorPage.GanjoorPageType)
                     {
                         case GanjoorPageType.PoemPage:
                             _preparePoemExcerpt(GanjoorPage.Poem.Next);
