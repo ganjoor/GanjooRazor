@@ -29,8 +29,6 @@ namespace GanjooRazor.Utils
         /// <param name="image"></param>
         public void AddItem(string name, string slug, string image)
         {
-            if (slug.IndexOf('/') == 0)
-                slug = slug.Substring(1);
             _items.Add(new ItemListElement()
             {
                 Position = _items.Count + 1,
@@ -59,7 +57,7 @@ namespace GanjooRazor.Utils
                 sb.AppendLine("     \"@type\": \"ListItem\",");
                 sb.AppendLine($"     \"position\": {_items[i].Position},");
                 sb.AppendLine("     \"item\": {");
-                sb.AppendLine($"         \"@id\": \"https://ganjoor.net/{_items[i].Id}/\",");
+                sb.AppendLine($"         \"@id\": \"https://ganjoor.net{_items[i].Id}/\",");
                 sb.AppendLine($"         \"name\": \"{_items[i].Name}\", ");
                 sb.AppendLine($"         \"image\": \"{_items[i].Image}\"");
 
