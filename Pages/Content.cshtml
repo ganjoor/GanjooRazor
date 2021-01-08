@@ -87,19 +87,35 @@
                     if (Model.GanjoorPage.PoetOrCat != null)
                     {
                         <div class="spacer">&nbsp;</div>
-                        <div style="width:82px;margin:auto">
-                            <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.GanjoorPage.PoetOrCat.Poet.Id).png" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" /></a>
-                        </div>
-                        <div style="width:100%;margin:auto">
-                            @{
-                                foreach (var gran in Model.GanjoorPage.PoetOrCat.Cat.Ancestors)
-                                {
-                                    <a href="@Html.Raw(gran.FullUrl)">@Html.Raw(gran.Title)</a><span> &raquo;</span>
-                                }
-                                <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.FullUrl)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)</a>
-                            }
+                            @if (Model.GanjoorPage.SecondPoet != null)
+                            {
+                                <div style="width:164px;margin:auto">
+                                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.GanjoorPage.PoetOrCat.Poet.Id).png" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" style="width:auto;float:right" /></a>
+                                    <a href="@Html.Raw(Model.GanjoorPage.SecondPoet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.GanjoorPage.SecondPoet.Id).png" alt="@Html.Raw(Model.GanjoorPage.SecondPoet.Name)" style="width:auto;float:right" /></a>
+                                </div>
+                                <div style="width:164px;margin:auto">
+                                    @{
+                                        <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)</a><span> &raquo;</span>
+                                        <a href="@Html.Raw(Model.GanjoorPage.FullUrl)">@Html.Raw(Model.GanjoorPage.Title)</a>
+                                    }
+                                </div>
 
-                        </div>
+                            }
+                            else
+                            {
+                                <div style="width:82px;margin:auto">
+                                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="https://raw.githubusercontent.com/ganjoor/ganjoorflutter/main/images/poets/@(Model.GanjoorPage.PoetOrCat.Poet.Id).png" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" /></a>
+                                </div>
+                                <div style="width:100%;margin:auto">
+                                    @{
+                                        foreach (var gran in Model.GanjoorPage.PoetOrCat.Cat.Ancestors)
+                                        {
+                                            <a href="@Html.Raw(gran.FullUrl)">@Html.Raw(gran.Title)</a><span> &raquo;</span>
+                                        }
+                                        <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.FullUrl)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)</a>
+                                    }
+                                </div>
+                            }
                     }
                 }
 
