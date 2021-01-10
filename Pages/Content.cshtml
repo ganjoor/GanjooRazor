@@ -241,7 +241,7 @@
                         <p>
                             <small>🖐 <a href="#" onclick="javascript:btshmr()">شماره‌گذاری ابیات</a></small>
                             @if (!string.IsNullOrEmpty(Model.GanjoorPage.Poem.SourceName)) {
-                               <text> |<small>منبع اولیه: <a href="@Html.Raw($"/sources/${Model.GanjoorPage.Poem.SourceUrlSlug}/")">@Html.Raw(Model.GanjoorPage.Poem.SourceName)</a></small></text>
+                               <text> |<small>منبع اولیه: <a href="@Html.Raw($"/sources/{Model.GanjoorPage.Poem.SourceUrlSlug}/")">@Html.Raw(Model.GanjoorPage.Poem.SourceName)</a></small></text>
                             }
                              | <small><a href="http://www.facebook.com/sharer.php?u=/onsori/oghat/sh9/&amp;t=%D8%B4%D9%85%D8%A7%D8%B1%D9%87%D9%94+%DB%B9/">ارسال به فیس‌بوک</a></small>
                         </p>
