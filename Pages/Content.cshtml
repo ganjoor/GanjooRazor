@@ -243,10 +243,10 @@
                             @if (!string.IsNullOrEmpty(Model.GanjoorPage.Poem.SourceName)) {
                                <text> |<small>منبع اولیه: <a href="@Html.Raw($"/sources/{Model.GanjoorPage.Poem.SourceUrlSlug}/")">@Html.Raw(Model.GanjoorPage.Poem.SourceName)</a></small></text>
                             }
-                             | <small><a href="http://www.facebook.com/sharer.php?u=/onsori/oghat/sh9/&amp;t=%D8%B4%D9%85%D8%A7%D8%B1%D9%87%D9%94+%DB%B9/">ارسال به فیس‌بوک</a></small>
+                             | <small><a href="@Html.Raw($"http://www.facebook.com/sharer.php?u=https://ganjoor.net{Model.GanjoorPage.FullUrl}&amp;t={Uri.EscapeUriString(Model.GanjoorPage.FullTitle)}/")">ارسال به فیس‌بوک</a></small>
                         </p>
                         <h3>این شعر را چه کسی در کدام آهنگ خوانده است؟</h3>
-                        <p>🎜 <small><a href="/spotify/?p=68936" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهایی که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
+                        <p>🎜 <small><a href="@Html.Raw($"/spotify/?p={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهایی که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
 
                         @if (Model.GanjoorPage.Poem.Images.Length == 0)
                         {
@@ -270,7 +270,7 @@
                         <h3>حاشیه‌ها</h3>
                         <p>
 
-                            تا به حال حاشیه‌ای برای این شعر نوشته نشده است. <a href="/?comments_popup=68936" onclick="wpopen(this.href); return false" class="comments-link" title="Comment on شمارهٔ ۹">💬 شما حاشیه بگذارید ...</a>
+                            تا به حال حاشیه‌ای برای این شعر نوشته نشده است. <a href="@Html.Raw($"/?comments_popup={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link" title="Comment on شمارهٔ ۹">💬 شما حاشیه بگذارید ...</a>
                         </p>
                     </div> <!-- <div id="comments"> -->
                 }
