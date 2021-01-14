@@ -1,0 +1,33 @@
+﻿@page
+@model GanjooRazor.Pages.SpotifyModel
+@{
+    Layout = "Shared/_SuggestSong";
+    ViewData["Title"] = "انتخاب قطعهٔ موسیقی مرتبط با شعر از اسپاتیفای";
+}
+
+<span class="inputlabel">خواننده: </span>
+<input type="text" class="search" id="searchid" placeholder="خواننده" />&nbsp;<span style="visibility:hidden" id="l1"><a id="artistlink" href="#" target="_blank">صفحهٔ هنرمند</a></span>
+<br />
+<div id="result"></div>
+<span class="inputlabel">آلبوم: </span><select name="album" id="album" disabled="disabled" class="albumtrack"></select>&nbsp;<span style="visibility:hidden" id="l2"><a id="albumlink" href="#" target="_blank">صفحهٔ آلبوم</a></span>
+<br />
+<span class="inputlabel">آهنگ: </span><select name="track" id="track" disabled="disabled" class="albumtrack"></select>&nbsp;<span style="visibility:hidden" id="l3"><a id="tracklink" href="#" target="_blank">صفحهٔ آهنگ</a></span>
+<br />
+
+<span><small>جستجو بر اساس نام آهنگ:</small> </span>
+<input type="text" class="trackq" id="trackq" placeholder="عنوان آهنگ" />
+<br />
+<div id="resultq"></div>
+
+<form action="index.php?p=<?=$poemid?>" method="post">
+    <input type="hidden" name="spotify_artist_name" id="spotify_artist_name" value="" />
+    <input type="hidden" name="spotify_artist_url" id="spotify_artist_url" value="" />
+    <input type="hidden" name="spotify_album_name" id="spotify_album_name" value="" />
+    <input type="hidden" name="spotify_album_url" id="spotify_album_url" value="" />
+    <input type="hidden" name="spotify_track_name" id="spotify_track_name" value="" />
+    <input type="hidden" name="spotify_track_url" id="spotify_track_url" value="" />
+
+
+
+    <input type="submit" name="submit" id="submit" value="پیشنهاد قطعه" />
+</form>
