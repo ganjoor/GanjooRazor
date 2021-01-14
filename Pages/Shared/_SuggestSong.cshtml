@@ -233,6 +233,12 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
     <style type="text/css">
+
+        a img {
+            width: unset;
+        }
+
+      
         
         .content, .poem {
             width: 530px;
@@ -316,9 +322,7 @@
             color: #fff;
             border: 2px solid #433;
         }
-        a img {
-            width: auto;
-        }
+        
     </style>
 </head>
 <body>
@@ -334,7 +338,7 @@
                     <input type="radio" id="golha" name="golha" value="گلها">
                     <label for="golha"><a href="@Html.Raw($"/g/?p={ViewData["p"]}")"><img src="/image/golha.png" alt="گلها" height="32" /></a></label>
                     <input type="radio" id="beeptunes" name="beeptunes" value="بیپ‌تونز">
-                    <label for="beeptunes"><a href=""@Html.Raw($"/bp/?p={ViewData["p"]}")""><img src="/image/beeptunes.png" alt="بیپ‌تونز" height="32" /></a></label>
+                    <label for="beeptunes"><a href="@Html.Raw($"/bp/?p={ViewData["p"]}")"><img src="/image/beeptunes.png" alt="بیپ‌تونز" height="32" /></a></label>
                 </div>
             </div>
             <p>
