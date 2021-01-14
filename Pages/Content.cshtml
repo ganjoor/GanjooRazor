@@ -240,13 +240,33 @@
                         </p>
                         <p>
                             <small>🖐 <a href="#" onclick="javascript:btshmr()">شماره‌گذاری ابیات</a></small>
-                            @if (!string.IsNullOrEmpty(Model.GanjoorPage.Poem.SourceName)) {
-                               <text> |<small>منبع اولیه: <a href="@Html.Raw($"/sources/{Model.GanjoorPage.Poem.SourceUrlSlug}/")">@Html.Raw(Model.GanjoorPage.Poem.SourceName)</a></small></text>
+                            @if (!string.IsNullOrEmpty(Model.GanjoorPage.Poem.SourceName))
+                            {
+                                <text> |<small>منبع اولیه: <a href="@Html.Raw($"/sources/{Model.GanjoorPage.Poem.SourceUrlSlug}/")">@Html.Raw(Model.GanjoorPage.Poem.SourceName)</a></small></text>
                             }
-                             | <small><a href="@Html.Raw($"http://www.facebook.com/sharer.php?u=https://ganjoor.net{Model.GanjoorPage.FullUrl}&amp;t={Uri.EscapeUriString(Model.GanjoorPage.FullTitle)}/")">ارسال به فیس‌بوک</a></small>
+                            | <small><a href="@Html.Raw($"http://www.facebook.com/sharer.php?u=https://ganjoor.net{Model.GanjoorPage.FullUrl}&amp;t={Uri.EscapeUriString(Model.GanjoorPage.FullTitle)}/")">ارسال به فیس‌بوک</a></small>
                         </p>
                         <h3>این شعر را چه کسی در کدام آهنگ خوانده است؟</h3>
-                        <p>🎜 <small><a href="@Html.Raw($"/spotify/?p={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهایی که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
+                        @if (Model.GanjoorPage.Poem.Songs.Length == 0)
+                        {
+                            <p>🎜 <small><a href="@Html.Raw($"/spotify/?p={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهایی که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
+                        }
+                        else
+                        {
+
+                            @foreach (var song in Model.GanjoorPage.Poem.Songs)
+                            {
+                                <p>
+                                    <a target="_blank" href="@Html.Raw(song.TrackUrl)">@Html.Raw($"{song}")</a>
+                                    @if(song.TrackType == RMuseum.Models.Ganjoor.PoemMusicTrackType.Spotify)
+                                    {
+                                        <a target="_blank" href="@Html.Raw(song.TrackUrl)"><img style="display:inline;width:16px;" src="/image/sp16.png" alt="اسپاتیفای" height="16" /></a> 			
+                                    }
+                                </p>
+                            }
+
+                            <p>🎜 <small><a href="@Html.Raw($"/spotify/?p={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link">معرفی آهنگهای دیگری که در متن آنها از این شعر استفاده شده است</a> ...</small></p>
+                        }
 
                         @if (Model.GanjoorPage.Poem.Images.Length == 0)
                         {
