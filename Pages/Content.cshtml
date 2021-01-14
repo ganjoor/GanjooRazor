@@ -245,7 +245,7 @@
                                 <text>| <small>وزن: <a href="@Html.Raw($"/vazn/?v={Uri.EscapeUriString(Model.GanjoorPage.Poem.GanjoorMetre.Rhythm)}&amp;a={Model.GanjoorPage.PoetOrCat.Poet.Id}")">@Html.Raw(Model.GanjoorPage.Poem.GanjoorMetre.Rhythm)</a></small></text>
                                 @if (!string.IsNullOrEmpty(Model.GanjoorPage.Poem.RhymeLetters))
                                 {
-                                    <text> | <small>🔍 <a href="@Html.Raw($"https://ganjoor.net/simi/?v={Uri.EscapeUriString(Model.GanjoorPage.Poem.GanjoorMetre.Rhythm)}&amp;g={Uri.EscapeUriString(Model.GanjoorPage.Poem.RhymeLetters)}")">شعرهای مشابه (وزن و قافیه)</a></small></text>
+                                    <text> | <small>🔍 <a href="@Html.Raw($"/simi/?v={Uri.EscapeUriString(Model.GanjoorPage.Poem.GanjoorMetre.Rhythm)}&amp;g={Uri.EscapeUriString(Model.GanjoorPage.Poem.RhymeLetters)}")">شعرهای مشابه (وزن و قافیه)</a></small></text>
                                 }
                             }
                             @if (!string.IsNullOrEmpty(Model.GanjoorPage.Poem.SourceName))
