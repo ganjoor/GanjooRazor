@@ -24,8 +24,11 @@ namespace GanjooRazor.Pages
         {
             using (HttpClient client = new HttpClient())
             {
-                string url = $"http://spotify.ganjoor.net/spotifyapi/search/artists/{HttpUtility.UrlEncode(search)}";
-                var response = await client.GetAsync(url);
+                //Warning: This is a private wrapper around the spotify API, created only for this project and incapable of
+                //         responding large number of requests (both server and Spotify user limitations),
+                //         so please do not use this proxy in other projects because you will cause this proxy to become unavailable for me
+                //         Thanks!
+                var response = await client.GetAsync($"http://spotify.ganjoor.net/spotifyapi/search/artists/{HttpUtility.UrlEncode(search)}");
 
                 NameIdUrlImage[] artists = new NameIdUrlImage[] { };
 
