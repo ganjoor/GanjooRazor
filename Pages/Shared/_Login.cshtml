@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="fa-IR" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <title>@Html.Raw(ViewData["Title"])</title>
+    <link href="/css/p5.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+        }
+
+        form {
+            margin: auto; /* nice thing of auto margin if display:flex; it center both horizontal and vertical :) */
+        }
+
+        td{
+            border: 0;
+        }
+
+        input {
+            direction:ltr;
+            text-align:left;
+        }
+    </style>
+    
+</head>
+<body>
+    @RenderBody()
+</body>
+</html>
