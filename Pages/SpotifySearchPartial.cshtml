@@ -1,0 +1,13 @@
+﻿@model GanjooRazor.Pages.SpotifySearchPartialModel
+@{
+    Layout = null;
+}
+
+@foreach (var artist in Model.Artists)
+{
+    <div class="show" align="right">
+        <img src="@artist.Image" style="width:60px; height:60px; float:right; margin-right:6px;pointer-events: none;" /><span class="name">@artist.Name</span>&nbsp;<br /><br />
+        <span class="artist_id" style="display:none">@artist.Id</span>
+        <span class="artist_url" style="display:none">@artist.Url</span>
+    </div>
+}
