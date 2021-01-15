@@ -14,9 +14,14 @@ namespace GanjooRazor.Pages
     [IgnoreAntiforgeryToken(Order = 1001)]
     public class SpotifyModel : PageModel
     {
+        /// <summary>
+        /// poem id
+        /// </summary>
+        public int PoemId { get; set; }
+
         public void OnGet()
         {
-            ViewData["p"] = Request.Query["p"];
+            PoemId = int.Parse(Request.Query["p"]);
         }
 
         
