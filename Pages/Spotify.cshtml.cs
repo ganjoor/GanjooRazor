@@ -25,6 +25,11 @@ namespace GanjooRazor.Pages
         }
 
         
+        /// <summary>
+        /// search by artists name
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> OnPostSearchByArtistNameAsync(string search)
         {
             using (HttpClient client = new HttpClient())
@@ -54,6 +59,26 @@ namespace GanjooRazor.Pages
                         }
                     }
                 };
+            }
+        }
+
+        public async Task<IActionResult> OnPostFillAlbumsAsync(string artist)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                //Warning: This is a private wrapper around the spotify API, created only for this project and incapable of
+                //         responding large number of requests (both server and Spotify user limitations),
+                //         so please do not use this proxy in other projects because you will cause this proxy to become unavailable for me
+                //         Thanks!
+                var response = await client.GetAsync($"http://spotify.ganjoor.net/spotifyapi/artists/{artist}/albums");
+
+                NameIdUrlImage[] artists = new NameIdUrlImage[] { };
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    artists = JsonConvert.DeserializeObject<NameIdUrlImage[]>(await response.Content.ReadAsStringAsync());
+                }
+                return new OkObjectResult(artists);
             }
         }
     }

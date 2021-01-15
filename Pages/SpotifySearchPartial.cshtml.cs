@@ -10,7 +10,5 @@ namespace GanjooRazor.Pages
         public void OnGet()
         {
         }
-
-        
     }
 }
