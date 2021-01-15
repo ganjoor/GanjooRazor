@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace GanjooRazor
 {
@@ -18,6 +20,10 @@ namespace GanjooRazor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(
+                    HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.BasicLatin,
+                    UnicodeRanges.Arabic }));
+
             services.AddRazorPages(options =>
             {
                 options.Conventions.AddPageRoute("/content", "{*url}");

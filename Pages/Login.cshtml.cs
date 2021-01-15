@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RSecurityBackend.Models.Auth.ViewModels;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -45,6 +48,21 @@ namespace GanjooRazor.Pages
                     LastError = response.ToString();
                     return Page();
                 }
+
+                LoggedOnUserModel loggedOnUser = JsonConvert.DeserializeObject<LoggedOnUserModel>(await response.Content.ReadAsStringAsync());
+
+                var cookieOption = new CookieOptions()
+                {
+                    Expires = DateTime.Now.AddDays(365),
+                };
+
+                Response.Cookies.Append("UserId", loggedOnUser.User.Id.ToString(), cookieOption);
+                Response.Cookies.Append("SessionId", loggedOnUser.SessionId.ToString(), cookieOption);
+                Response.Cookies.Append("Token", loggedOnUser.Token, cookieOption);
+                Response.Cookies.Append("Username", loggedOnUser.User.Username, cookieOption);
+                Response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
+
+
             }
 
             LastError = "Success!";
