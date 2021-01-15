@@ -99,7 +99,7 @@ namespace GanjooRazor.Pages
 
             LastError = "Success!";
 
-            return Page();
+            return RedirectToPage("/login");
         }
     }
 }
