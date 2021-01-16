@@ -176,7 +176,7 @@
                     $("#spotify_album_name").val($("#album option:selected").html());
                     $("#spotify_album_url").val($album_url);
 
-                    $.post("filltracks.php", {
+                    $.post("/spotify?handler=FillTracks", {
                         'album': $("#album option:selected").val()
                     },
                         function (data) {
