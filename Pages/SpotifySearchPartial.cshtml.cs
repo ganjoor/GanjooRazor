@@ -7,6 +7,8 @@ namespace GanjooRazor.Pages
     {
         public NameIdUrlImage[] Artists { get; set; }
 
+        public TrackQueryResult[] Tracks { get; set; }
+
         public void OnGet()
         {
         }

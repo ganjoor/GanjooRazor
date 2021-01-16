@@ -111,5 +111,41 @@ namespace GanjooRazor.Pages
                 return new OkObjectResult(tracks);
             }
         }
+
+        /// <summary>
+        /// search by track title
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostSearchByTrackTitleAsync(string search)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                //Warning: This is a private wrapper around the spotify API, created only for this project and incapable of
+                //         responding large number of requests (both server and Spotify user limitations),
+                //         so please do not use this proxy in other projects because you will cause this proxy to become unavailable for me
+                //         Thanks!
+                var response = await client.GetAsync($"http://spotify.ganjoor.net/spotifyapi/search/tracks/{search}");
+
+                TrackQueryResult[] tracks = new TrackQueryResult[] { };
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    tracks = JsonConvert.DeserializeObject<TrackQueryResult[]>(await response.Content.ReadAsStringAsync());
+                }
+
+                return new PartialViewResult()
+                {
+                    ViewName = "SpotifySearchPartial",
+                    ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                    {
+                        Model = new SpotifySearchPartialModel()
+                        {
+                            Tracks = tracks
+                        }
+                    }
+                };
+            }
+        }
     }
 }

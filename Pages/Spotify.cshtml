@@ -101,7 +101,7 @@
                 if (searchid != '') {
                     $.ajax({
                         type: "POST",
-                        url: "searchtracks.php",
+                        url: "/spotify?handler=SearchByTrackTitle",
                         data: dataString,
                         cache: false,
                         success: function (html) {
