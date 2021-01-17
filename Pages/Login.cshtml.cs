@@ -24,6 +24,8 @@ namespace GanjooRazor.Pages
 
         public string LastError { get; set; }
 
+        public string RedirectUrl { get; set; }
+
         public void OnGet()
         {
             LoginViewModel = new LoginViewModel()
@@ -34,11 +36,22 @@ namespace GanjooRazor.Pages
             UserFriendlyName = Request.Cookies["Name"];
             LoggedIn = !string.IsNullOrEmpty(UserFriendlyName);
             LastError = "";
-            
+            RedirectUrl = Request.Query["redirect"];
+            if (string.IsNullOrEmpty(RedirectUrl))
+            {
+                RedirectUrl = "/";
+            }
+
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            RedirectUrl = Request.Query["redirect"];
+            if (string.IsNullOrEmpty(RedirectUrl))
+            {
+                RedirectUrl = "/";
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -98,7 +111,8 @@ namespace GanjooRazor.Pages
 
             LastError = "Success!";
 
-            return RedirectToPage("/login");
+
+            return Redirect(RedirectUrl);
         }
     }
 }
