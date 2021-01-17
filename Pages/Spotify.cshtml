@@ -9,6 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <title>انتخاب قطعهٔ موسیقی مرتبط با شعر از اسپاتیفای</title>
+    <meta name="robots" content="noindex, nofollow" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link href="/css/p5.css" rel="stylesheet" type="text/css" />
     <link href="/css/spotify.css" rel="stylesheet" type="text/css" />
@@ -38,8 +39,8 @@
             {
                 <div class="width-100per">
                     <div class="width-100per text-align-center">
-                        <p>
-                            خطا: شعر متناظر مشخص نیست.
+                        <p class="alert-text">
+                            خطا: شعری انتخاب نشده است.
                         </p>
                     </div>
                 </div>
@@ -49,10 +50,10 @@
             {
                 <div class="width-100per">
                     <div class="width-100per text-align-center">
-                        <p>
+                        <p class="alert-text">
                             برای پیشنهاد آهنگهای مرتبط با اشعار لازم است ابتدا با نام کاربری خود وارد گنجور شوید.
                         </p>
-                        <p>
+                        <p class="text-align-center">
                             <a href=@Html.Raw($"/login/?redirect=/spotify/?p={Model.PoemId}")>ورود به گنجور</a>
                         </p>
                     </div>

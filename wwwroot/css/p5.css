@@ -703,3 +703,7 @@ ol li {
     direction: ltr;
     text-align: left;
 }
+
+.alert-text{
+    color:red;
+}
