@@ -672,3 +672,26 @@ ol li {
   float:right;
 
 }
+
+#login {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+#login-container {
+    display: flex;
+}
+
+#login-container form {
+    margin: auto; /* nice thing of auto margin if display:flex; it center both horizontal and vertical :) */
+}
+
+#login-container td {
+    border: 0;
+}
+
+#login-container input {
+    direction: ltr;
+    text-align: left;
+}

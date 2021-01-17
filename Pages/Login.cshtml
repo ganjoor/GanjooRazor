@@ -4,53 +4,60 @@
     Layout = "Shared/_Login";
     ViewData["Title"] = "ورود کاربر";
 }
-@if (Model.LoggedIn)
-{
-    <form method="post">
-        <table>
-            <tr>
-                <td></td>
-                <td><input type="submit" name="submit" id="submit" value="خروج" /></td>
-            </tr>
-        </table>
-        <div>@Model.LastError</div>
-    </form>
-    <div>@Model.UserFriendlyName</div>
-}
-else
-{
-    <form method="post">
-        <table>
-            <tr>
-                <td>
-                    <span class="inputlabel">پست الکترونیکی: </span>
-                </td>
-                <td>
-                    <input type="text" asp-for="LoginViewModel.Username" placeholder="پست الکترونیکی" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span class="inputlabel">گذرواژه: </span>
-                </td>
-                <td>
-                    <input type="password" asp-for="LoginViewModel.Password" id="password" placeholder="گذرواژه" />
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input type="submit" name="submit" id="submit" value="ورود" /></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><a href="https://museum.ganjoor.net/signup">ثبت نام</a></td>
-            </tr>
-            
 
-        </table>
-        <div>@Model.LastError</div>
-    </form>
-  
-}
+<div id="login">
+    <div id="login-container">
+        @if (Model.LoggedIn)
+        {
+            <form method="post">
+                <table>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" name="submit" id="submit" value="خروج" /></td>
+                    </tr>
+                </table>
+                <div>@Model.LastError</div>
+            </form>
+            <div>@Model.UserFriendlyName</div>
+        }
+        else
+        {
+            <form method="post">
+                <table>
+                    <tr>
+                        <td>
+                            <span class="inputlabel">پست الکترونیکی: </span>
+                        </td>
+                        <td>
+                            <input type="text" asp-for="LoginViewModel.Username" placeholder="پست الکترونیکی" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="inputlabel">گذرواژه: </span>
+                        </td>
+                        <td>
+                            <input type="password" asp-for="LoginViewModel.Password" id="password" placeholder="گذرواژه" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" name="submit" id="submit" value="ورود" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><a href="https://museum.ganjoor.net/signup">ثبت نام</a></td>
+                    </tr>
+
+
+                </table>
+                <div>@Model.LastError</div>
+            </form>
+
+        }
+
+    </div>
+</div>
+
 
 
