@@ -34,19 +34,29 @@
 <body>
     <div id="fa">
         <div class="poem">
-
-            @if (!Model.LoggedIn)
+            @if (Model.PoemId == 0)
             {
-            <div class="width-100per">
-                <div class="width-100per text-align-center">
-                    <p>
-                        برای پیشنهاد آهنگهای مرتبط با اشعار لازم است ابتدا با نام کاربری خود وارد گنجور شوید.
-                    </p>
-                    <p>
-                        <a href=@Html.Raw($"/login/?redirect=/spotify/?p={Model.PoemId}")>ورود به گنجور</a>
-                    </p>
+                <div class="width-100per">
+                    <div class="width-100per text-align-center">
+                        <p>
+                            خطا: شعر متناظر مشخص نیست.
+                        </p>
+                    </div>
                 </div>
-            </div>
+            }
+            else
+           if (!Model.LoggedIn)
+            {
+                <div class="width-100per">
+                    <div class="width-100per text-align-center">
+                        <p>
+                            برای پیشنهاد آهنگهای مرتبط با اشعار لازم است ابتدا با نام کاربری خود وارد گنجور شوید.
+                        </p>
+                        <p>
+                            <a href=@Html.Raw($"/login/?redirect=/spotify/?p={Model.PoemId}")>ورود به گنجور</a>
+                        </p>
+                    </div>
+                </div>
             }
             else
             {

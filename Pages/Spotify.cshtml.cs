@@ -26,8 +26,15 @@ namespace GanjooRazor.Pages
 
         public void OnGet()
         {
-            PoemId = int.Parse(Request.Query["p"]);
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
+            if (!string.IsNullOrEmpty(Request.Query["p"]))
+            {
+                PoemId = int.Parse(Request.Query["p"]);
+            }
+            else
+            {
+                PoemId = 0;
+            }
         }
 
         
