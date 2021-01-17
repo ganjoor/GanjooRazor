@@ -46,7 +46,7 @@
                 </div>
             }
             else
-           if (!Model.LoggedIn)
+        if (!Model.LoggedIn)
             {
                 <div class="width-100per">
                     <div class="width-100per text-align-center">
@@ -61,6 +61,28 @@
             }
             else
             {
+                @if (!string.IsNullOrEmpty(Model.LastError))
+                {
+                    <div class="width-100per">
+                        <div class="width-100per text-align-center">
+                            <p class="alert-text">
+                                @Model.LastError
+                            </p>
+                        </div>
+                    </div>
+                }
+
+                @if (Model.PostSuccess)
+                {
+                    <div class="width-100per">
+                        <div class="width-100per text-align-center">
+                            <p style="color:green">
+                                با سپاس! پیشنهاد شما به فهرست اضافه شد.
+                            </p>
+                        </div>
+                    </div>
+                }
+
                 <div class="width-100per">
                     <div class="width-100per text-align-center">
                         <h3><strong>انتخاب منبع جستجو:</strong></h3>

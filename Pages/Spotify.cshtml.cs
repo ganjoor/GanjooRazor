@@ -8,6 +8,8 @@ using RMuseum.Models.Ganjoor;
 using RMuseum.Models.Ganjoor.ViewModels;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -28,6 +30,16 @@ namespace GanjooRazor.Pages
         public int PoemId { get; set; }
 
         /// <summary>
+        /// Last Error
+        /// </summary>
+        public string LastError { get; set; }
+
+        /// <summary>
+        /// Post Success
+        /// </summary>
+        public bool PostSuccess { get; set; }
+
+        /// <summary>
         /// api model
         /// </summary>
         [BindProperty]
@@ -35,6 +47,8 @@ namespace GanjooRazor.Pages
 
         public void OnGet()
         {
+            PostSuccess = false;
+            LastError = "";
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
            
             if (!string.IsNullOrEmpty(Request.Query["p"]))
@@ -49,8 +63,28 @@ namespace GanjooRazor.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+            PostSuccess = false;
+            LastError = "";
+            LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
             PoemId = PoemMusicTrackViewModel.PoemId = int.Parse(Request.Query["p"]);
             PoemMusicTrackViewModel.TrackType = PoemMusicTrackType.Spotify;
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["Token"]);
+                var stringContent = new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json");
+                var methodUrl = $"{APIRoot.Url}/api/ganjoor/song";
+                var response = await client.PostAsync(methodUrl, stringContent);
+                if(!response.IsSuccessStatusCode)
+                {
+                    LastError = await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    PostSuccess = true;
+                }
+            }
+
             return Page();
         }
 
