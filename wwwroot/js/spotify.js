@@ -27,8 +27,8 @@
 
         $('#l1').css('visibility', 'visible');
 
-        $("#spotify_artist_name").val($name);
-        $("#spotify_artist_url").val($artist_url);
+        $("#PoemMusicTrackViewModel_ArtistName").val($name);
+        $("#PoemMusicTrackViewModel_ArtistUrl").val($artist_url);
 
         $('#searchid').val(decoded);
         if ($("#searchid").val() != '') {
@@ -125,12 +125,12 @@
         $('#l2').css('visibility', 'visible');
         $('#l3').css('visibility', 'visible');
 
-        $("#spotify_artist_name").val($artist_name);
-        $("#spotify_artist_url").val($artist_url);
-        $("#spotify_album_name").val($album_name);
-        $("#spotify_album_url").val($album_url);
-        $("#spotify_track_name").val($track_name);
-        $("#spotify_track_url").val($track_url);
+        $("#PoemMusicTrackViewModel_ArtistName").val($artist_name);
+        $("#PoemMusicTrackViewModel_ArtistUrl").val($artist_url);
+        $("#PoemMusicTrackViewModel_AlbumName").val($album_name);
+        $("#PoemMusicTrackViewModel_AlbumUrl").val($album_url);
+        $("#PoemMusicTrackViewModel_TrackName").val($track_name);
+        $("#PoemMusicTrackViewModel_TrackUrl").val($track_url);
 
 
 
@@ -159,8 +159,8 @@
             $('#l2').css('visibility', 'visible');
 
 
-            $("#spotify_album_name").val($("#album option:selected").html());
-            $("#spotify_album_url").val($album_url);
+            $("#PoemMusicTrackViewModel_AlbumName").val($("#album option:selected").html());
+            $("#PoemMusicTrackViewModel_AlbumUrl").val($album_url);
 
             $.post("/spotify?handler=FillTracks", {
                 'album': $("#album option:selected").val()
@@ -195,8 +195,8 @@
 
             $('#l3').css('visibility', 'visible');
 
-            $("#spotify_track_name").val($("#track option:selected").html());
-            $("#spotify_track_url").val($track_url);
+            $("#PoemMusicTrackViewModel_TrackName").val($("#track option:selected").html());
+            $("#PoemMusicTrackViewModel_TrackUrl").val($track_url);
 
 
 

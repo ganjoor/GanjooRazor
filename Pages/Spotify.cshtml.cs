@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
+using RMuseum.Models.Ganjoor;
+using RMuseum.Models.Ganjoor.ViewModels;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,27 +16,42 @@ namespace GanjooRazor.Pages
     [IgnoreAntiforgeryToken(Order = 1001)]
     public class SpotifyModel : PageModel
     {
-        /// <summary>
-        /// poem id
-        /// </summary>
-        public int PoemId { get; set; }
-
+        
         /// <summary>
         /// is logged on
         /// </summary>
         public bool LoggedIn { get; set; }
 
+        /// <summary>
+        /// PoemId
+        /// </summary>
+        public int PoemId { get; set; }
+
+        /// <summary>
+        /// api model
+        /// </summary>
+        [BindProperty]
+        public PoemMusicTrackViewModel PoemMusicTrackViewModel { get; set; }
+
         public void OnGet()
         {
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
+           
             if (!string.IsNullOrEmpty(Request.Query["p"]))
             {
                 PoemId = int.Parse(Request.Query["p"]);
             }
             else
             {
-                PoemId = 0;
+                PoemMusicTrackViewModel.PoemId = 0;
             }
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            PoemId = PoemMusicTrackViewModel.PoemId = int.Parse(Request.Query["p"]);
+            PoemMusicTrackViewModel.TrackType = PoemMusicTrackType.Spotify;
+            return Page();
         }
 
         
