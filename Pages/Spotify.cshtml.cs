@@ -40,17 +40,36 @@ namespace GanjooRazor.Pages
         public bool PostSuccess { get; set; }
 
         /// <summary>
+        /// suggested (unapproved) songs
+        /// </summary>
+        public PoemMusicTrackViewModel[] SuggestedSongs { get; set; }
+
+        /// <summary>
         /// api model
         /// </summary>
         [BindProperty]
         public PoemMusicTrackViewModel PoemMusicTrackViewModel { get; set; }
 
-        public void OnGet()
+        private async Task _GetSuggestedSongs(HttpClient client)
+        {
+            var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{PoemId}/songs/?approved=false&trackType={(int)PoemMusicTrackType.Spotify}");
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                SuggestedSongs = JsonConvert.DeserializeObject<PoemMusicTrackViewModel[]>(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                SuggestedSongs = new PoemMusicTrackViewModel[] { };
+            }
+        }
+
+        public async Task OnGetAsync()
         {
             PostSuccess = false;
             LastError = "";
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
-           
+
             if (!string.IsNullOrEmpty(Request.Query["p"]))
             {
                 PoemId = int.Parse(Request.Query["p"]);
@@ -58,6 +77,11 @@ namespace GanjooRazor.Pages
             else
             {
                 PoemMusicTrackViewModel.PoemId = 0;
+            }
+
+            using (HttpClient client = new HttpClient())
+            {
+                await _GetSuggestedSongs(client);
             }
         }
 
@@ -83,6 +107,8 @@ namespace GanjooRazor.Pages
                 {
                     PostSuccess = true;
                 }
+
+                await _GetSuggestedSongs(client);
             }
 
             return Page();
