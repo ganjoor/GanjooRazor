@@ -38,6 +38,12 @@ namespace GanjooRazor.Pages
         /// Post Success
         /// </summary>
         public bool PostSuccess { get; set; }
+        
+
+        /// <summary>
+        /// Inserted song Id
+        /// </summary>
+        public int InsertedSongId { get; set; }
 
         /// <summary>
         /// suggested (unapproved) songs
@@ -68,6 +74,7 @@ namespace GanjooRazor.Pages
         {
             PostSuccess = false;
             LastError = "";
+            InsertedSongId = 0;
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
 
             if (!string.IsNullOrEmpty(Request.Query["p"]))
@@ -92,6 +99,7 @@ namespace GanjooRazor.Pages
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
             PoemId = PoemMusicTrackViewModel.PoemId = int.Parse(Request.Query["p"]);
             PoemMusicTrackViewModel.TrackType = PoemMusicTrackType.Spotify;
+            InsertedSongId = 0;
 
             using (HttpClient client = new HttpClient())
             {
@@ -105,6 +113,8 @@ namespace GanjooRazor.Pages
                 }
                 else
                 {
+                    InsertedSongId = JsonConvert.DeserializeObject<PoemMusicTrackViewModel>(await response.Content.ReadAsStringAsync()).Id;
+
                     PostSuccess = true;
                 }
 

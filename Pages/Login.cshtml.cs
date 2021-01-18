@@ -28,11 +28,6 @@ namespace GanjooRazor.Pages
 
         public void OnGet()
         {
-            LoginViewModel = new LoginViewModel()
-            {
-                ClientAppName = "GanjooRazor",
-                Language = "fa-IR"
-            };
             UserFriendlyName = Request.Cookies["Name"];
             LoggedIn = !string.IsNullOrEmpty(UserFriendlyName);
             LastError = "";
@@ -56,6 +51,9 @@ namespace GanjooRazor.Pages
             {
                 return Page();
             }
+
+            LoginViewModel.ClientAppName = "GanjooRazor";
+            LoginViewModel.Language = "fa-IR";
 
             using (HttpClient client = new HttpClient())
             {

@@ -23,7 +23,7 @@
             });
 
             $('#golha').on('click', function () {
-                window.location.href = "@Html.Raw($"/g/?p={Model.PoemId}")";
+                window.location.href = "@Html.Raw($"/golha/?p={Model.PoemId}")";
             });
 
             $('#beeptunes').on('click', function () {
@@ -46,7 +46,7 @@
                 </div>
             }
             else
-     if (!Model.LoggedIn)
+          if (!Model.LoggedIn)
             {
                 <div class="width-100per">
                     <div class="width-100per text-align-center">
@@ -82,7 +82,7 @@
                         <input type="radio" id="spotify" name="spotify" value="اسپاتیفای" checked>
                         <label for="spotify"><a href="@Html.Raw($"/spotify/?p={Model.PoemId}")"><img src="/image/spotify.png" alt="اسپاتیفای" height="32" /></a></label>
                         <input type="radio" id="golha" name="golha" value="گلها">
-                        <label for="golha"><a href="@Html.Raw($"/g/?p={Model.PoemId}")"><img src="/image/golha.png" alt="گلها" height="32" /></a></label>
+                        <label for="golha"><a href="@Html.Raw($"/golha/?p={Model.PoemId}")"><img src="/image/golha.png" alt="گلها" height="32" /></a></label>
                         <input type="radio" id="beeptunes" name="beeptunes" value="بیپ‌تونز">
                         <label for="beeptunes"><a href="@Html.Raw($"/bp/?p={Model.PoemId}")"><img src="/image/beeptunes.png" alt="بیپ‌تونز" height="32" /></a></label>
                     </div>
@@ -100,9 +100,22 @@
 
                     @foreach (var suggestedSong in Model.SuggestedSongs)
                     {
-                        <p>
-                            <a target="_blank" href="@Html.Raw(suggestedSong.ArtistUrl)">@suggestedSong.ArtistName</a> » <a target="_blank" href="@Html.Raw(suggestedSong.AlbumUrl)">@suggestedSong.AlbumName</a> » <a target="_blank" href="@Html.Raw(suggestedSong.TrackUrl)">@suggestedSong.TrackName</a>
-                        </p>
+        <p>
+            @if (suggestedSong.Id == Model.InsertedSongId)
+            {
+                <text>
+                    <a target="_blank" href="@Html.Raw(suggestedSong.ArtistUrl)" style="color:green">@suggestedSong.ArtistName</a> » <a target="_blank" href="@Html.Raw(suggestedSong.AlbumUrl)" style="color:green">@suggestedSong.AlbumName</a> » <a target="_blank" href="@Html.Raw(suggestedSong.TrackUrl)" style="color:green">@suggestedSong.TrackName</a>
+                </text>
+
+            }
+            else
+            {
+                <text>
+                    <a target="_blank" href="@Html.Raw(suggestedSong.ArtistUrl)">@suggestedSong.ArtistName</a> » <a target="_blank" href="@Html.Raw(suggestedSong.AlbumUrl)">@suggestedSong.AlbumName</a> » <a target="_blank" href="@Html.Raw(suggestedSong.TrackUrl)">@suggestedSong.TrackName</a>
+                </text>
+            }
+
+        </p>
                     }
                     @if (Model.PostSuccess)
                     {
@@ -115,35 +128,39 @@
                         </div>
                     }
                 }
-
-                <div class="content">
-                    <span class="inputlabel">خواننده: </span>
-                    <input type="text" class="search" id="searchid" placeholder="خواننده" />&nbsp;<span style="visibility:hidden" id="l1"><a id="artistlink" href="#" target="_blank">صفحهٔ هنرمند</a></span>
-                    <br />
-                    <div id="result"></div>
-                    <span class="inputlabel">آلبوم: </span><select name="album" id="album" disabled="disabled" class="albumtrack"></select>&nbsp;<span style="visibility:hidden" id="l2"><a id="albumlink" href="#" target="_blank">صفحهٔ آلبوم</a></span>
-                    <br />
-                    <span class="inputlabel">آهنگ: </span><select name="track" id="track" disabled="disabled" class="albumtrack"></select>&nbsp;<span style="visibility:hidden" id="l3"><a id="tracklink" href="#" target="_blank">صفحهٔ آهنگ</a></span>
-                    <br />
-                    <span><small>جستجو بر اساس نام آهنگ:</small> </span>
-                    <input type="text" class="trackq" id="trackq" placeholder="عنوان آهنگ" />
-                    <br />
-                    <div id="resultq"></div>
-
-                    <form method="post">
-                        <input type="hidden" asp-for="PoemMusicTrackViewModel.ArtistName" />
-                        <input type="hidden" asp-for="PoemMusicTrackViewModel.ArtistUrl" />
-                        <input type="hidden" asp-for="PoemMusicTrackViewModel.AlbumName" />
-                        <input type="hidden" asp-for="PoemMusicTrackViewModel.AlbumUrl" />
-                        <input type="hidden" asp-for="PoemMusicTrackViewModel.TrackName" />
-                        <input type="hidden" asp-for="PoemMusicTrackViewModel.TrackUrl" />
-                        <span class="inputlabel">توضیح: </span><input type="text" class="albumtrack" placeholder="توضیح" asp-for="PoemMusicTrackViewModel.Description" />
-                        <br />
-                        <input type="submit" name="submit" id="submit" value="پیشنهاد قطعه" />
-                    </form>
-                </div>
             }
         </div>
+
+        @if (Model.PoemId != 0 && Model.LoggedIn)
+        {
+            <div class="content">
+                <span class="inputlabel">خواننده: </span>
+                <input type="text" class="search" id="searchid" placeholder="خواننده" />&nbsp;<span style="visibility:hidden" id="l1"><a id="artistlink" href="#" target="_blank">صفحهٔ هنرمند</a></span>
+                <br />
+                <div id="result"></div>
+                <span class="inputlabel">آلبوم: </span><select name="album" id="album" disabled="disabled" class="albumtrack"></select>&nbsp;<span style="visibility:hidden" id="l2"><a id="albumlink" href="#" target="_blank">صفحهٔ آلبوم</a></span>
+                <br />
+                <span class="inputlabel">آهنگ: </span><select name="track" id="track" disabled="disabled" class="albumtrack"></select>&nbsp;<span style="visibility:hidden" id="l3"><a id="tracklink" href="#" target="_blank">صفحهٔ آهنگ</a></span>
+                <br />
+                <span><small>جستجو بر اساس نام آهنگ:</small> </span>
+                <input type="text" class="trackq" id="trackq" placeholder="عنوان آهنگ" />
+                <br />
+                <div id="resultq"></div>
+
+                <form method="post">
+                    <input type="hidden" asp-for="PoemMusicTrackViewModel.ArtistName" />
+                    <input type="hidden" asp-for="PoemMusicTrackViewModel.ArtistUrl" />
+                    <input type="hidden" asp-for="PoemMusicTrackViewModel.AlbumName" />
+                    <input type="hidden" asp-for="PoemMusicTrackViewModel.AlbumUrl" />
+                    <input type="hidden" asp-for="PoemMusicTrackViewModel.TrackName" />
+                    <input type="hidden" asp-for="PoemMusicTrackViewModel.TrackUrl" />
+                    <span class="inputlabel">توضیح: </span><input type="text" class="albumtrack" placeholder="توضیح" asp-for="PoemMusicTrackViewModel.Description" />
+                    <br />
+                    <input type="submit" name="submit" id="submit" value="پیشنهاد قطعه" />
+                </form>
+            </div>
+        }
+
     </div>
 </body>
 </html>
