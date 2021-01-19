@@ -20,7 +20,7 @@
             $('#collection').on('change', function () {
                 if ($("#collection option:selected").text() != '') {
                     $("#program").attr("disabled", "disabled");
-                    $.post("golhaprograms.php", {
+                    $.post("/golha?handler=FillPrograms", {
                         'collection': $("#collection option:selected").val()
                     },
                         function (data) {
@@ -28,7 +28,7 @@
                             sel.empty();
                             for (var i = 0; i < data.length; i++) {
                                 sel.removeAttr("disabled");
-                                sel.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                                sel.append('<option program-url="' + data[i].url + '" value="' + data[i].id + '">' + data[i].title + '</option>');
                             }
                             $("#program").removeAttr("disabled");
                             $('#program').trigger("change");
@@ -46,7 +46,10 @@
             $('#program').on('change', function () {
                 if ($("#program option:selected").text() != '') {
                     $("#track").attr("disabled", "disabled");
-                    $.post("golhatracks.php", {
+                    $("#programlink").attr('href', $("#program option:selected").attr('program-url'));
+                    $('#l2').css('visibility', 'visible');
+
+                    $.post("/golha?handler=FillTracks", {
                         'program': $("#program option:selected").val()
                     },
                         function (data) {
@@ -54,23 +57,11 @@
                             sel.empty();
                             for (var i = 0; i < data.length; i++) {
                                 sel.removeAttr("disabled");
-                                sel.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                                sel.append('<option value="' + data[i].id + '">' + data[i].timing + ' ' + data[i].title + '</option>');
                             }
                             $("#track").removeAttr("disabled");
                             $('#track').trigger("change");
-
-                            $.post("getprogramlink.php", {
-                                'programid': $("#program option:selected").val()
-                            },
-                                function (urls) {
-                                    var programlink = $("#programlink");
-
-                                    for (var i = 0; i < urls.length; i++) {
-                                        programlink.attr('href', urls[i].url);
-                                    }
-                                    $('#l2').css('visibility', 'visible');
-                                }, "json");
-
+                         
                         }, "json");
                 }
             });
