@@ -178,7 +178,6 @@ function prepaudio(xmlfilename, poemtitle, auartist, oggurl, mp3url){
 		{
 			title: poemtitle,				
 			artist:auartist,
-			oga: oggurl,
 			mp3: mp3url
 		},
 	], 

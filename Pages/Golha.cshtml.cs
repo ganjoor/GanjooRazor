@@ -1,5 +1,7 @@
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -34,6 +36,11 @@ namespace GanjooRazor.Pages
         public bool PostSuccess { get; set; }
 
         /// <summary>
+        /// Inserted song Id
+        /// </summary>
+        public int InsertedSongId { get; set; }
+
+        /// <summary>
         /// suggested (unapproved) songs
         /// </summary>
         public PoemMusicTrackViewModel[] SuggestedSongs { get; set; }
@@ -63,7 +70,7 @@ namespace GanjooRazor.Pages
             PostSuccess = false;
             LastError = "";
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
-
+            InsertedSongId = 0;
             if (!string.IsNullOrEmpty(Request.Query["p"]))
             {
                 PoemId = int.Parse(Request.Query["p"]);
@@ -77,6 +84,38 @@ namespace GanjooRazor.Pages
             {
                 await _GetSuggestedSongs(client);
             }
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            PostSuccess = false;
+            LastError = "";
+            LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
+            PoemId = PoemMusicTrackViewModel.PoemId = int.Parse(Request.Query["p"]);
+            PoemMusicTrackViewModel.TrackType = PoemMusicTrackType.Golha;
+            InsertedSongId = 0;
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["Token"]);
+                var stringContent = new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json");
+                var methodUrl = $"{APIRoot.Url}/api/ganjoor/song";
+                var response = await client.PostAsync(methodUrl, stringContent);
+                if (!response.IsSuccessStatusCode)
+                {
+                    LastError = await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    InsertedSongId = JsonConvert.DeserializeObject<PoemMusicTrackViewModel>(await response.Content.ReadAsStringAsync()).Id;
+
+                    PostSuccess = true;
+                }
+
+                await _GetSuggestedSongs(client);
+            }
+
+            return Page();
         }
 
         /// <summary>

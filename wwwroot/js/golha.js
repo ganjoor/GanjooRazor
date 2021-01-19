@@ -53,7 +53,7 @@
     $('#track').on('change', function () {
         if ($("#track option:selected").text() != '') {
 
-            $("#trackid").val($("#track option:selected").val());
+            $("#PoemMusicTrackViewModel_GolhaTrackId").val($("#track option:selected").val());
 
         }
     });
