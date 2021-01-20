@@ -1,3 +1,4 @@
+using GanjooRazor.Models.BeepTunes;
 using GSpotifyProxy.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using RMuseum.Models.Ganjoor;
 using RMuseum.Models.Ganjoor.ViewModels;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -134,17 +136,28 @@ namespace GanjooRazor.Pages
         {
             using (HttpClient client = new HttpClient())
             {
-                //Warning: This is a private wrapper around the spotify API, created only for this project and incapable of
-                //         responding large number of requests (both server and Spotify user limitations),
-                //         so please do not use this proxy in other projects because you will cause this proxy to become unavailable for me
-                //         Thanks!
-                var response = await client.GetAsync($"http://spotify.ganjoor.net/spotifyapi/search/artists/{HttpUtility.UrlEncode(search)}");
+                
+                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/search?albumCount=6&artistCount=6&text={search}&trackCount=8");
 
-                NameIdUrlImage[] artists = new NameIdUrlImage[] { };
+                List<NameIdUrlImage> artists = new List<NameIdUrlImage>();
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    artists = JsonConvert.DeserializeObject<NameIdUrlImage[]>(await response.Content.ReadAsStringAsync());
+                    BpSearchResponseModel bpResponse = JsonConvert.DeserializeObject<BpSearchResponseModel>(await response.Content.ReadAsStringAsync());
+                    foreach(var artist in bpResponse.Artists)
+                    {
+                        artists.Add
+                            (
+                            new NameIdUrlImage()
+                            {
+                                Id = artist.Id,
+                                Name = artist.ArtisticName,
+                                Url = artist.Url,
+                                Image = artist.Picture
+                            }
+                            );
+                    }
+
                 }
 
 
@@ -155,7 +168,7 @@ namespace GanjooRazor.Pages
                     {
                         Model = new SpotifySearchPartialModel()
                         {
-                            Artists = artists
+                            Artists = artists.ToArray()
                         }
                     }
                 };
