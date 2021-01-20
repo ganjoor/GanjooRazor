@@ -137,7 +137,7 @@ namespace GanjooRazor.Pages
             using (HttpClient client = new HttpClient())
             {
                 
-                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/search?albumCount=6&artistCount=6&text={search}&trackCount=8");
+                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/search?albumCount=0&artistCount=100&text={search}&trackCount=0");
 
                 List<NameIdUrlImage> artists = new List<NameIdUrlImage>();
 
@@ -178,23 +178,23 @@ namespace GanjooRazor.Pages
         /// <summary>
         /// fill artist albums
         /// </summary>
-        /// <param name="artist">is an ID and consists of numeric and non-numeric characters</param>
+        /// <param name="artist">is an ID</param>
         /// <returns></returns>
         public async Task<IActionResult> OnPostFillAlbumsAsync(string artist)
         {
             using (HttpClient client = new HttpClient())
             {
-                //Warning: This is a private wrapper around the spotify API, created only for this project and incapable of
-                //         responding large number of requests (both server and Spotify user limitations),
-                //         so please do not use this proxy in other projects because you will cause this proxy to become unavailable for me
-                //         Thanks!
-                var response = await client.GetAsync($"http://spotify.ganjoor.net/spotifyapi/artists/{artist}/albums");
+                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/artist/albums?artistId={artist}&begin=0&size=1000");
 
                 NameIdUrlImage[] albums = new NameIdUrlImage[] { };
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     albums = JsonConvert.DeserializeObject<NameIdUrlImage[]>(await response.Content.ReadAsStringAsync());
+                    foreach(var album in albums)
+                    {
+                        album.Url = $"https://beeptunes.com/album/{album.Id}";
+                    }
                 }
                 return new OkObjectResult(albums);
             }

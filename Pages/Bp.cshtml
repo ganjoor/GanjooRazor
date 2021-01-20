@@ -54,7 +54,7 @@
                     $('#album').attr("disabled", "disabled");
                     $("#track").attr("disabled", "disabled");
 
-                    $.post("/spotify?handler=FillAlbums", {
+                    $.post("/bp?handler=FillAlbums", {
                         'artist': $artist_id
                     },
                         function (data) {
