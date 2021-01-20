@@ -16,6 +16,9 @@
         public string ArtistUrl { get; set; }
         public string AlbumName { get; set; }
         public string AlbumId { get; set; }
+        /// <summary>
+        /// typo on service side, so let it be unfixed for now
+        /// </summary>
         public string AlbunUrl { get; set; }
     }
 }
