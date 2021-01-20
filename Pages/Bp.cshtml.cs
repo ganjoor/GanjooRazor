@@ -203,23 +203,23 @@ namespace GanjooRazor.Pages
         /// <summary>
         /// fill album tracks
         /// </summary>
-        /// <param name="album">is an ID and consists of numeric and non-numeric characters</param>
+        /// <param name="album">is an ID</param>
         /// <returns></returns>
         public async Task<IActionResult> OnPostFillTracksAsync(string album)
         {
             using (HttpClient client = new HttpClient())
             {
-                //Warning: This is a private wrapper around the spotify API, created only for this project and incapable of
-                //         responding large number of requests (both server and Spotify user limitations),
-                //         so please do not use this proxy in other projects because you will cause this proxy to become unavailable for me
-                //         Thanks!
-                var response = await client.GetAsync($"http://spotify.ganjoor.net/spotifyapi/albums/{album}/tracks");
+                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/album/list-tracks/?albumId={album}");
 
                 NameIdUrlImage[] tracks = new NameIdUrlImage[] { };
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     tracks = JsonConvert.DeserializeObject<NameIdUrlImage[]>(await response.Content.ReadAsStringAsync());
+                    foreach(var track in tracks)
+                    {
+                        track.Url = $"https://beeptunes.com/track/{track.Id}";
+                    }
                 }
                 return new OkObjectResult(tracks);
             }

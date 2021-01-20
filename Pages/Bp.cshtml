@@ -180,7 +180,7 @@
                     $("#PoemMusicTrackViewModel_AlbumName").val($("#album option:selected").html());
                     $("#PoemMusicTrackViewModel_AlbumUrl").val($album_url);
 
-                    $.post("/spotify?handler=FillTracks", {
+                    $.post("/bp?handler=FillTracks", {
                         'album': $("#album option:selected").val()
                     },
                         function (data) {
