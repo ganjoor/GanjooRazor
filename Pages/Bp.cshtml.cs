@@ -13,7 +13,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
 
 namespace GanjooRazor.Pages
@@ -100,7 +99,7 @@ namespace GanjooRazor.Pages
             LastError = "";
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
             PoemId = PoemMusicTrackViewModel.PoemId = int.Parse(Request.Query["p"]);
-            PoemMusicTrackViewModel.TrackType = PoemMusicTrackType.Spotify;
+            PoemMusicTrackViewModel.TrackType = PoemMusicTrackType.BeepTunesOrKhosousi;
             InsertedSongId = 0;
 
             using (HttpClient client = new HttpClient())
