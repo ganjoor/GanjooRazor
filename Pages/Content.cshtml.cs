@@ -22,6 +22,11 @@ namespace GanjooRazor.Pages
 
         public bool PoemPage { get; set; }
 
+        /// <summary>
+        /// is logged on
+        /// </summary>
+        public bool LoggedIn { get; set; }
+
         private void _preparePoemExcerpt(GanjoorPoemSummaryViewModel poem)
         {
             if(poem == null)
@@ -79,6 +84,7 @@ namespace GanjooRazor.Pages
 
         public async Task OnGet()
         {
+            LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
             PoetPage = false;
             CatPage = false;
             PoemPage = false;

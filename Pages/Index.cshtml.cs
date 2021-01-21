@@ -15,6 +15,10 @@ namespace GanjooRazor.Pages
         private List<GanjoorPoetViewModel> _poets;
         public List<GanjoorPoetViewModel> Poets { get { return _poets; } }
 
+        /// <summary>
+        /// is logged on
+        /// </summary>
+        public bool LoggedIn { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger)
         {
@@ -23,6 +27,8 @@ namespace GanjooRazor.Pages
 
         public async Task OnGet()
         {
+            LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
+
             using (HttpClient client = new HttpClient())
             {
                 var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poets?includeBio=false");
