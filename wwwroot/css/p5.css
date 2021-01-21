@@ -241,9 +241,8 @@ select {
 }
 
 .poet {
-    display: block;
+    display: inline-table;
     width: 82px;
-    float: right;
     margin-right: 1px;
 }
 
