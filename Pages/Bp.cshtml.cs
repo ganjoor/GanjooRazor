@@ -234,17 +234,43 @@ namespace GanjooRazor.Pages
         {
             using (HttpClient client = new HttpClient())
             {
-                //Warning: This is a private wrapper around the spotify API, created only for this project and incapable of
-                //         responding large number of requests (both server and Spotify user limitations),
-                //         so please do not use this proxy in other projects because you will cause this proxy to become unavailable for me
-                //         Thanks!
-                var response = await client.GetAsync($"http://spotify.ganjoor.net/spotifyapi/search/tracks/{search}");
+                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/search?albumCount=0&artistCount=0&text={search}&trackCount=100");
 
-                TrackQueryResult[] tracks = new TrackQueryResult[] { };
+                List<TrackQueryResult> tracks = new List<TrackQueryResult>();
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    tracks = JsonConvert.DeserializeObject<TrackQueryResult[]>(await response.Content.ReadAsStringAsync());
+                    BpSearchResponseModel bpResponse = JsonConvert.DeserializeObject<BpSearchResponseModel>(await response.Content.ReadAsStringAsync());
+                    foreach (var track in bpResponse.Tracks)
+                    {
+                        if(track.FirstArtists != null && track.FirstArtists.Length > 0)
+                        {
+                            string albumName = "";
+                            var responseAlbum = await client.GetAsync($"https://newapi.beeptunes.com/public/album/info/?albumId={track.Album_Id}");
+                            if (responseAlbum.StatusCode == HttpStatusCode.OK)
+                            {
+                                NameIdUrlImage nameIdUrl = JsonConvert.DeserializeObject<NameIdUrlImage>(await responseAlbum.Content.ReadAsStringAsync());
+                                albumName = nameIdUrl.Name;
+                            }
+
+                            tracks.Add
+                                (
+                                new TrackQueryResult()
+                                {
+                                    Id = track.Id,
+                                    Name = track.Name,
+                                    Url = track.Url,
+                                    AlbumId = track.Album_Id,
+                                    AlbumName = albumName,
+                                    AlbunUrl = $"https://beeptunes.com/album/{track.Album_Id}",
+                                    ArtistId = track.FirstArtists[0].Id,
+                                    ArtistName = track.FirstArtists[0].ArtisticName,
+                                    ArtistUrl = track.FirstArtists[0].Url,
+                                    Image = track.PrimaryImage
+                                }
+                                );
+                        }
+                    }
                 }
 
                 return new PartialViewResult()
@@ -254,7 +280,7 @@ namespace GanjooRazor.Pages
                     {
                         Model = new SpotifySearchPartialModel()
                         {
-                            Tracks = tracks
+                            Tracks = tracks.ToArray()
                         }
                     }
                 };

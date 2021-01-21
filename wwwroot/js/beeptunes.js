@@ -5,7 +5,7 @@
         if (searchid != '') {
             $.ajax({
                 type: "POST",
-                url: "/spotify?handler=SearchByArtistName",
+                url: "/bp?handler=SearchByArtistName",
                 data: dataString,
                 cache: false,
                 success: function (html) {
@@ -36,7 +36,7 @@
             $('#album').attr("disabled", "disabled");
             $("#track").attr("disabled", "disabled");
 
-            $.post("/spotify?handler=FillAlbums", {
+            $.post("/bp?handler=FillAlbums", {
                 'artist': $artist_id
             },
                 function (data) {
@@ -87,7 +87,7 @@
         if (searchid != '') {
             $.ajax({
                 type: "POST",
-                url: "/spotify?handler=SearchByTrackTitle",
+                url: "/bp?handler=SearchByTrackTitle",
                 data: dataString,
                 cache: false,
                 success: function (html) {
@@ -162,7 +162,7 @@
             $("#PoemMusicTrackViewModel_AlbumName").val($("#album option:selected").html());
             $("#PoemMusicTrackViewModel_AlbumUrl").val($album_url);
 
-            $.post("/spotify?handler=FillTracks", {
+            $.post("/bp?handler=FillTracks", {
                 'album': $("#album option:selected").val()
             },
                 function (data) {
@@ -205,5 +205,5 @@
         }
     });
 
- 
+
 });
