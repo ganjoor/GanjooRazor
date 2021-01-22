@@ -72,11 +72,67 @@
         {
             <div class="fab">
                 <span class="fab-action-button">
-                    <a href="/login" data-tooltip="ورود کاربر" title="ورود کاربر">
+                    <a href="#" onclick="document.getElementById('id01').style.display='block'" data-tooltip="ورود کاربر" title="ورود کاربر">
                         <i class="fab-action-button__icon"></i>
                     </a>
                 </span>
             </div>
+
+            <!-- The Modal -->
+    <div id="id01" class="modal">
+        <span onclick="document.getElementById('id01').style.display='none'"
+              class="close" title="بستن">&times;</span>
+
+        <!-- Modal Content -->
+        <form class="modal-content animate" method="post">
+            <div class="imgcontainer">
+                <img src="/image/login.png" alt="گنجور" class="avatar">
+            </div>
+            <table style="width:100%">
+                <tr>
+                    <td>
+                        <span class="inputlabel">پست الکترونیکی: </span>
+                    </td>
+                    <td>
+                        <input type="text" style="text-align:left;direction:ltr;width:100%" placeholder="پست الکترونیکی" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="inputlabel">گذرواژه: </span>
+                    </td>
+                    <td>
+                        <input type="password" id="password"  style="text-align:left;direction:ltr;width:100%" placeholder="گذرواژه" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" name="submit" style="width:100%;cursor:pointer" id="submit" value="ورود" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <table style="width:100%; margin:0">
+                            <tr>
+                                <td>
+                                    <a href="https://museum.ganjoor.net/signup" target="_blank" style="width:50%; cursor:pointer"><input type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn" style="width:100%;text-align:center;cursor:pointer" value="ثبت نام" /></a>
+                                </td>
+                                <td>
+                                    <input type="button" onclick="document.getElementById('id01').style.display='none'" style="width: 100%; text-align: center; cursor: pointer" value="انصراف" />
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        
+                    </td>
+                </tr>
+
+
+            </table>
+            <div><p>خطا</p></div>
+        </form>
+        
+    </div>
         }
 
 
