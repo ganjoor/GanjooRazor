@@ -729,16 +729,14 @@ ol li {
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
     font-size: 1.25em;
-    border-radius: 25px;
     padding: 5px;
 }
-
-
 
 
 .modal-content td {
     border: none
 }
+
 
 /* The Close Button */
 .close {
