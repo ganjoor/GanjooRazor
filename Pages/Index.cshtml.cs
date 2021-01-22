@@ -1,16 +1,72 @@
 ﻿using GanjooRazor.Utils;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Ganjoor.ViewModels;
 using RMuseum.Models.GanjoorAudio.ViewModels;
+using RSecurityBackend.Models.Auth.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GanjooRazor.Pages
 {
+    [IgnoreAntiforgeryToken(Order = 1001)]
     public class IndexModel : PageModel
     {
+        [BindProperty]
+        public LoginViewModel LoginViewModel { get; set; }
+
+        /// <summary>
+        /// Login
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostLoginAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            LoginViewModel.ClientAppName = "GanjooRazor";
+            LoginViewModel.Language = "fa-IR";
+
+            using (HttpClient client = new HttpClient())
+            {
+                var stringContent = new StringContent(JsonConvert.SerializeObject(LoginViewModel), Encoding.UTF8, "application/json");
+                var loginUrl = $"{APIRoot.Url}/api/users/login";
+                var response = await client.PostAsync(loginUrl, stringContent);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");
+                }
+
+                LoggedOnUserModel loggedOnUser = JsonConvert.DeserializeObject<LoggedOnUserModel>(await response.Content.ReadAsStringAsync());
+
+                var cookieOption = new CookieOptions()
+                {
+                    Expires = DateTime.Now.AddDays(365),
+                };
+
+                Response.Cookies.Append("UserId", loggedOnUser.User.Id.ToString(), cookieOption);
+                Response.Cookies.Append("SessionId", loggedOnUser.SessionId.ToString(), cookieOption);
+                Response.Cookies.Append("Token", loggedOnUser.Token, cookieOption);
+                Response.Cookies.Append("Username", loggedOnUser.User.Username, cookieOption);
+                Response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
+
+            }
+
+
+            return Redirect(Request.Path);
+        }
+
         /// <summary>
         /// is home page
         /// </summary>

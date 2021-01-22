@@ -30,7 +30,7 @@ namespace GanjooRazor.Pages
         {
             UserFriendlyName = Request.Cookies["Name"];
             LoggedIn = !string.IsNullOrEmpty(UserFriendlyName);
-            LastError = "";
+            LastError = Request.Query["error"];
             RedirectUrl = Request.Query["redirect"];
             if (string.IsNullOrEmpty(RedirectUrl))
             {
