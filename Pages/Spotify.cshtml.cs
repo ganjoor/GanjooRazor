@@ -150,10 +150,10 @@ namespace GanjooRazor.Pages
 
                 return new PartialViewResult()
                 {
-                    ViewName = "SpotifySearchPartial",
+                    ViewName = "_SpotifySearchPartial",
                     ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                     {
-                        Model = new SpotifySearchPartialModel()
+                        Model = new _SpotifySearchPartialModel()
                         {
                             Artists = artists
                         }
@@ -236,10 +236,10 @@ namespace GanjooRazor.Pages
 
                 return new PartialViewResult()
                 {
-                    ViewName = "SpotifySearchPartial",
+                    ViewName = "_SpotifySearchPartial",
                     ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                     {
-                        Model = new SpotifySearchPartialModel()
+                        Model = new _SpotifySearchPartialModel()
                         {
                             Tracks = tracks
                         }

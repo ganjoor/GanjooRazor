@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace GanjooRazor.Pages
 {
-    public class SpotifySearchPartialModel : PageModel
+    public class _SpotifySearchPartialModel : PageModel
     {
         public NameIdUrlImage[] Artists { get; set; }
 
