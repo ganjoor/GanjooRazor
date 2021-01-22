@@ -26,7 +26,7 @@ namespace GanjooRazor
 
             services.AddRazorPages(options =>
             {
-                options.Conventions.AddPageRoute("/content", "{*url}");
+                options.Conventions.AddPageRoute("/index", "{*url}");
             });
         }
 
