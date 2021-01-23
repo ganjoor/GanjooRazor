@@ -1,8 +1,9 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -97,20 +98,27 @@ namespace GanjooRazor.Pages
 
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["Token"]);
-                var stringContent = new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json");
-                var methodUrl = $"{APIRoot.Url}/api/ganjoor/song";
-                var response = await client.PostAsync(methodUrl, stringContent);
-                if (!response.IsSuccessStatusCode)
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
                 {
-                    LastError = await response.Content.ReadAsStringAsync();
+                    var stringContent = new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json");
+                    var methodUrl = $"{APIRoot.Url}/api/ganjoor/song";
+                    var response = await client.PostAsync(methodUrl, stringContent);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        LastError = await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        InsertedSongId = JsonConvert.DeserializeObject<PoemMusicTrackViewModel>(await response.Content.ReadAsStringAsync()).Id;
+
+                        PostSuccess = true;
+                    }
                 }
                 else
                 {
-                    InsertedSongId = JsonConvert.DeserializeObject<PoemMusicTrackViewModel>(await response.Content.ReadAsStringAsync()).Id;
-
-                    PostSuccess = true;
+                    LastError = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
                 }
+                
 
                 await _GetSuggestedSongs(client);
             }

@@ -1,3 +1,4 @@
+using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -59,8 +60,11 @@ namespace GanjooRazor.Pages
             {
                 if(string.IsNullOrEmpty(LoginViewModel.Username))
                 {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["Token"]);
-                    var logoutUrl = $"{APIRoot.Url}/api/users/delsession?userId={Request.Cookies["UserId"]}&sessionId={Request.Cookies["SessionId"]}";
+                    if(await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                    {
+                        var logoutUrl = $"{APIRoot.Url}/api/users/delsession?userId={Request.Cookies["UserId"]}&sessionId={Request.Cookies["SessionId"]}";
+                        await client.DeleteAsync(logoutUrl);
+                    }
                     
 
                     var cookieOption = new CookieOptions()
@@ -75,7 +79,7 @@ namespace GanjooRazor.Pages
                         }
                     }
 
-                    await client.DeleteAsync(logoutUrl);
+                    
 
                     return Page();
                 }
