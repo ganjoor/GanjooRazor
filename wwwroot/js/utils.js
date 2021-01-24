@@ -5,3 +5,4 @@
         timer = setTimeout(fn.bind(this, ...args), ms || 0)
     }
 }
+

@@ -68,6 +68,46 @@ namespace GanjooRazor.Pages
         }
 
         /// <summary>
+        /// logout
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostLogoutAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            if(!string.IsNullOrEmpty(Request.Cookies["SessionId"]) && !string.IsNullOrEmpty(Request.Cookies["UserId"]))
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                    {
+                        var logoutUrl = $"{APIRoot.Url}/api/users/delsession?userId={Request.Cookies["UserId"]}&sessionId={Request.Cookies["SessionId"]}";
+                        await client.DeleteAsync(logoutUrl);
+                    }
+                }
+            }
+           
+
+            var cookieOption = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(-1)
+            };
+            foreach (var cookieName in new string[] { "UserId", "SessionId", "Token", "Username", "Name" })
+            {
+                if (Request.Cookies[cookieName] != null)
+                {
+                    Response.Cookies.Append(cookieName, "", cookieOption);
+                }
+            }
+
+
+            return Redirect(Request.Path);
+        }
+
+        /// <summary>
         /// is home page
         /// </summary>
         public bool IsHomePage { get; set; }
