@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using RSecurityBackend.Models.Auth.ViewModels;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -57,10 +59,39 @@ namespace GanjooRazor.Utils
                 response.Cookies.Append("Username", loggedOnUser.User.Username, cookieOption);
                 response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
 
+                List<string> permissions = new List<string>();
+                foreach (var securableItem in loggedOnUser.SecurableItem)
+                    foreach (var operation in securableItem.Operations)
+                    {
+                        if (operation.Status)
+                        {
+                            permissions.Add($"{securableItem.ShortName}-{operation.ShortName}");
+                        }
+                    }
+                response.Cookies.Append("Permissions", JsonConvert.SerializeObject(permissions.ToArray()));
+
                 return true;
 
             }
             return false;
+        }
+
+        /// <summary>
+        /// has permission
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="secuableShortName"></param>
+        /// <param name="operationShortName"></param>
+        /// <returns></returns>
+        public static bool IsPermitted(HttpRequest request, string secuableShortName, string operationShortName)
+        {
+            string json = request.Cookies["Permissions"];
+
+            if (string.IsNullOrEmpty(json))
+                return false;
+
+            string[] permissions = JsonConvert.DeserializeObject<string[]>(json);
+            return permissions.Where(p => p == $"{secuableShortName}-{operationShortName}").SingleOrDefault() != null;
         }
     }
 }

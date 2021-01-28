@@ -61,6 +61,16 @@ namespace GanjooRazor.Pages
                 Response.Cookies.Append("Username", loggedOnUser.User.Username, cookieOption);
                 Response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
 
+                List<string> permissions = new List<string>();
+                foreach(var securableItem in loggedOnUser.SecurableItem)
+                    foreach (var operation in securableItem.Operations)
+                    {
+                        if(operation.Status)
+                        {
+                            permissions.Add($"{securableItem.ShortName}-{operation.ShortName}");
+                        }
+                    }
+                Response.Cookies.Append("Permissions", JsonConvert.SerializeObject(permissions.ToArray()));
             }
 
 
@@ -95,7 +105,7 @@ namespace GanjooRazor.Pages
             {
                 Expires = DateTime.Now.AddDays(-1)
             };
-            foreach (var cookieName in new string[] { "UserId", "SessionId", "Token", "Username", "Name" })
+            foreach (var cookieName in new string[] { "UserId", "SessionId", "Token", "Username", "Name", "Permissions" })
             {
                 if (Request.Cookies[cookieName] != null)
                 {

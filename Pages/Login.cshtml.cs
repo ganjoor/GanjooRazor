@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using RSecurityBackend.Models.Auth.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -71,7 +72,7 @@ namespace GanjooRazor.Pages
                     {
                         Expires = DateTime.Now.AddDays(-1)
                     };
-                    foreach (var cookieName in new string[] { "UserId", "SessionId", "Token", "Username", "Name" })
+                    foreach (var cookieName in new string[] { "UserId", "SessionId", "Token", "Username", "Name", "Permissions" })
                     {
                         if(Request.Cookies[cookieName] != null)
                         {
@@ -107,6 +108,17 @@ namespace GanjooRazor.Pages
                     Response.Cookies.Append("Token", loggedOnUser.Token, cookieOption);
                     Response.Cookies.Append("Username", loggedOnUser.User.Username, cookieOption);
                     Response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
+
+                    List<string> permissions = new List<string>();
+                    foreach (var securableItem in loggedOnUser.SecurableItem)
+                        foreach (var operation in securableItem.Operations)
+                        {
+                            if (operation.Status)
+                            {
+                                permissions.Add($"{securableItem.ShortName}-{operation.ShortName}");
+                            }
+                        }
+                    Response.Cookies.Append("Permissions", JsonConvert.SerializeObject(permissions.ToArray()));
                 }
 
             }
