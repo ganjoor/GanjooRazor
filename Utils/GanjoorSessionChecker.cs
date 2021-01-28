@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using RSecurityBackend.Models.Auth.ViewModels;
 using System;
@@ -92,6 +93,25 @@ namespace GanjooRazor.Utils
 
             string[] permissions = JsonConvert.DeserializeObject<string[]>(json);
             return permissions.Where(p => p == $"{secuableShortName}-{operationShortName}").SingleOrDefault() != null;
+        }
+
+        /// <summary>
+        /// apply permissions to view data
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="viewData"></param>
+        public static void ApplyPermissionsToViewData(HttpRequest request, ViewDataDictionary viewData)
+        {
+            string json = request.Cookies["Permissions"];
+
+            if (string.IsNullOrEmpty(json))
+                return;
+
+            string[] permissions = JsonConvert.DeserializeObject<string[]>(json);
+            foreach(string permission in permissions)
+            {
+                viewData[permission] = true;
+            }
         }
     }
 }

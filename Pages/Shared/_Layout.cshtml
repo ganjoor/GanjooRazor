@@ -26,16 +26,16 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if ((bool)ViewData["ganjoor-import"])
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="User" asp-page="/Index">خانه</a>
+                        </li>
+
+                        @if (ViewData.ContainsKey("ganjoor-songrevu"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="User" asp-page="/ReviewSongs">آهنگ‌ها</a>
                             </li>
                         }
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">حریم خصوصی</a>
-                        </li>
                     </ul>
                 </div>
             </div>
