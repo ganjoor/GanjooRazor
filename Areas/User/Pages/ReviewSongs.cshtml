@@ -2,7 +2,7 @@
 @model GanjooRazor.Areas.User.Pages.ReviewSongsModel
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "آهنگ‌های پیشنهادی";
+    GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, ViewData);
 }
-<h1>
-    آهنگهای پیشنهادی
-</h1>
+<h1>@ViewData["Title"]</h1>

@@ -2,5 +2,7 @@
 @model GanjooRazor.Areas.Panel.Pages.IndexModel
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "پیشخان کاربر";
+    GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, ViewData);
 }
-<h1>سلام</h1>
+<h1>@ViewData["Title"]</h1>

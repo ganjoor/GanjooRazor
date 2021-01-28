@@ -1,6 +1,4 @@
-using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using RMuseum.Models.Auth.Memory;
 
 namespace GanjooRazor.Areas.Panel.Pages
 {
@@ -12,7 +10,7 @@ namespace GanjooRazor.Areas.Panel.Pages
         /// </summary>
         public void OnGet()
         {
-            GanjoorSessionChecker.ApplyPermissionsToViewData(Request, ViewData);
+            
         }
     }
 }

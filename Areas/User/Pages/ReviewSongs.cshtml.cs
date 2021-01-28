@@ -10,7 +10,7 @@ namespace GanjooRazor.Areas.User.Pages
         /// </summary>
         public void OnGet()
         {
-            GanjoorSessionChecker.ApplyPermissionsToViewData(Request, ViewData);
+            
         }
     }
 }
