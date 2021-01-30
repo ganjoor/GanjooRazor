@@ -1,8 +1,20 @@
 ﻿@page
 @model GanjooRazor.Areas.User.Pages.ReviewSongsModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = "_Layout";
     ViewData["Title"] = "آهنگ‌های پیشنهادی";
     GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, ViewData);
 }
 <h1>@ViewData["Title"]</h1>
+<form method="post">
+    <span class="inputlabel">خواننده: </span><input asp-for="PoemMusicTrackViewModel.ArtistName" /><br />
+    <span class="inputlabel">نشانی خواننده: </span><input asp-for="PoemMusicTrackViewModel.ArtistUrl" /><br />
+    <span class="inputlabel">آلبوم: </span><input asp-for="PoemMusicTrackViewModel.AlbumName" /><br />
+    <span class="inputlabel">نشانی آلبوم: </span><input asp-for="PoemMusicTrackViewModel.AlbumUrl" /><br />
+    <span class="inputlabel">آهنگ: </span><input asp-for="PoemMusicTrackViewModel.TrackName" /><br />
+    <span class="inputlabel">نشانی آهنگ: </span><input asp-for="PoemMusicTrackViewModel.TrackUrl" /><br />
+    <span class="inputlabel">توضیح: </span><input placeholder="توضیح" asp-for="PoemMusicTrackViewModel.Description" />
+    <br />
+    <input type="submit" name="submit" id="submit" value="ارسال" />
+</form>
