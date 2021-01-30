@@ -8,13 +8,73 @@
 }
 <h1>@ViewData["Title"]</h1>
 <form method="post">
-    <span class="inputlabel">خواننده: </span><input asp-for="PoemMusicTrackViewModel.ArtistName" /><br />
-    <span class="inputlabel">نشانی خواننده: </span><input asp-for="PoemMusicTrackViewModel.ArtistUrl" /><br />
-    <span class="inputlabel">آلبوم: </span><input asp-for="PoemMusicTrackViewModel.AlbumName" /><br />
-    <span class="inputlabel">نشانی آلبوم: </span><input asp-for="PoemMusicTrackViewModel.AlbumUrl" /><br />
-    <span class="inputlabel">آهنگ: </span><input asp-for="PoemMusicTrackViewModel.TrackName" /><br />
-    <span class="inputlabel">نشانی آهنگ: </span><input asp-for="PoemMusicTrackViewModel.TrackUrl" /><br />
-    <span class="inputlabel">توضیح: </span><input placeholder="توضیح" asp-for="PoemMusicTrackViewModel.Description" />
-    <br />
-    <input type="submit" name="submit" id="submit" value="ارسال" />
+    <table style="width:100%">
+        <tr>
+            <td>
+                <span class="inputlabel">خواننده: </span>
+            </td>
+            <td>
+                <input style="width:100%" asp-for="PoemMusicTrackViewModel.ArtistName" /><br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">نشانی خواننده: </span>
+            </td>
+            <td>
+                <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.ArtistUrl" /><br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">آلبوم: </span>
+            </td>
+            <td>
+                <input style="width:100%" asp-for="PoemMusicTrackViewModel.AlbumName" /><br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">نشانی آلبوم: </span>
+            </td>
+            <td>
+                <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.AlbumUrl" /><br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">آهنگ: </span>
+            </td>
+            <td>
+                <input style="width:100%" asp-for="PoemMusicTrackViewModel.TrackName" /><br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">نشانی آهنگ: </span>
+            </td>
+            <td>
+                <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.TrackUrl" /><br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">توضیح: </span>
+            </td>
+            <td>
+                <input style="width:100%" asp-for="PoemMusicTrackViewModel.Description" /><br />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" name="approve" id="approve" style="width:100%;color:white;background-color:green">تأیید</button>
+            </td>
+            <td>
+                <button type="button" name="reject" id="reject" style="width:100%;color:white;background-color:darkred">رد</button>
+            </td>
+        </tr>
+    </table>
+
+   
+    
 </form>

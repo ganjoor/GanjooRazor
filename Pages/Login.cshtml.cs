@@ -118,7 +118,7 @@ namespace GanjooRazor.Pages
                                 permissions.Add($"{securableItem.ShortName}-{operation.ShortName}");
                             }
                         }
-                    Response.Cookies.Append("Permissions", JsonConvert.SerializeObject(permissions.ToArray()));
+                    Response.Cookies.Append("Permissions", JsonConvert.SerializeObject(permissions.ToArray()), cookieOption);
                 }
 
             }
