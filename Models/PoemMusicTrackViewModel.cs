@@ -12,7 +12,7 @@
 
         /// <summary>
         /// poem id
-        /// </summary>
+        /// </summary>a
         public int PoemId { get; set; }
 
         /// <summary>
@@ -61,9 +61,24 @@
         public bool BrokenLink { get; set; }
 
         /// <summary>
-        /// golha track id
+        /// golha id
         /// </summary>
         public int GolhaTrackId { get; set; }
+
+        /// <summary>
+        /// approved
+        /// </summary>
+        public bool Approved { get; set; }
+
+        /// <summary>
+        /// instead of deleting rejected songs keep track of them
+        /// </summary>
+        public bool Rejected { get; set; }
+
+        /// <summary>
+        /// rejection cause
+        /// </summary>
+        public string RejectionCause { get; set; }
 
         /// <summary>
         /// to string
@@ -73,6 +88,5 @@
         {
             return TrackType == PoemMusicTrackType.Golha ? $"{AlbumName} » {TrackName}" : $"{ArtistName} » {AlbumName} » {TrackName}";
         }
-
     }
 }
