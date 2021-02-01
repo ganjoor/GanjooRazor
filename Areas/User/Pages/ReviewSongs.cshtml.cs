@@ -28,16 +28,22 @@ namespace GanjooRazor.Areas.User.Pages
         public GanjoorPoemCompleteViewModel Poem { get; set; }
 
         /// <summary>
+        /// skip
+        /// </summary>
+        public int Skip { get; set; }
+
+        /// <summary>
         /// get
         /// </summary>
         public async Task OnGetAsync()
         {
             LastError = "";
+            Skip = string.IsNullOrEmpty(Request.Query["skip"]) ? 0 : int.Parse(Request.Query["skip"]);
             using (HttpClient client = new HttpClient())
             {
                 if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
                 {
-                    var trackResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/song?skip=0&onlyMine=false");
+                    var trackResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/song?skip={Skip}&onlyMine=false");
                     if (!trackResponse.IsSuccessStatusCode)
                     {
                         LastError = await trackResponse.Content.ReadAsStringAsync();
@@ -73,6 +79,13 @@ namespace GanjooRazor.Areas.User.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+
+            if(Request.Form["next"].Count == 1)
+            {
+                Skip = string.IsNullOrEmpty(Request.Query["skip"]) ? 0 : int.Parse(Request.Query["skip"]);
+                return Redirect($"/User/ReviewSongs/?skip={Skip + 1}");
+            }
+
             PoemMusicTrackViewModel.Approved = Request.Form["approve"].Count == 1;
 
             await OnGetAsync();
