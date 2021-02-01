@@ -22,6 +22,7 @@ else
                 </td>
                 <td>
                     <a href="@Html.Raw(Model.Poem.FullUrl)" target="_blank">@Model.Poem.FullTitle</a>
+                    <input type="hidden" asp-for="PoemMusicTrackViewModel.Id" />
                 </td>
             </tr>
             <tr>
@@ -52,15 +53,23 @@ else
             </tr>
             <tr>
                 <td>
-                    <span class="inputlabel">نشانی خواننده: </span>
+                    <span class="inputlabel"><a target="_blank" href="@Html.Raw(Model.PoemMusicTrackViewModel.ArtistUrl)">نشانی خواننده:</a></span>
                 </td>
                 <td>
-                    <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.ArtistUrl" /><br />
+                    <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.ArtistUrl" />
                 </td>
             </tr>
             <tr>
                 <td>
-                    <span class="inputlabel">آلبوم: </span>
+                   
+                </td>
+                <td>
+                   
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel">آلبوم:</span>
                 </td>
                 <td>
                     <input style="width:100%" asp-for="PoemMusicTrackViewModel.AlbumName" /><br />
@@ -68,26 +77,26 @@ else
             </tr>
             <tr>
                 <td>
-                    <span class="inputlabel">نشانی آلبوم: </span>
+                    <span class="inputlabel"><a target="_blank" href="@Html.Raw(Model.PoemMusicTrackViewModel.AlbumUrl)">نشانی آلبوم:</a></span>
                 </td>
                 <td>
-                    <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.AlbumUrl" /><br />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span class="inputlabel">آهنگ: </span>
-                </td>
-                <td>
-                    <input style="width:100%" asp-for="PoemMusicTrackViewModel.TrackName" /><br />
+                    <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.AlbumUrl" />
                 </td>
             </tr>
             <tr>
                 <td>
-                    <span class="inputlabel">نشانی آهنگ: </span>
+                    <span class="inputlabel">آهنگ:</span>
                 </td>
                 <td>
-                    <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.TrackUrl" /><br />
+                    <input style="width:100%" asp-for="PoemMusicTrackViewModel.TrackName" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel"><a target="_blank" href="@Html.Raw(Model.PoemMusicTrackViewModel.TrackUrl)">نشانی آهنگ:</a></span>
+                </td>
+                <td>
+                    <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.TrackUrl" />
                 </td>
             </tr>
             <tr>
@@ -120,7 +129,7 @@ else
                                 <button type="submit" name="reject1" id="reject1" style="width:100%;color:white;background-color:darkred">رد به دلیل دیگر:</button>
                             </td>
                             <td>
-                                <input style="width:100%;text-align:left;direction:ltr;" asp-for="PoemMusicTrackViewModel.RejectionCause" /><br />
+                                <input style="width:100%" asp-for="PoemMusicTrackViewModel.RejectionCause" /><br />
                             </td>
                         </tr>
                         <tr>

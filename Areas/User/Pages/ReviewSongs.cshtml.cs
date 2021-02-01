@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RMuseum.Models.Ganjoor.ViewModels;
 using RMuseum.Services.Implementation.ImportedFromDesktopGanjoor;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GanjooRazor.Areas.User.Pages
@@ -80,17 +81,54 @@ namespace GanjooRazor.Areas.User.Pages
         public async Task<IActionResult> OnPostAsync()
         {
 
-            if(Request.Form["next"].Count == 1)
+            Skip = string.IsNullOrEmpty(Request.Query["skip"]) ? 0 : int.Parse(Request.Query["skip"]);
+
+            if (Request.Form["next"].Count == 1)
             {
-                Skip = string.IsNullOrEmpty(Request.Query["skip"]) ? 0 : int.Parse(Request.Query["skip"]);
+                
                 return Redirect($"/User/ReviewSongs/?skip={Skip + 1}");
             }
 
             PoemMusicTrackViewModel.Approved = Request.Form["approve"].Count == 1;
+            PoemMusicTrackViewModel.Rejected = (Request.Form["reject1"].Count + Request.Form["reject2"].Count + Request.Form["reject3"].Count) > 0;
+            if(string.IsNullOrEmpty(PoemMusicTrackViewModel.RejectionCause))
+            {
+                if (Request.Form["reject1"].Count == 1)
+                {
+                    PoemMusicTrackViewModel.RejectionCause = "در آهنگ این شعر خوانده نشده";
+                }
+                else
+                if (Request.Form["reject2"].Count == 1)
+                {
+                    PoemMusicTrackViewModel.RejectionCause = "لینک یا اطلاعات آهنگ ایراد دارد";
+                }
+            }
 
-            await OnGetAsync();
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var putResponse = await client.PutAsync($"{APIRoot.Url}/api/ganjoor/song", new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json"));
+                    if (!putResponse.IsSuccessStatusCode)
+                    {
+                        LastError = await putResponse.Content.ReadAsStringAsync();
+                    }
+                }
+                else
+                {
+                    LastError = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
+                }
 
-            return Page();
+            }
+
+
+            if(!string.IsNullOrEmpty(LastError))
+            {
+                return Page();
+            }
+
+            return Redirect($"/User/ReviewSongs/?skip={Skip}");
+
         }
     }
 }
