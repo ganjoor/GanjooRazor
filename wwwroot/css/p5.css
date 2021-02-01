@@ -513,6 +513,10 @@ td {
     border: 1px solid #000;
 }
 
+.noborder td {
+    border: none;
+}
+
 tr {
     background: #eee;
 }
