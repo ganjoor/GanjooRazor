@@ -4,7 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using RMuseum.Models.Ganjoor.ViewModels;
 using RMuseum.Services.Implementation.ImportedFromDesktopGanjoor;
+using RSecurityBackend.Models.Generic;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,11 +38,17 @@ namespace GanjooRazor.Areas.User.Pages
         public int Skip { get; set; }
 
         /// <summary>
+        /// total count
+        /// </summary>
+        public int TotalCount { get; set; }
+
+        /// <summary>
         /// get
         /// </summary>
         public async Task OnGetAsync()
         {
             LastError = "";
+            TotalCount = 0;
             Skip = string.IsNullOrEmpty(Request.Query["skip"]) ? 0 : int.Parse(Request.Query["skip"]);
             using (HttpClient client = new HttpClient())
             {
@@ -51,6 +61,12 @@ namespace GanjooRazor.Areas.User.Pages
                     }
                     else
                     {
+                        string paginnationMetadata =  trackResponse.Headers.GetValues("paging-headers").FirstOrDefault();
+                        if (!string.IsNullOrEmpty(paginnationMetadata))
+                        {
+                            TotalCount = JsonConvert.DeserializeObject<PaginationMetadata>(paginnationMetadata).totalCount;
+                        }
+
                         PoemMusicTrackViewModel = JsonConvert.DeserializeObject<PoemMusicTrackViewModel>(await trackResponse.Content.ReadAsStringAsync());
 
                         PoemMusicTrackViewModel.ArtistName = GPersianTextSync.Sync(PoemMusicTrackViewModel.ArtistName);
@@ -62,6 +78,9 @@ namespace GanjooRazor.Areas.User.Pages
                         if (poemResponse.IsSuccessStatusCode)
                         {
                             Poem = JsonConvert.DeserializeObject<GanjoorPoemCompleteViewModel>(await poemResponse.Content.ReadAsStringAsync());
+
+                           
+
                         }
                         else
                         {
