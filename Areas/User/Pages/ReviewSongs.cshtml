@@ -11,6 +11,14 @@
 {
     <h2>@Model.LastError</h2>
 }
+else if (@Model.PoemMusicTrackViewModel == null)
+{
+    <p>پیشنهادی وجود ندارد.</p>
+}
+else if (@Model.Poem == null)
+{
+    <p>شعر مرتبط یافت نشد!</p>
+}
 else
 {
 
@@ -61,10 +69,8 @@ else
             </tr>
             <tr>
                 <td>
-                   
                 </td>
                 <td>
-                   
                 </td>
             </tr>
             <tr>
