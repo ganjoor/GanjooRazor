@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using RMuseum.Models.Ganjoor.ViewModels;
 
 namespace GanjooRazor.Areas.User.Pages
@@ -34,8 +38,8 @@ namespace GanjooRazor.Areas.User.Pages
                 PoemId = 0,
                 ArtistName = "محمدرضا شجریان",
                 ArtistUrl = "http://beeptunes.com/artist/3403349",
-                AlbumName = "",
-                AlbumUrl = "",
+                AlbumName = "اجراهای خصوصی",
+                AlbumUrl = "http://khosousi.com",
                 TrackName = "",
                 TrackUrl = "",
                 Approved = false,
@@ -43,6 +47,34 @@ namespace GanjooRazor.Areas.User.Pages
                 BrokenLink = false,
                 Description = ""
             };
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var putResponse = await client.PostAsync($"{APIRoot.Url}/api/ganjoor/song/add", new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json"));
+                    if (!putResponse.IsSuccessStatusCode)
+                    {
+                        LastError = await putResponse.Content.ReadAsStringAsync();
+                    }
+                }
+                else
+                {
+                    LastError = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
+                }
+
+            }
+
+
+            if (!string.IsNullOrEmpty(LastError))
+            {
+                return Page();
+            }
+
+            return Redirect("/User/AddSong");
         }
     }
 }
