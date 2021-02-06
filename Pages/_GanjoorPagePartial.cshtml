@@ -290,10 +290,35 @@
                         }
 
                         <h3>حاشیه‌ها</h3>
-                        <p>
 
-                            تا به حال حاشیه‌ای برای این شعر نوشته نشده است. <a href="@Html.Raw($"/?comments_popup={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link" title="Comment on شمارهٔ ۹">💬 شما حاشیه بگذارید ...</a>
-                        </p>
+                        @switch (Model.GanjoorPage.Poem.Comments.Length)
+                        {
+                            case 0:
+                                <p>
+                                    تا به حال حاشیه‌ای برای این شعر نوشته نشده است. <a href="@Html.Raw($"/?comments_popup={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link" title="شما حاشیه بگذارید ...">💬 شما حاشیه بگذارید ...</a>
+                                </p>
+                                break;
+                            case 1:
+                                <p>
+                                    تا به حال یک حاشیه برای این شعر نوشته شده است. <a href="@Html.Raw($"/?comments_popup={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link" title="شما حاشیه بگذارید ...">💬 شما حاشیه بگذارید ...</a>
+                                </p>
+                                break;
+                            default:
+                                <p>
+                                    تا به حال @Html.Raw(RMuseum.Services.Implementation.ImportedFromDesktopGanjoor.GPersianTextSync.Sync(Model.GanjoorPage.Poem.Comments.Length.ToString())) حاشیه برای این شعر نوشته شده است. <a href="@Html.Raw($"/?comments_popup={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link" title="شما حاشیه بگذارید ...">💬 شما حاشیه بگذارید ...</a>
+                                </p>
+                                break;
+                        }
+
+                        @foreach (var comment in Model.GanjoorPage.Poem.Comments)
+                        {
+                            <div class="item" id="comment-@comment.Id">
+                                <p>@comment.AuthorName نوشته:</p>
+                                @Html.Raw(comment.HtmlComment)
+                                <p><a href="/report/?poem_id=@Model.GanjoorPage.Id&amp;comment_id=@comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="درخواست حذف حاشیه">👆⚐</a></p>
+                            </div>
+                        }
+
                     </div> <!-- <div id="comments"> -->
                 }
 
@@ -304,19 +329,18 @@
 
             <div class="spacer">&nbsp;</div>
 
-        </div>
+            <div class="helpers">
 
-        <div class="helpers">
+                <div class="cat">
+                </div>
 
-            <div class="cat">
+                <div class="com">
+
+                </div>
+
             </div>
 
-            <div class="com">
-
-            </div>
-
         </div>
-
 
         <partial name="_InlineLoginPartial" model="Model" />
 
