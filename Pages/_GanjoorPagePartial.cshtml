@@ -6,8 +6,17 @@
         <form action="/index.php" method="get" id="searchform">
             <input type="text" name="s" id="s" class="inputText" value="" placeholder="جستجو" />
             <select name="author" id="author">
-                <option value="0" selected="selected">در آثار همه شاعران</option>
+
                 @{
+                    if (Model.GanjoorPage.PoetOrCat != null)
+                    {
+                        <option value="0">در آثار همه شاعران</option>
+                    }
+                    else
+                    {
+                        <option value="0" selected="selected">در آثار همه شاعران</option>
+                    }
+
                     foreach (RMuseum.Models.Ganjoor.ViewModels.GanjoorPoetViewModel poet in Model.Poets)
                     {
                         if (Model.GanjoorPage.PoetOrCat != null && poet.Id == Model.GanjoorPage.PoetOrCat.Poet.Id)
