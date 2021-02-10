@@ -156,6 +156,11 @@ namespace GanjooRazor.Pages
         public bool LoggedIn { get; set; }
 
         /// <summary>
+        /// pinterest url
+        /// </summary>
+        public string PinterestUrl { get; set; }
+
+        /// <summary>
         /// prepare poem except
         /// </summary>
         /// <param name="poem"></param>
@@ -231,6 +236,7 @@ namespace GanjooRazor.Pages
             IsCatPage = false;
             IsPoemPage = false;
             IsHomePage = Request.Path == "/";
+            PinterestUrl = Request.Query["pinterest_url"];
             GoogleBreadCrumbList breadCrumbList = new GoogleBreadCrumbList();
 
             using (HttpClient client = new HttpClient())
