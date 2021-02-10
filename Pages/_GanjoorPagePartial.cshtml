@@ -65,12 +65,13 @@
                 if (!string.IsNullOrEmpty(Model.PinterestUrl))
                 {
                         <div style="display:block;width:100%">
-                            <form method="post" action="/pin">
-                                <input type="hidden" name="p" value="@Model.GanjoorPage.Id">
-                                <input type="hidden" name="u" value="@Model.GanjoorPage.FullUrl?pinterest_url=@Model.PinterestUrl">
-                                <input type="hidden" name="i" value="@Model.PinterestUrl">
-                                <input type="submit" name="pinterest_suggest" value="انتخاب شعر" style="background-color:red;color:white;font-family:IRANSans;font-size:1.5em;width:100%;cursor:pointer;">
-                            </form>
+                                        <form method="post" action="/pin">
+                                            <input type="hidden" id="RelatedImageSuggestionModel_PoemId" name="RelatedImageSuggestionModel.PoemId" value="@Model.GanjoorPage.Id">
+                                            <input type="hidden" id="RelatedImageSuggestionModel_GanjoorUrl" name="RelatedImageSuggestionModel.GanjoorUrl" value="@Model.GanjoorPage.FullUrl">
+                                            <input type="hidden" id="RelatedImageSuggestionModel_GanjoorTitle" name="RelatedImageSuggestionModel.GanjoorTitle" value="@Model.GanjoorPage.FullTitle">
+                                            <input type="hidden" id="RelatedImageSuggestionModel_PinterestUrl" name="RelatedImageSuggestionModel.PinterestUrl" value="@Model.PinterestUrl">
+                                            <input type="submit" name="pinterest_suggest" value="انتخاب شعر" style="background-color:red;color:white;font-family:IRANSans;font-size:1.5em;width:100%;cursor:pointer;">
+                                        </form>
                             @if (Model.PinterestUrl == "manual")
                             {
                                 <a href="http://blog.ganjoor.net/1399/01/29/pinterest/" target="_blank">پیشنهاد آسان از اینستاگرام و پین‌ترست با افزونهٔ فایرفاکس</a>

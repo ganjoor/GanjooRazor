@@ -34,5 +34,7 @@
         /// description
         /// </summary>
         public string AltText { get; set; }
+
+     
     }
 }

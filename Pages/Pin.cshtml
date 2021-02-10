@@ -17,8 +17,8 @@
     <script src="/lib/jquery/dist//jquery.min.js"></script>
     <script>
         function assignEvents() {
-            const inputPinterestUrl = document.getElementById('PinterestUrl');
-            const inputPinterestImageUrl = document.getElementById('PinterestImageUrl');
+            const inputPinterestUrl = document.getElementById('RelatedImageSuggestionModel_PinterestUrl');
+            const inputPinterestImageUrl = document.getElementById('RelatedImageSuggestionModel_PinterestImageUrl');
 
             const inputHandler = function (e) {
                 if (e.target.value.indexOf("instagram.com") != -1) {
@@ -30,17 +30,49 @@
             inputPinterestUrl.addEventListener('propertychange', inputHandler); // for IE8
         }
     </script>
+    <style>
+        .inputlabel {
+            width: 100%;
+            display: block;
+        }
+
+        textarea {
+            background-color: white;
+        }
+
+        input#submit {
+            text-align: center;
+            background-color: #fff;
+            border: 2px solid #300;
+            color: #300
+        }
+
+            input#submit:hover {
+                background-color: #300;
+                color: #fff;
+                border: 2px solid #433;
+            }
+    </style>
 </head>
 <body onload="assignEvents()">
     <div id="fa">
         <div class="poem">
-            <div class="content">
-                @if (Model.RelatedImageSuggestionModel.PinterestUrl != "manual")
-                {
-                    <img src="@Html.Raw(Model.RelatedImageSuggestionModel.PinterestImageUrl)" width="400" />
-                }
 
-                <form method="post" action="/pin/post.php">
+
+
+            @if (Model.Succeeded)
+            {
+                <p>با تشکر، تصویر پیشنهادی جهت بررسی ارسال شد.</p>
+                <p>لطفاً توجه فرمایید که تصاویر دارای واترمارک نازیبا یا دارای کیفیت پایین یا دارای مشکلات دیگر تأیید نخواهند شد.</p>
+                <p>تصویر ارسالی:</p>
+            }
+            else
+            {
+               <p>
+                   @Model.LastError
+               </p>
+
+                <form method="post" action="/pin/?final=1">
                     <input type="hidden" asp-for="RelatedImageSuggestionModel.GanjoorTitle">
                     <input type="hidden" asp-for="RelatedImageSuggestionModel.PoemId">
                     <input type="hidden" asp-for="RelatedImageSuggestionModel.GanjoorUrl">
@@ -50,11 +82,16 @@
                     <br />
                     <span class="inputlabel">توضیحات (<small>می‌توانید اطلاعاتی مانند نام هنرمند و ... را اضافه کنید.</small>):</span>
                     <textarea asp-for="RelatedImageSuggestionModel.AltText" rows="10" cols="50"></textarea>
+                    <br />
                     <input type="submit" name="pinterest_suggest" value="پیشنهاد" style="background-color:red;color:white">
                 </form>
+            }
 
+            @if (Model.RelatedImageSuggestionModel.PinterestUrl != "manual")
+            {
+                <img src="@Html.Raw(Model.RelatedImageSuggestionModel.PinterestImageUrl)" width="400" />
+            }
 
-            </div>
 
         </div>
     </div>
