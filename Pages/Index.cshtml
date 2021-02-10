@@ -89,6 +89,20 @@
                 </script>
             }
         }
+
+        if (!string.IsNullOrEmpty(Model.PinterestUrl))
+        {
+            <script>
+                    $(function () {
+                        $("a").attr('href', function (i, h) {
+                            if (h != null) {
+                                return h + (h.indexOf('?') != -1 ? "&pinterest_url=@Html.Raw(Model.PinterestUrl)" : "?pinterest_url=@Html.Raw(Model.PinterestUrl)");
+                            }
+                            return h;
+                        });
+                    });
+            </script>
+        }
     }
 
 
