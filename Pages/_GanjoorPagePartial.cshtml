@@ -239,13 +239,13 @@
                             <div class="navleft">
                                 @if (Model.GanjoorPage.PoetOrCat.Cat.Next != null)
                                 {
-                                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Next.UrlSlug)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Next.Title)</a><span> &raquo;</span>
+                                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Next.FullUrl)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Next.Title)</a><span> &raquo;</span>
                                 }
                             </div>
                             <div class="navright">
                                 @if (Model.GanjoorPage.PoetOrCat.Cat.Previous != null)
                                 {
-                                    <span>&laquo; </span><a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Previous.UrlSlug)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Previous.Title)</a>
+                                    <span>&laquo; </span><a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Previous.FullUrl)">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Previous.Title)</a>
                                 }
                             </div>
                         </div>
