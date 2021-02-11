@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using DNTPersianUtils.Core;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Ganjoor.ViewModels;
@@ -6,7 +7,6 @@ using RMuseum.Services.Implementation.ImportedFromDesktopGanjoor;
 using RSecurityBackend.Models.Generic;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -35,12 +35,8 @@ namespace GanjooRazor.Pages
 
                 foreach (var comment in JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorCommentFullViewModel>>())
                 {
-                    PersianCalendar pc = new PersianCalendar();
-                    string[] months = { "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند" };
-                    string dateInShamsi = $"{pc.GetDayOfMonth(comment.CommentDate)} {months[pc.GetMonth(comment.CommentDate) - 1]} {pc.GetYear(comment.CommentDate)}";
-
                     htmlText += $"<blockquote>{comment.HtmlComment}{Environment.NewLine}" +
-                        $"<p>{comment.AuthorName} <small>در تاریخ {GPersianTextSync.Sync(dateInShamsi)} ساعت {GPersianTextSync.Sync($"{comment.CommentDate:HH:mm}")}</small> دربارهٔ <a href=\"{comment.Poem.UrlSlug}\">{comment.Poem.Title}</a>" +
+                        $"<p>{comment.AuthorName} <small>در {comment.CommentDate.ToFriendlyPersianDateTextify()}</small> دربارهٔ <a href=\"{comment.Poem.UrlSlug}\">{comment.Poem.Title}</a>" +
                         $"</blockquote>{Environment.NewLine}<hr />{Environment.NewLine}";
                 }
 
