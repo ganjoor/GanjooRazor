@@ -229,7 +229,7 @@ namespace GanjooRazor.Pages
         /// Get
         /// </summary>
         /// <returns></returns>
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
             IsPoetPage = false;
@@ -241,6 +241,13 @@ namespace GanjooRazor.Pages
 
             using (HttpClient client = new HttpClient())
             {
+                if (!string.IsNullOrEmpty(Request.Query["p"]))
+                {
+                    var pageUrlResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/pageurl?id={Request.Query["p"]}");
+                    pageUrlResponse.EnsureSuccessStatusCode();
+                    var pageUrl = JsonConvert.DeserializeObject<string>(await pageUrlResponse.Content.ReadAsStringAsync());
+                    return Redirect(pageUrl);
+                }
 
                 var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poets?includeBio=false");
                 response.EnsureSuccessStatusCode();
@@ -271,6 +278,8 @@ namespace GanjooRazor.Pages
                         }
                     }
                 }
+
+               
             }
 
             if (IsHomePage)
@@ -407,6 +416,8 @@ namespace GanjooRazor.Pages
             }
 
             ViewData["BrearCrumpList"] = breadCrumbList.ToString();
+
+            return Page();
         }
     }
 }
