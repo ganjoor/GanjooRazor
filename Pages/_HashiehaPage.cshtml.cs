@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Ganjoor.ViewModels;
-using RMuseum.Services.Implementation.ImportedFromDesktopGanjoor;
 using RSecurityBackend.Models.Generic;
 using System;
 using System.Collections.Generic;
@@ -60,11 +59,11 @@ namespace GanjooRazor.Pages
                                 htmlText += " [";
                                 if (i == paginationMetadata.currentPage)
                                 {
-                                    htmlText += GPersianTextSync.Sync(i.ToString());
+                                    htmlText += i.ToPersianNumbers();
                                 }
                                 else
                                 {
-                                    htmlText += $"<a href=\"/hashieha/?page={i}\">{GPersianTextSync.Sync(i.ToString())}</a>";
+                                    htmlText += $"<a href=\"/hashieha/?page={i}\">{i.ToPersianNumbers()}</a>";
                                 }
                                 htmlText += "] ";
                             }

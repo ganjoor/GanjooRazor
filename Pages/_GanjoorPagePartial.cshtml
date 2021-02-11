@@ -1,4 +1,5 @@
 ﻿@model GanjooRazor.Pages.IndexModel
+@using DNTPersianUtils.Core
 
 <div id="hdr2" class="clearfix">
     <h1><a href="/" title="گنجور"><img src="/image/ganjadabk.gif" alt="گنجور" /></a></h1>
@@ -349,7 +350,7 @@
                                 break;
                             default:
                                 <p>
-                                    تا به حال @Html.Raw(RMuseum.Services.Implementation.ImportedFromDesktopGanjoor.GPersianTextSync.Sync(Model.GanjoorPage.Poem.Comments.Length.ToString())) حاشیه برای این شعر نوشته شده است. <a href="@Html.Raw($"/?comments_popup={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link" title="شما حاشیه بگذارید ...">💬 شما حاشیه بگذارید ...</a>
+                                    تا به حال @Html.Raw(Model.GanjoorPage.Poem.Comments.Length.ToPersianNumbers()) حاشیه برای این شعر نوشته شده است. <a href="@Html.Raw($"/?comments_popup={Model.GanjoorPage.Id}")" onclick="wpopen(this.href); return false" class="comments-link" title="شما حاشیه بگذارید ...">💬 شما حاشیه بگذارید ...</a>
                                 </p>
                                 break;
                         }

@@ -1,9 +1,9 @@
-﻿using GanjooRazor.Utils;
+﻿using DNTPersianUtils.Core;
+using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using RMuseum.Models.Ganjoor.ViewModels;
-using RMuseum.Services.Implementation.ImportedFromDesktopGanjoor;
 using RSecurityBackend.Models.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -67,9 +67,9 @@ namespace GanjooRazor.Areas.User.Pages
 
                         PoemMusicTrackViewModel = JsonConvert.DeserializeObject<PoemMusicTrackViewModel>(await trackResponse.Content.ReadAsStringAsync());
 
-                        PoemMusicTrackViewModel.ArtistName = GPersianTextSync.Sync(PoemMusicTrackViewModel.ArtistName);
-                        PoemMusicTrackViewModel.AlbumName = GPersianTextSync.Sync(PoemMusicTrackViewModel.AlbumName);
-                        PoemMusicTrackViewModel.TrackName = GPersianTextSync.Sync(PoemMusicTrackViewModel.TrackName);
+                        PoemMusicTrackViewModel.ArtistName = PoemMusicTrackViewModel.ArtistName.ToPersianNumbers().ApplyCorrectYeKe();
+                        PoemMusicTrackViewModel.AlbumName = PoemMusicTrackViewModel.AlbumName.ToPersianNumbers().ApplyCorrectYeKe();
+                        PoemMusicTrackViewModel.TrackName = PoemMusicTrackViewModel.TrackName.ToPersianNumbers().ApplyCorrectYeKe();
 
 
                         var poemResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{PoemMusicTrackViewModel.PoemId}?catInfo=false&rhymes=false&recitations=false&images=false&songs=false&comments=false&verseDetails=false&navigation=false");
