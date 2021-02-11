@@ -6,23 +6,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Ganjoor.ViewModels;
 using RMuseum.Models.GanjoorAudio.ViewModels;
-using RMuseum.Services.Implementation.ImportedFromDesktopGanjoor;
 using RSecurityBackend.Models.Auth.ViewModels;
-using RSecurityBackend.Models.Generic;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GanjooRazor.Pages
 {
     [IgnoreAntiforgeryToken(Order = 1001)]
-    public class IndexModel : PageModel
+    public partial class IndexModel : PageModel
     {
         [BindProperty]
         public LoginViewModel LoginViewModel { get; set; }
@@ -347,69 +342,7 @@ namespace GanjooRazor.Pages
 
                     if (GanjoorPage.UrlSlug == "hashieha")
                     {
-                        using (HttpClient client = new HttpClient())
-                        {
-                            int pageNumber = 1;
-                            if(!string.IsNullOrEmpty(Request.Query["page"]))
-                            {
-                                pageNumber = int.Parse(Request.Query["page"]);
-                            }
-                            var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/comments?PageNumber={pageNumber}&PageSize=20");
-                            response.EnsureSuccessStatusCode();
-
-                            string htmlText = "";
-
-                            foreach (var comment in JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorCommentFullViewModel>>())
-                            {
-                                PersianCalendar pc = new PersianCalendar();
-                                string[] months = { "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"};
-                                string dateInShamsi = $"{pc.GetDayOfMonth(comment.CommentDate)} {months[pc.GetMonth(comment.CommentDate)-1]} {pc.GetYear(comment.CommentDate)}";
-
-                                htmlText += $"<blockquote>{comment.HtmlComment}{Environment.NewLine}" +
-                                    $"<p>{comment.AuthorName} <small>در تاریخ {GPersianTextSync.Sync(dateInShamsi)} ساعت {GPersianTextSync.Sync($"{comment.CommentDate:HH:mm}")}</small> دربارهٔ <a href=\"{comment.Poem.UrlSlug}\">{comment.Poem.Title}</a>" +
-                                    $"</blockquote>{Environment.NewLine}<hr />{Environment.NewLine}";
-                            }
-
-                            htmlText += "<p style=\"text-align: center;\">";
-
-                            string paginnationMetadata = response.Headers.GetValues("paging-headers").FirstOrDefault();
-                            if (!string.IsNullOrEmpty(paginnationMetadata))
-                            {
-                                PaginationMetadata paginationMetadata = JsonConvert.DeserializeObject<PaginationMetadata>(paginnationMetadata);
-
-                                if(paginationMetadata.totalPages > 1)
-                                {
-                                    if(paginationMetadata.currentPage > 3)
-                                    {
-                                        htmlText += $"[<a href=\"/hashieha/?page=1\">صفحهٔ اول</a>] …";
-                                    }
-                                    for (int i = (paginationMetadata.currentPage - 2); i <= (paginationMetadata.currentPage + 2); i++)
-                                    {
-                                        if(i >= 1 && i<= paginationMetadata.totalPages)
-                                        {
-                                            htmlText += " [";
-                                            if (i == paginationMetadata.currentPage)
-                                            {
-                                                htmlText += GPersianTextSync.Sync(i.ToString());
-                                            }
-                                            else
-                                            {
-                                                htmlText += $"<a href=\"/hashieha/?page={i}\">{GPersianTextSync.Sync(i.ToString())}</a>";
-                                            }
-                                            htmlText += "] ";
-                                        }
-                                    }
-                                    if(paginationMetadata.totalPages > (paginationMetadata.currentPage + 2) )
-                                    {
-                                        htmlText += $"… [<a href=\"/hashieha/?page={paginationMetadata.totalPages}\">صفحهٔ آخر</a>]";
-                                    }
-                                }
-                            }
-
-                            htmlText += $"</p>{Environment.NewLine}";
-
-                            GanjoorPage.HtmlText = htmlText;
-                        }
+                        await _GenerateHashiehaHtmlText();
                     }
                 }
                 breadCrumbList.AddItem(GanjoorPage.Title, GanjoorPage.FullUrl, "https://i.ganjoor.net/cat.png");
