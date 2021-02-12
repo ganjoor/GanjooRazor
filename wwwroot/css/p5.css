@@ -418,27 +418,11 @@ div.n {
     color: #ffffe1
 }
 
-form fieldset {
-    clear: both;
-    font-size: 100%;
-    border: none;
-    padding: 10px;
-    margin: 2px;
-    text-align: right
-}
-
-form fieldset legend {
-    font-weight: normal;
-    color: #300;
-    margin: 0;
-    padding: 0 5px
-}
-
 textarea {
     background-color: #fc9
 }
 
-form fieldset div.notes p.last {
+form div.notes p.last {
     margin: 0;
 }
 
@@ -472,16 +456,6 @@ form div label {
     text-align: left
 }
 
-form div fieldset {
-    display: block;
-    clear: none;
-    border: 2px solid #300;
-    padding: 0 5px 5px 0;
-}
-
-form div fieldset legend {
-    padding: 0 3px 0 9px;
-}
 
 form div.submit {
     text-align: center
