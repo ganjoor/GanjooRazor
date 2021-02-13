@@ -33,7 +33,28 @@
         function wpopen(macagna) {
             window.open(macagna, '_blank', 'width=600,height=700,scrollbars=yes,status=yes');
         }
-        
+
+        function postComment(parent) {
+            $("#commentform").submit(function (e) {
+
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                var form = $(this);
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function (data) {
+                        $("<div class='item' id='comment-1000000'><p>سلام</p></div>").appendTo(parent);
+                        alert(data); // show response from server
+                    }
+                });
+
+            });
+        }
+
     </script>
 </head>
 <body>

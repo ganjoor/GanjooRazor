@@ -1,7 +1,9 @@
 ﻿using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Ganjoor.ViewModels;
@@ -114,6 +116,21 @@ namespace GanjooRazor.Pages
 
 
             return Redirect(Request.Path);
+        }
+
+        public ActionResult OnPostComment(string comment, int inReplytoId)
+        {
+            return new PartialViewResult()
+            {
+                ViewName = "_SpotifySearchPartial",
+                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = new _SpotifySearchPartialModel()
+                    {
+                        Artists = new GSpotifyProxy.Models.NameIdUrlImage[]{ }
+                    }
+                }
+            };
         }
 
         /// <summary>
