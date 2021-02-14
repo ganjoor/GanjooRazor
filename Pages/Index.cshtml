@@ -47,8 +47,7 @@
                     url: url,
                     data: form.serialize(), // serializes the form's elements.
                     success: function (data) {
-                        $("<div class='item' id='comment-1000000'><p>سلام</p></div>").appendTo(parent);
-                        alert(data); // show response from server
+                        $(data).appendTo(parent);
                     }
                 });
 

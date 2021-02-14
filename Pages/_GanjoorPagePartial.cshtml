@@ -379,12 +379,12 @@
                                             <div class="required">
                                                 <textarea name="comment" id="comment" class="inputTextarea" tabindex="4" rows="10" style="width:100%"></textarea>
                                             </div>
-                                            <input type="hidden" name="inReplytoId" id="inReplytoId" value="0" />
+                                            <input type="hidden" name="poemId" id="poemId" value="@Model.GanjoorPage.Id" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <input type="submit" name="postcomment" id="postcomment" class="inputSubmit" onclick="return postComment(document.getElementById('comments-block'));" style="width:100%" tabindex="5" value="درج حاشیه" />
+                                            <button name="postcomment" id="postcomment" class="inputSubmit" onclick="return postComment(document.getElementById('comments-block'));" style="width:100%">درج حاشیه</button>
                                         </td>
                                     </tr>
                                 </table>

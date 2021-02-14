@@ -118,16 +118,54 @@ namespace GanjooRazor.Pages
             return Redirect(Request.Path);
         }
 
-        public ActionResult OnPostComment(string comment, int inReplytoId)
+        public async Task<ActionResult> OnPostComment(string comment, int poemId, int inReplytoId)
         {
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    
+                    var stringContent = new StringContent(
+                        JsonConvert.SerializeObject
+                        (
+                            new GanjoorCommentPostViewModel()
+                            {
+                                HtmlComment = comment,
+                                InReplyToId = inReplytoId == 0 ? null : inReplytoId,
+                                PoemId = poemId
+                            }
+                        ),
+                        Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync($"{APIRoot.Url}/api/ganjoor/comment", stringContent);
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        GanjoorCommentSummaryViewModel resComment = JsonConvert.DeserializeObject<GanjoorCommentSummaryViewModel>(await response.Content.ReadAsStringAsync());
+
+
+                        return new PartialViewResult()
+                        {
+                            ViewName = "_CommentPartial",
+                            ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                            {
+                                Model = new _CommentPartialModel()
+                                {
+                                    Comment = resComment
+                                }
+                            }
+                        };
+                    }
+                }
+            }
+
+
             return new PartialViewResult()
             {
-                ViewName = "_SpotifySearchPartial",
+                ViewName = "_CommentPartialModel",
                 ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
-                    Model = new _SpotifySearchPartialModel()
+                    Model = new _CommentPartialModel()
                     {
-                        Artists = new GSpotifyProxy.Models.NameIdUrlImage[]{ }
+                        Comment = null
                     }
                 }
             };
