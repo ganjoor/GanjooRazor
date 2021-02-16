@@ -39,6 +39,8 @@
 
                 e.preventDefault(); // avoid to execute the actual submit of the form.
 
+                $('#comment-error').remove();
+
                 var form = $(this);
                 var url = form.attr('action');
 
@@ -49,7 +51,7 @@
                     success: function (data) {
                         $(data).appendTo(parent);
                         $("#commentform")[0].reset();
-                    }
+                    },
                 });
 
             });

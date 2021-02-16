@@ -92,7 +92,7 @@ namespace GanjooRazor.Pages
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        LastError = response.ToString();
+                        LastError = await response.Content.ReadAsStringAsync();
                         return Page();
                     }
 

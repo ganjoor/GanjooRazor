@@ -118,13 +118,20 @@ namespace GanjooRazor.Pages
             return Redirect(Request.Path);
         }
 
+        /// <summary>
+        /// comment
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <param name="poemId"></param>
+        /// <param name="inReplytoId"></param>
+        /// <returns></returns>
         public async Task<ActionResult> OnPostComment(string comment, int poemId, int inReplytoId)
         {
             using (HttpClient client = new HttpClient())
             {
                 if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
                 {
-                    
+
                     var stringContent = new StringContent(
                         JsonConvert.SerializeObject
                         (
@@ -154,21 +161,38 @@ namespace GanjooRazor.Pages
                             }
                         };
                     }
-                }
-            }
-
-
-            return new PartialViewResult()
-            {
-                ViewName = "_CommentPartialModel",
-                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = new _CommentPartialModel()
+                    else
                     {
-                        Comment = null
+                        return new PartialViewResult()
+                        {
+                            ViewName = "_CommentPartial",
+                            ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                            {
+                                Model = new _CommentPartialModel()
+                                {
+                                    Comment = null,
+                                    Error = await response.Content.ReadAsStringAsync()
+                                }
+                            }
+                        };
                     }
                 }
-            };
+                else
+                {
+                    return new PartialViewResult()
+                    {
+                        ViewName = "_CommentPartial",
+                        ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                        {
+                            Model = new _CommentPartialModel()
+                            {
+                                Comment = null,
+                                Error = "لطفا از گنجور خارج و مجددا به آن وارد شوید."
+                            }
+                        }
+                    };
+                }
+            }
         }
 
         /// <summary>
