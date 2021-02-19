@@ -418,6 +418,10 @@ div.n {
     color: #ffffe1
 }
 
+.actionlink {
+    cursor: pointer
+}
+
 textarea {
     background-color: #fc9
 }
