@@ -57,6 +57,26 @@
             });
         }
 
+        function deleteMyComment(commentId) {
+            if (!confirm('آیا از حذف این حاشیه اطمینان دارید؟'))
+                return;
+
+            var url = '?handler=MyComment';
+
+            $.ajax({
+                type: "DELETE",
+                url: url,
+                data: {
+                    id: commentId
+                },
+                success: function () {
+                    var commentBlockId = '#comment-' + commentId;
+                    $(commentBlockId).remove();
+                },
+            });
+
+        }
+
     </script>
 </head>
 <body>

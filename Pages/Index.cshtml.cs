@@ -195,6 +195,19 @@ namespace GanjooRazor.Pages
             }
         }
 
+        public async Task<IActionResult> OnDeleteMyComment(int id)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                   await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment?id={id}");
+
+                }
+            }
+            return await OnGet();
+        }
+
         /// <summary>
         /// is home page
         /// </summary>

@@ -16,7 +16,7 @@ else
     <div class="item" id="comment-@Model.Comment.Id">
         <p>@Model.Comment.AuthorName <small>در @Html.Raw($"{Model.Comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
         @Html.Raw(Model.Comment.HtmlComment)
-        <p><a href="#" class="comments-link" title="حذف حاشیه">🗑</a><a href="/report/?poem_id=0&amp;comment_id=@Model.Comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="گزارش حاشیهٔ نامناسب">⚐</a></p>
+    <p> <a href="#" onclick="deleteMyComment(@Model.Comment.Id)" class="comments-link" title="حذف حاشیه">🗑</a><a href="/report/?poem_id=0&amp;comment_id=@Model.Comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="گزارش حاشیهٔ نامناسب">⚐</a></p>
     </div>
 }
 
