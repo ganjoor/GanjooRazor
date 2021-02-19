@@ -37,11 +37,27 @@ namespace RMuseum.Models.Ganjoor.ViewModels
         /// </summary>
         public string PublishStatus { get; set; }
 
+
+        /// <summary>
+        /// in reply to
+        /// </summary>
+        public int? InReplyToId { get; set; }
+
+        /// <summary>
+        /// User Id
+        /// </summary>
+        public Guid? UserId { get; set; }
+
         /// <summary>
         /// replies
         /// </summary>
 
         public GanjoorCommentSummaryViewModel[] Replies { get; set; }
+
+        /// <summary>
+        /// this can be used by clients
+        /// </summary>
+        public bool MyComment { get; set; }
 
     }
  

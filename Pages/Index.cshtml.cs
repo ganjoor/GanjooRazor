@@ -259,6 +259,35 @@ namespace GanjooRazor.Pages
             }
         }
 
+
+        private void _markMyComments()
+        {
+            if(GanjoorPage == null)
+            {
+                return;
+            }
+            if(GanjoorPage.Poem == null)
+            {
+                return;
+            }
+            if(string.IsNullOrEmpty(Request.Cookies["UserId"]))
+            {
+                return;
+            }
+            if(!Guid.TryParse(Request.Cookies["UserId"], out Guid userId))
+            {
+                return;
+            }
+            if(userId == Guid.Empty)
+            {
+                return;
+            }
+            foreach(GanjoorCommentSummaryViewModel comment in GanjoorPage.Poem.Comments)
+            {
+                comment.MyComment = comment.UserId == userId;
+            }
+        }
+
         /// <summary>
         /// get audio description
         /// </summary>
@@ -338,6 +367,7 @@ namespace GanjooRazor.Pages
                         switch (GanjoorPage.GanjoorPageType)
                         {
                             case GanjoorPageType.PoemPage:
+                                _markMyComments();
                                 _preparePoemExcerpt(GanjoorPage.Poem.Next);
                                 _preparePoemExcerpt(GanjoorPage.Poem.Previous);
                                 GanjoorPage.PoetOrCat = GanjoorPage.Poem.Category;
