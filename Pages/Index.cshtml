@@ -77,6 +77,26 @@
 
         }
 
+        function editMyComment(commentId) {
+            var commentTextBlockId = '#comment-text-' + commentId;
+            $("textarea#editCommentText").val($(commentTextBlockId).html());
+            $("editCommentId").val(commentId);
+            document.getElementById('id02').style.display = 'block';
+        }
+
+        function editComment() {
+            $("#editcommentform").unbind('submit').bind('submit', function (e) {
+
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                
+                alert('edit');
+
+                document.getElementById('id02').style.display = 'none';
+
+            });
+        }
+
     </script>
 </head>
 <body>

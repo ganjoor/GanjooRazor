@@ -367,6 +367,7 @@
                                 @if (comment.MyComment)
                                 {
                                     <a role="button" onclick="deleteMyComment(@comment.Id)" class="actionlink" title="حذف حاشیه">🗑</a>
+                                    <a role="button" onclick="editMyComment(@comment.Id)" class="actionlink" title="ویرایش حاشیه">✎</a>
                                 }
                                 <a href="/report/?poem_id=@Model.GanjoorPage.Id&amp;comment_id=@comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="گزارش حاشیهٔ نامناسب">⚐</a>
                             </p>
@@ -412,6 +413,28 @@
                             </fieldset>
                                
                         </form>
+
+
+                        <div id="id02" class="modal">
+                            <span onclick="document.getElementById('id02').style.display='none'"
+                                  class="close" title="بستن">&times;</span>
+                            <form class="modal-content animate" method="post" id="editcommentform" action="?handler=EditComment">
+                                <table style="max-width:100%; width:100%; margin:0">
+                                    <tr>
+                                        <td>
+                                            <textarea name="editCommentText" id="editCommentText" class="inputTextarea" tabindex="4" rows="10" style="width:100%"></textarea>
+                                            <input type="hidden" name="editCommentId" id="editCommentId" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <button name="editcomment" id="editcomment" class="inputSubmit" onclick="return editComment();" style="width:100%">ویرایش حاشیه</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                                    
+                            </form>
+                        </div>
                     }
                     else
                     {
