@@ -63,10 +63,10 @@ namespace GanjooRazor.Pages
                 Response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
 
                 List<string> permissions = new List<string>();
-                foreach(var securableItem in loggedOnUser.SecurableItem)
+                foreach (var securableItem in loggedOnUser.SecurableItem)
                     foreach (var operation in securableItem.Operations)
                     {
-                        if(operation.Status)
+                        if (operation.Status)
                         {
                             permissions.Add($"{securableItem.ShortName}-{operation.ShortName}");
                         }
@@ -89,7 +89,7 @@ namespace GanjooRazor.Pages
                 return BadRequest();
             }
 
-            if(!string.IsNullOrEmpty(Request.Cookies["SessionId"]) && !string.IsNullOrEmpty(Request.Cookies["UserId"]))
+            if (!string.IsNullOrEmpty(Request.Cookies["SessionId"]) && !string.IsNullOrEmpty(Request.Cookies["UserId"]))
             {
                 using (HttpClient client = new HttpClient())
                 {
@@ -100,7 +100,7 @@ namespace GanjooRazor.Pages
                     }
                 }
             }
-           
+
 
             var cookieOption = new CookieOptions()
             {
@@ -201,7 +201,7 @@ namespace GanjooRazor.Pages
             {
                 if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
                 {
-                   await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment?id={id}");
+                    await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment?id={id}");
 
                 }
             }
@@ -275,27 +275,27 @@ namespace GanjooRazor.Pages
 
         private void _markMyComments()
         {
-            if(GanjoorPage == null)
+            if (GanjoorPage == null)
             {
                 return;
             }
-            if(GanjoorPage.Poem == null)
+            if (GanjoorPage.Poem == null)
             {
                 return;
             }
-            if(string.IsNullOrEmpty(Request.Cookies["UserId"]))
+            if (string.IsNullOrEmpty(Request.Cookies["UserId"]))
             {
                 return;
             }
-            if(!Guid.TryParse(Request.Cookies["UserId"], out Guid userId))
+            if (!Guid.TryParse(Request.Cookies["UserId"], out Guid userId))
             {
                 return;
             }
-            if(userId == Guid.Empty)
+            if (userId == Guid.Empty)
             {
                 return;
             }
-            foreach(GanjoorCommentSummaryViewModel comment in GanjoorPage.Poem.Comments)
+            foreach (GanjoorCommentSummaryViewModel comment in GanjoorPage.Poem.Comments)
             {
                 comment.MyComment = comment.UserId == userId;
             }
@@ -370,13 +370,13 @@ namespace GanjooRazor.Pages
 
                 Poets = JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoetViewModel>>();
 
-                if(!IsHomePage)
+                if (!IsHomePage)
                 {
                     var pageQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/page?url={Request.Path}");
                     if (pageQuery.IsSuccessStatusCode)
                     {
                         GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
-                        GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/");
+                        GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/").Replace("http://ganjoor.net/", "/");
                         switch (GanjoorPage.GanjoorPageType)
                         {
                             case GanjoorPageType.PoemPage:
@@ -396,7 +396,7 @@ namespace GanjooRazor.Pages
                     }
                 }
 
-               
+
             }
 
             if (IsHomePage)
@@ -438,7 +438,7 @@ namespace GanjooRazor.Pages
                 breadCrumbList.AddItem(GanjoorPage.Poem.Title, GanjoorPage.Poem.FullUrl, "https://i.ganjoor.net/poem.png");
 
             }
-            else
+            else if (GanjoorPage != null)
             {
                 if (GanjoorPage.PoetOrCat != null)
                 {
@@ -468,6 +468,10 @@ namespace GanjooRazor.Pages
                     }
                 }
                 breadCrumbList.AddItem(GanjoorPage.Title, GanjoorPage.FullUrl, "https://i.ganjoor.net/cat.png");
+            }
+            else
+            {
+                return RedirectToPage("404");
             }
 
             ViewData["BrearCrumpList"] = breadCrumbList.ToString();

@@ -1,0 +1,108 @@
+﻿@page
+@model GanjooRazor.Pages.SearchModel
+@{
+  Layout = null;
+}
+
+
+
+<!DOCTYPE html>
+<html lang="fa-IR" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>
+    @Html.Raw(ViewData["Title"])
+  </title>
+
+
+  <link href="/dist/skin/blue.monday/css/jplayer.blue.monday.min.css" rel="stylesheet" type="text/css" />
+  <link href="/css/p5.css" rel="stylesheet" type="text/css" />
+  <link href="/css/fab.css" rel="stylesheet" type="text/css" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="search" type="application/opensearchdescription+xml" title="گنجور" href="https://ganjoor.net/search.xml" />
+
+</head>
+<body>
+
+
+  <script src="/lib/jquery/dist/jquery.min.js"></script>
+  <script src="/js/be.js"></script>
+  <script src="/js/vaabc.js"></script>
+
+
+  <div id="hdr">
+    <h1><a href="/" title="گنجور"><img src="/image/gm.gif" alt="گنجور" style="width:auto;margin:auto;" /></a></h1>
+  </div>
+
+  <div id="fa">
+    <h2>
+      آثار سخنسرایان پارسی‌گو
+    </h2>
+
+    <div class="actionbox">
+      <form action="/search" method="get" id="searchhorm">
+        <label for="s">جستجو:</label>
+
+
+        <input type="text" name="s" id="s" class="inputText" size="35" value="@Model.Query" />
+        <select name="author" id="author">
+          <option value="0" selected="selected">در آثار همه شاعران</option>
+          @{
+            foreach (RMuseum.Models.Ganjoor.ViewModels.GanjoorPoetViewModel poet in Model.Poets)
+            {
+              if (poet.Id == Model.AuthorId)
+              {
+                <option value="@poet.Id" selected="selected">@Html.Raw(poet.Name)</option>
+              }
+              else
+              {
+                <option value="@poet.Id">@poet.Name</option>
+              }
+            }
+          }
+        </select>
+        <input type="submit" value="بیاب" />
+      </form>
+    </div>
+
+
+    <div id="maincnt">
+
+      <div class="spacer">&nbsp;</div>
+
+      @foreach (var verse in Model.Verses)
+      {
+
+        <div class="sitem">
+          <h2>
+            <a href="@verse.PoemFullUrl">@verse.PoemFullTitle</a>
+          </h2>
+          <div class="spacer">&nbsp;</div>
+          <div class="sit">
+
+            @Html.Raw(verse.Text)
+
+            <p>
+              <br>
+              <a href="@verse.PoemFullUrl">متن کامل شعر را ببینید ...</a>
+            </p>
+          </div>
+
+          <img src="/image/poets/@(verse.PoetId).png" />
+
+          <div class="spacer">&nbsp;</div>
+        </div>
+      }
+
+      <div class="spacer">&nbsp;</div>
+
+    </div>
+
+    <partial name="_FooterPartial" model="null" />
+
+  </div>
+
+</body>
+</html>
+
