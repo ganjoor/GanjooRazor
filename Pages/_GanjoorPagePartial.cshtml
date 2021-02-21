@@ -360,7 +360,9 @@
                         {
                         <div class="item" id="comment-@comment.Id">
                             <p>@comment.AuthorName <small>در @Html.Raw($"{comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
-                            @Html.Raw(comment.HtmlComment)
+                            <div id="comment-text-@comment.Id">
+                                @Html.Raw(comment.HtmlComment)
+                            </div>
                             <p>
                                 @if (comment.MyComment)
                                 {
