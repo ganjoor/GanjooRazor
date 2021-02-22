@@ -80,7 +80,7 @@
         function editMyComment(commentId) {
             var commentTextBlockId = '#comment-text-' + commentId;
             $("textarea#editCommentText").val($(commentTextBlockId).html());
-            $("editCommentId").val(commentId);
+            $("#editCommentId").val(commentId);
             document.getElementById('id02').style.display = 'block';
         }
 
@@ -89,10 +89,30 @@
 
                 e.preventDefault(); // avoid to execute the actual submit of the form.
 
-                
-                alert('edit');
+                var url = '?handler=MyComment';
 
-                document.getElementById('id02').style.display = 'none';
+                var commentId = $("#editCommentId").val();
+
+
+                $.ajax({
+                    type: "PUT",
+                    url: url,
+                    data: {
+                        id: commentId,
+                        comment: $("textarea#editCommentText").val()
+                    },
+                    success: function () {
+                        document.getElementById('id02').style.display = 'none';
+
+                        var commentTextBlockId = '#comment-text-' + commentId;
+
+                        $(commentTextBlockId).html($("textarea#editCommentText").val());
+                    },
+                    
+                });
+               
+
+               
 
             });
         }

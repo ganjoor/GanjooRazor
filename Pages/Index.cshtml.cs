@@ -201,8 +201,29 @@ namespace GanjooRazor.Pages
             {
                 if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
                 {
-                    await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment?id={id}");
+                    var response  = await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment?id={id}");
 
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");
+                    }
+
+                }
+            }
+            return await OnGet();
+        }
+
+        public async Task<IActionResult> OnPutMyComment(int id, string comment)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var response = await client.PutAsync($"{APIRoot.Url}/api/ganjoor/comment/{id}", new StringContent(JsonConvert.SerializeObject(comment), Encoding.UTF8, "application/json"));
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");
+                    }
                 }
             }
             return await OnGet();
