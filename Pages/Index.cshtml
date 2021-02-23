@@ -79,7 +79,7 @@
 
         function editMyComment(commentId) {
             var commentTextBlockId = '#comment-text-' + commentId;
-            $("textarea#editCommentText").val($(commentTextBlockId).html());
+            tinymce.get('editCommentText').setContent($(commentTextBlockId).html());
             $("#editCommentId").val(commentId);
             document.getElementById('id02').style.display = 'block';
         }
@@ -108,16 +108,18 @@
 
                         $(commentTextBlockId).html($("textarea#editCommentText").val());
                     },
-                    
-                });
-               
 
-               
+                });
+
+
+
 
             });
         }
 
     </script>
+    <script src="/lib/tinymce/tinymce.min.js"></script>
+    <script>tinymce.init({ selector: 'textarea', language: 'fa_IR' });</script>
 </head>
 <body>
 
