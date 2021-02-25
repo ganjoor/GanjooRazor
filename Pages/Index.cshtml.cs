@@ -352,7 +352,7 @@ namespace GanjooRazor.Pages
                 }
             }
 
-            audiodesc += $" <small><a href='https://ganjoor.net/audioclip/?a={recitation.Id}' onclick='wpopen(this.href); return false' class='comments-link' title='دریافت'>(دریافت)</a></small>";
+            audiodesc += $" <small><a href='/AudioClip/?a={recitation.Id}' onclick='wpopen(this.href); return false' class='comments-link' title='دریافت'>(دریافت)</a></small>";
 
             if (contributionLink)
             {
