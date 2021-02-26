@@ -38,10 +38,10 @@ namespace GanjooRazor.Pages
 
                 Recitation = JsonConvert.DeserializeObject<PublicRecitationViewModel>(await response.Content.ReadAsStringAsync());
 
-                var responsePoem = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{Recitation.PoemId}");
+                var responsePoem = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{Recitation.PoemId}?rhymes=false&recitations=false&images=false&songs=false&comments=false&navigation=false");
                 responsePoem.EnsureSuccessStatusCode();
 
-                Poem = JsonConvert.DeserializeObject<GanjoorPoemCompleteViewModel>(await response.Content.ReadAsStringAsync());
+                Poem = JsonConvert.DeserializeObject<GanjoorPoemCompleteViewModel>(await responsePoem.Content.ReadAsStringAsync());
 
             }
 
