@@ -287,9 +287,13 @@
                                     <text> | <small>🔍 <a href="@Html.Raw($"/simi/?v={Uri.EscapeUriString(Model.GanjoorPage.Poem.GanjoorMetre.Rhythm)}&amp;g={Uri.EscapeUriString(Model.GanjoorPage.Poem.RhymeLetters)}")">شعرهای مشابه (وزن و قافیه)</a></small></text>
                                 }
                             }
+                            @if (!string.IsNullOrEmpty(Model.GanjoorPage.Poem.OldTag))
+                            {
+                                <text> | <small><a href="@Html.Raw($"{Model.GanjoorPage.Poem.OldTagPageUrl}/")">@Html.Raw(Model.GanjoorPage.Poem.OldTag)</a></small></text>
+                            }
                             @if (!string.IsNullOrEmpty(Model.GanjoorPage.Poem.SourceName))
                             {
-                                <text> |<small>منبع اولیه: <a href="@Html.Raw($"/sources/{Model.GanjoorPage.Poem.SourceUrlSlug}/")">@Html.Raw(Model.GanjoorPage.Poem.SourceName)</a></small></text>
+                                <text> | <small>منبع اولیه: <a href="@Html.Raw($"/sources/{Model.GanjoorPage.Poem.SourceUrlSlug}/")">@Html.Raw(Model.GanjoorPage.Poem.SourceName)</a></small></text>
                             }
                             | <small><a href="@Html.Raw($"http://www.facebook.com/sharer.php?u=https://ganjoor.net{Model.GanjoorPage.FullUrl}&amp;t={Uri.EscapeUriString(Model.GanjoorPage.FullTitle)}/")">ارسال به فیس‌بوک</a></small>
                         </p>
