@@ -36,6 +36,13 @@
                                 <a class="nav-link text-dark" asp-area="User" asp-page="/ReviewSongs">آهنگ‌ها</a>
                             </li>
                         }
+
+                        @if (ViewData.ContainsKey("ganjoor-moderate"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="User" asp-page="/ReportedComments">حاشیه‌های گزارش شده</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
