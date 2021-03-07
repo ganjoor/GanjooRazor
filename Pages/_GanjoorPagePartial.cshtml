@@ -373,7 +373,7 @@
                                     <a role="button" onclick="deleteMyComment(@comment.Id)" class="actionlink" title="حذف حاشیه">🗑</a>
                                     <a role="button" onclick="editMyComment(@comment.Id)" class="actionlink" title="ویرایش حاشیه">✎</a>
                                 }
-                                <a href="/report/?poem_id=@Model.GanjoorPage.Id&amp;comment_id=@comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="گزارش حاشیهٔ نامناسب">⚐</a>
+                                <a href="/ReportComment/?CommentId=@comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="گزارش حاشیهٔ نامناسب">⚐</a>
                             </p>
                         </div>
                         }
