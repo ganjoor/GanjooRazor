@@ -201,29 +201,8 @@ namespace GanjooRazor.Pages
             {
                 if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
                 {
-                    var response  = await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment?id={id}");
+                    await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment?id={id}");
 
-                    if (response.StatusCode != HttpStatusCode.OK)
-                    {
-                        return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");
-                    }
-
-                }
-            }
-            return await OnGet();
-        }
-
-        public async Task<IActionResult> OnPutMyComment(int id, string comment)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
-                {
-                    var response = await client.PutAsync($"{APIRoot.Url}/api/ganjoor/comment/{id}", new StringContent(JsonConvert.SerializeObject(comment), Encoding.UTF8, "application/json"));
-                    if (response.StatusCode != HttpStatusCode.OK)
-                    {
-                        return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");
-                    }
                 }
             }
             return await OnGet();
@@ -352,7 +331,7 @@ namespace GanjooRazor.Pages
                 }
             }
 
-            audiodesc += $" <small><a href='/AudioClip/?a={recitation.Id}' onclick='wpopen(this.href); return false' class='comments-link' title='دریافت'>(دریافت)</a></small>";
+            audiodesc += $" <small><a href='https://ganjoor.net/audioclip/?a={recitation.Id}' onclick='wpopen(this.href); return false' class='comments-link' title='دریافت'>(دریافت)</a></small>";
 
             if (contributionLink)
             {
