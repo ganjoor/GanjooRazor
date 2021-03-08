@@ -15,8 +15,6 @@
     @Html.Raw(ViewData["Title"])
   </title>
 
-
-  <link href="/dist/skin/blue.monday/css/jplayer.blue.monday.min.css" rel="stylesheet" type="text/css" />
   <link href="/css/p5.css" rel="stylesheet" type="text/css" />
   <link href="/css/fab.css" rel="stylesheet" type="text/css" />
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -96,6 +94,8 @@
       }
 
       <div class="spacer">&nbsp;</div>
+
+      @Html.Raw(Model.PagingToolsHtml)
 
     </div>
 
