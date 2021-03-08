@@ -1,6 +1,11 @@
+﻿using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using RMuseum.Models.Ganjoor.ViewModels;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace GanjooRazor.Pages
 {
@@ -47,10 +52,37 @@ namespace GanjooRazor.Pages
             {
                 Report.CommentId = 0;
             }
+        }
 
-            
+        public async Task<IActionResult> OnPostAsync()
+        {
+            PostSuccess = false;
+            LastError = "";
+            LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
 
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var stringContent = new StringContent(JsonConvert.SerializeObject(Report), Encoding.UTF8, "application/json");
+                    var methodUrl = $"{APIRoot.Url}/api/ganjoor/comment/report";
+                    var response = await client.PostAsync(methodUrl, stringContent);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        LastError = await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        PostSuccess = true;
+                    }
+                }
+                else
+                {
+                    LastError = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
+                }
+            }
 
+            return Page();
         }
     }
 }
