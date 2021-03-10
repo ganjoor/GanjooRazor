@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DNTPersianUtils.Core;
 using GanjooRazor.Utils;
 using GSpotifyProxy.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -33,7 +35,7 @@ namespace GanjooRazor.Areas.User.Pages
         public List<NameIdUrlImage> PaginationLinks { get; set; }
 
         
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             LastError = "";
             using (HttpClient client = new HttpClient())
@@ -49,7 +51,7 @@ namespace GanjooRazor.Areas.User.Pages
                         if (!response.IsSuccessStatusCode)
                         {
                             LastError = await response.Content.ReadAsStringAsync();
-                            return;
+                            return Page();
                         }
                         response.EnsureSuccessStatusCode();
 
@@ -127,6 +129,26 @@ namespace GanjooRazor.Areas.User.Pages
 
                     }
                 }
-        }       
+            return Page();
+        }
+
+
+        public async Task<IActionResult> OnDeleteComment(int id)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var response = await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment/moderate?id={id}&reason=''");
+
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");
+                    }
+
+                }
+            }
+            return await OnGetAsync();
+        }
     }
 }

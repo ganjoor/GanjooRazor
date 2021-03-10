@@ -13,6 +13,27 @@
     <link href="/css/fab.css" rel="stylesheet" type="text/css" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="search" type="application/opensearchdescription+xml" title="گنجور" href="https://ganjoor.net/search.xml" />
+    <script>
+        function deleteComment(commentId, reason) {
+            if (!confirm('آیا از حذف این حاشیه اطمینان دارید؟'))
+                return;
+
+            var url = '?handler=Comment';
+
+            $.ajax({
+                type: "DELETE",
+                url: url,
+                data: {
+                    id: commentId
+                },
+                success: function () {
+                    var commentBlockId = '#comment-' + commentId;
+                    $(commentBlockId).remove();
+                },
+            });
+
+        }
+    </script>
 </head>
 
 <body>
