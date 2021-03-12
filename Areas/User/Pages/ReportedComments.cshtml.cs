@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,9 +12,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Ganjoor.ViewModels;
 using RSecurityBackend.Models.Generic;
+using System.Text;
 
 namespace GanjooRazor.Areas.User.Pages
 {
+    [IgnoreAntiforgeryToken(Order = 1001)]
     public class ReportedCommentsModel : PageModel
     {
         /// <summary>
@@ -129,17 +130,51 @@ namespace GanjooRazor.Areas.User.Pages
 
                     }
                 }
+            else
+                {
+                    LastError = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
+                }
             return Page();
         }
 
-
-        public async Task<IActionResult> OnDeleteComment(int id)
+        public async Task<IActionResult> OnPostModerateComment(int id, string reasonCode, string reasonText)
         {
             using (HttpClient client = new HttpClient())
             {
                 if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
                 {
-                    var response = await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment/moderate?id={id}&reason=''");
+                    string reason;
+                    switch(reasonCode)
+                    {
+                        case "offensive":
+                            reason = "توهین آمیز است. " + reasonText;
+                            break;
+                        case "bogus":
+                            reason = "نامفهوم است. " + reasonText;
+                            break;
+                        default:
+                            reason = reasonText;
+                            break;
+                    }
+                    var response = await client.PostAsync($"{APIRoot.Url}/api/ganjoor/comment/moderate/{id}", new StringContent(JsonConvert.SerializeObject(reason), Encoding.UTF8, "application/json"));
+
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");
+                    }
+
+                }
+            }
+            return await OnGetAsync();
+        }
+
+        public async Task<IActionResult> OnDeleteReport(int id)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var response = await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment/report/{id}");
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {

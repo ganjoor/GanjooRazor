@@ -35,23 +35,25 @@ else
         else
             color = "gray";
 
-        <div style="background-color:@color" id="comment-@report.Comment.Id">
-            <p style="color:red">
-                @report.ReasonCode
-            </p>
-            <hr />
-            <p style="color:red">
-                @report.ReasonText
-            </p>
-            <hr />
-            <blockquote>
-                @Html.Raw(report.Comment.HtmlComment)
-                <p>
-                    @report.Comment.AuthorName <small>در @report.Comment.CommentDate.ToFriendlyPersianDateTextify()</small> دربارهٔ <a href="@report.Comment.Poem.UrlSlug">@report.Comment.Poem.Title</a>
-                </p>
-            </blockquote>
-            <a role="button" onclick="deleteComment(@report.Comment.Id, '@report.ReasonCode')" class="actionlink" title="حذف حاشیه">🗑</a>
-        </div>
+<div style="background-color:@color" id="comment-@report.Comment.Id">
+    <p style="color:red">
+        @report.ReasonCode
+    </p>
+    <hr />
+    <p style="color:red">
+        @report.ReasonText
+    </p>
+    <hr />
+    <blockquote>
+        @Html.Raw(report.Comment.HtmlComment)
+        <p>
+            @report.Comment.AuthorName <small>در @report.Comment.CommentDate.ToFriendlyPersianDateTextify()</small> دربارهٔ <a href="@report.Comment.Poem.UrlSlug">@report.Comment.Poem.Title</a>
+        </p>
+    </blockquote>
+    <a role="button" onclick="deleteComment(@report.Comment.Id, '@report.ReasonCode', '@report.ReasonText')" class="actionlink" style="color:green" title="تأیید و حذف حاشیه">✓ درست می‌گوید</a>
+    &nbsp;&nbsp;&nbsp;
+    <a role="button" onclick="deleteReport(@report.Id, @report.Comment.Id)" class="actionlink" style="color:red" title="حذف گزارش">گزارش نابجا ❌</a>
+</div>
 
 
         <hr />
