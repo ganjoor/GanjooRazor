@@ -359,95 +359,116 @@
                                 break;
                         }
 
-                    <div id="comments-block">
-                        @foreach (var comment in Model.GanjoorPage.Poem.Comments)
-                        {
-                        <div class="item" id="comment-@comment.Id">
-                            <p>@comment.AuthorName <small>در @Html.Raw($"{comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
-                            <div id="comment-text-@comment.Id">
-                                @Html.Raw(comment.HtmlComment)
-                            </div>
-                            <p>
-                                @if (comment.MyComment)
-                                {
-                                    <a role="button" onclick="deleteMyComment(@comment.Id)" class="actionlink" title="حذف حاشیه">🗑</a>
-                                    <a role="button" onclick="editMyComment(@comment.Id)" class="actionlink" title="ویرایش حاشیه">✎</a>
-                                }
-                                <a href="/ReportComment/?CommentId=@comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="گزارش حاشیهٔ نامناسب">⚐</a>
-                            </p>
-                        </div>
-                        }
-                    </div>
-                                      
-
-                    @if (Model.LoggedIn)
-                    {
-                            
-                        <form method="post" id="commentform" action="?handler=Comment">
-                            <fieldset>
-                                <legend>💬 شما حاشیه بگذارید ...</legend>
-                                <table style="max-width:100%; width:100%; margin:0">
-                                    <tr>
-                                        <td>
-                                            <div class="required">
-                                                <textarea name="comment" id="comment" class="inputTextarea" tabindex="4" rows="10" style="width:100%"></textarea>
-                                            </div>
-                                            <input type="hidden" name="poemId" id="poemId" value="@Model.GanjoorPage.Id" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button name="postcomment" id="postcomment" class="inputSubmit" onclick="return postComment(document.getElementById('comments-block'));" style="width:100%">درج حاشیه</button>
-                                        </td>
-                                    </tr>
-                                </table>
-                                    
-                                   
-                                <div class="notice">
+                        <div id="comments-block">
+                            @foreach (var comment in Model.GanjoorPage.Poem.Comments)
+                            {
+                                <div class="item" id="comment-@comment.Id">
+                                    <p>@comment.AuthorName <small>در @Html.Raw($"{comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
+                                    <div id="comment-text-@comment.Id">
+                                        @Html.Raw(comment.HtmlComment)
+                                    </div>
                                     <p>
-                                        لطفاً توجه داشته باشید که حاشیه‌ها برای ثبت نظرات شما راجع به <strong>همین شعر</strong> در نظر گرفته شده‌اند. در صورتی که در متن ثبت شده‌ی شعر در گنجور غلط املایی مشاهده کردید، یا با مقابله با نسخه‌ی چاپی در دسترستان اشتباهاتی یافتید، در مورد این شعر نظر یا احساس خاصی دارید یا مطلب خاصی در مورد آن می‌دانید یا دوست دارید درباره‌ی آن از دیگران چیزی بپرسید یک حاشیه برای آن بنویسید. <span style="color:#f00">لطفاً از درج مطالب غیرمرتبط با متن این شعر خاص خودداری فرمایید</span> و حتی‌الامکان سعی کنید متن حاشیه‌ی خود را با حروف فارسی درج کنید (حاشیه‌ها بازبینی خواهند شد و موارد غیرمرتبط و ناقض این نکات حذف می‌شوند).
-                                    </p>
-                                    <p>
-                                        <span style="color:#f00">بحثهای مذهبی و اعتقادی و ارجاع توهین‌آمیز نسبت به بزرگان ادیان و همینطور بحثهای قومیتی و توهین به فرهنگها و قومیتها و زبانها از مصادیق حاشیه‌های نامناسب محسوب می‌شوند.</span>
-                                    </p>
-                                    <p>
-                                        <span style="color:#0a0">لطفاً در صورتی که اشتباهات را با استناد به نسخه‌های چاپی گزارش می‌کنید این مسئله را (حتی‌الامکان با ذکر نام مصحح) ذکر نمایید تا بتوانیم بین پیشنهادهای تصحیحی حدسی حاشیه‌گذاران و پیشنهادهای مستند تمایز قایل شویم.</span>
+                                        @if (comment.MyComment)
+                                        {
+                                            <a role="button" onclick="deleteMyComment(@comment.Id)" class="actionlink" title="حذف حاشیه">🗑</a>
+                                            <a role="button" onclick="editMyComment(@comment.Id)" class="actionlink" title="ویرایش حاشیه">✎</a>
+                                        }
+                                        <a href="/ReportComment/?CommentId=@comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="گزارش حاشیهٔ نامناسب">⚐</a>
                                     </p>
                                 </div>
-                            </fieldset>
-                               
-                        </form>
-
-
-                        <div id="id02" class="modal">
-                            <span onclick="document.getElementById('id02').style.display='none'"
-                                  class="close" title="بستن">&times;</span>
-                            <form class="modal-content animate" method="post" id="editcommentform" action="?handler=EditComment">
-                                <table style="max-width:100%; width:100%; margin:0">
-                                    <tr>
-                                        <td>
-                                            <textarea name="editCommentText" id="editCommentText" class="inputTextarea" tabindex="4" rows="10" style="width:100%"></textarea>
-                                            <input type="hidden" name="editCommentId" id="editCommentId" value="" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button name="editcomment" id="editcomment" class="inputSubmit" onclick="return editComment();" style="width:100%">ویرایش حاشیه</button>
-                                        </td>
-                                    </tr>
-                                </table>
-                                    
-                            </form>
+                            }
                         </div>
-                    }
-                    else
-                    {
-                        <p id="commentform">برای حاشیه‌گذاری باید در گنجور ثبت نام کنید و با نام کاربری خود به آن وارد شوید.</p>
-                    }
+
+
+                        @if (Model.LoggedIn)
+                        {
+
+                            <form method="post" id="commentform" action="?handler=Comment">
+                                <fieldset>
+                                    <legend>💬 شما حاشیه بگذارید ...</legend>
+                                    <table style="max-width:100%; width:100%; margin:0">
+                                        <tr>
+                                            <td>
+                                                <div class="required">
+                                                    <textarea name="comment" id="comment" class="inputTextarea" tabindex="4" rows="10" style="width:100%"></textarea>
+                                                </div>
+                                                <input type="hidden" name="poemId" id="poemId" value="@Model.GanjoorPage.Id" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <button name="postcomment" id="postcomment" class="inputSubmit" onclick="return postComment(document.getElementById('comments-block'));" style="width:100%">درج حاشیه</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+
+                                    <div class="notice">
+                                        <p>
+                                            لطفاً توجه داشته باشید که حاشیه‌ها برای ثبت نظرات شما راجع به <strong>همین شعر</strong> در نظر گرفته شده‌اند. در صورتی که در متن ثبت شده‌ی شعر در گنجور غلط املایی مشاهده کردید، یا با مقابله با نسخه‌ی چاپی در دسترستان اشتباهاتی یافتید، در مورد این شعر نظر یا احساس خاصی دارید یا مطلب خاصی در مورد آن می‌دانید یا دوست دارید درباره‌ی آن از دیگران چیزی بپرسید یک حاشیه برای آن بنویسید. <span style="color:#f00">لطفاً از درج مطالب غیرمرتبط با متن این شعر خاص خودداری فرمایید</span> و حتی‌الامکان سعی کنید متن حاشیه‌ی خود را با حروف فارسی درج کنید (حاشیه‌ها بازبینی خواهند شد و موارد غیرمرتبط و ناقض این نکات حذف می‌شوند).
+                                        </p>
+                                        <p>
+                                            <span style="color:#f00">بحثهای مذهبی و اعتقادی و ارجاع توهین‌آمیز نسبت به بزرگان ادیان و همینطور بحثهای قومیتی و توهین به فرهنگها و قومیتها و زبانها از مصادیق حاشیه‌های نامناسب محسوب می‌شوند.</span>
+                                        </p>
+                                        <p>
+                                            <span style="color:#0a0">لطفاً در صورتی که اشتباهات را با استناد به نسخه‌های چاپی گزارش می‌کنید این مسئله را (حتی‌الامکان با ذکر نام مصحح) ذکر نمایید تا بتوانیم بین پیشنهادهای تصحیحی حدسی حاشیه‌گذاران و پیشنهادهای مستند تمایز قایل شویم.</span>
+                                        </p>
+                                    </div>
+                                </fieldset>
+
+                            </form>
+
+
+                            <div id="id02" class="modal">
+                                <span onclick="document.getElementById('id02').style.display='none'"
+                                      class="close" title="بستن">&times;</span>
+                                <form class="modal-content animate" method="post" id="editcommentform" action="?handler=EditComment">
+                                    <table style="max-width:100%; width:100%; margin:0">
+                                        <tr>
+                                            <td>
+                                                <textarea name="editCommentText" id="editCommentText" class="inputTextarea" tabindex="4" rows="10" style="width:100%"></textarea>
+                                                <input type="hidden" name="editCommentId" id="editCommentId" value="" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <button name="editcomment" id="editcomment" class="inputSubmit" onclick="return editComment();" style="width:100%">ویرایش حاشیه</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <p id="commentform">برای حاشیه‌گذاری باید در گنجور ثبت نام کنید و با نام کاربری خود به آن وارد شوید.</p>
+                        }
 
                     </div> <!-- <div id="comments"> -->
                 }
 
+
+                if (Model.GanjoorPage.Previous != null || Model.GanjoorPage.Next != null)
+                {
+                    <nav>
+                        <div class="spacer">&nbsp;</div>
+                        <div class="navigation">
+                            <div class="navleft">
+                                @if (Model.GanjoorPage.Next != null)
+                                {
+                                    <a href="@Html.Raw(Model.GanjoorPage.Next.FullUrl)">@Html.Raw(Model.GanjoorPage.Next.Title)</a><span> &raquo;</span>
+                                }
+                            </div>
+                            <div class="navright">
+                                @if (Model.GanjoorPage.Previous != null)
+                                {
+                                    <span>&laquo; </span><a href="@Html.Raw(Model.GanjoorPage.Previous.FullUrl)">@Html.Raw(Model.GanjoorPage.Previous.Title)</a>
+                                }
+                            </div>
+                        </div>
+                    </nav>
+                }
 
 
             }
