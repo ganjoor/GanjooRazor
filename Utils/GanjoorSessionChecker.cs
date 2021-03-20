@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
+using RSecurityBackend.Models.Auth.Memory;
 using RSecurityBackend.Models.Auth.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -59,17 +59,8 @@ namespace GanjooRazor.Utils
                 response.Cookies.Append("Token", loggedOnUser.Token, cookieOption);
                 response.Cookies.Append("Username", loggedOnUser.User.Username, cookieOption);
                 response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
+                response.Cookies.Append("NickName", $"{loggedOnUser.User.NickName}", cookieOption);
 
-                List<string> permissions = new List<string>();
-                foreach (var securableItem in loggedOnUser.SecurableItem)
-                    foreach (var operation in securableItem.Operations)
-                    {
-                        if (operation.Status)
-                        {
-                            permissions.Add($"{securableItem.ShortName}-{operation.ShortName}");
-                        }
-                    }
-                response.Cookies.Append("Permissions", JsonConvert.SerializeObject(permissions.ToArray()), cookieOption);
 
                 return true;
 
@@ -84,15 +75,37 @@ namespace GanjooRazor.Utils
         /// <param name="secuableShortName"></param>
         /// <param name="operationShortName"></param>
         /// <returns></returns>
-        public static bool IsPermitted(HttpRequest request, string secuableShortName, string operationShortName)
+        public static async Task<bool> IsPermitted(HttpRequest request, HttpResponse response, string secuableShortName, string operationShortName)
         {
-            string json = request.Cookies["Permissions"];
 
-            if (string.IsNullOrEmpty(json))
-                return false;
+            using (HttpClient client = new HttpClient())
+            {
+                if (await PrepareClient(client, request, response))
+                {
+                    var res = await client.GetAsync($"{APIRoot.Url}/api/users/securableitems");
+                    if (!res.IsSuccessStatusCode)
+                    {
+                        return false;
+                    }
 
-            string[] permissions = JsonConvert.DeserializeObject<string[]>(json);
-            return permissions.Where(p => p == $"{secuableShortName}-{operationShortName}").SingleOrDefault() != null;
+                    SecurableItem[] secuarbleItems = JsonConvert.DeserializeObject<SecurableItem[]>(await res.Content.ReadAsStringAsync());
+                    var secuarbleItem = secuarbleItems.Where(s => s.ShortName == secuableShortName).SingleOrDefault();
+
+                    if (secuarbleItem == null)
+                        return false;
+
+                    var operation = secuarbleItem.Operations.Where(o => o.ShortName == operationShortName).SingleOrDefault();
+                    if (operation == null)
+                        return false;
+
+                    return operation.Status;
+
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         /// <summary>
@@ -100,17 +113,27 @@ namespace GanjooRazor.Utils
         /// </summary>
         /// <param name="request"></param>
         /// <param name="viewData"></param>
-        public static void ApplyPermissionsToViewData(HttpRequest request, ViewDataDictionary viewData)
+        public static async Task ApplyPermissionsToViewData(HttpRequest request, HttpResponse response, ViewDataDictionary viewData)
         {
-            string json = request.Cookies["Permissions"];
-
-            if (string.IsNullOrEmpty(json))
-                return;
-
-            string[] permissions = JsonConvert.DeserializeObject<string[]>(json);
-            foreach(string permission in permissions)
+            using (HttpClient client = new HttpClient())
             {
-                viewData[permission] = true;
+                if (await PrepareClient(client, request, response))
+                {
+                    var res = await client.GetAsync($"{APIRoot.Url}/api/users/securableitems");
+                    if (!res.IsSuccessStatusCode)
+                    {
+                        return;
+                    }
+
+                    SecurableItem[] secuarbleItems = JsonConvert.DeserializeObject<SecurableItem[]>(await res.Content.ReadAsStringAsync());
+                   
+                    foreach(SecurableItem securableItem in secuarbleItems)
+                        foreach(SecurableItemOperation operation in securableItem.Operations)
+                            if(operation.Status)
+                                viewData[$"{securableItem.ShortName}-{operation.ShortName}"] = true;
+
+                }
+                
             }
         }
     }

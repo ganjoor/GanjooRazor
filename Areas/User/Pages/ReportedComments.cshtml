@@ -4,7 +4,7 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = "حاشیه‌های گزارش شده";
-    GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, ViewData);
+    await GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, Response, ViewData);
     string color = "gray";
 }
 <h1>@ViewData["Title"]</h1>
