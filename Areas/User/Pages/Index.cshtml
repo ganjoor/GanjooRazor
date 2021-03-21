@@ -1,8 +1,73 @@
 ﻿@page
 @model GanjooRazor.Areas.Panel.Pages.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = "_Layout";
     ViewData["Title"] = "پیشخان کاربر";
     await GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, Response, ViewData);
 }
 <h1>@ViewData["Title"]</h1>
+@if (Model.LastError != "")
+{
+    <h2>@Model.LastError</h2>
+}
+else
+{
+    <form method="post">
+        <table style="width:100%" class="noborder">
+            <tr>
+                <td colspan="2">
+                    <h2>تغییر مشخصات</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel">نام: </span>
+                </td>
+                <td>
+                    <input style="width:100%" asp-for="UserInfo.FirstName" /><br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel">نام خانوادگی: </span>
+                </td>
+                <td>
+                    <input style="width:100%" asp-for="UserInfo.SureName" /><br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel">نام مستعار (نمایش در حاشیه‌ها): </span>
+                </td>
+                <td>
+                    <input style="width:100%" asp-for="UserInfo.NickName" /><br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel"><a target="_blank" href="@Html.Raw(Model.UserInfo.Website)">وبگاه:</a></span>
+                </td>
+                <td>
+                    <input style="width:100%;text-align:left;direction:ltr;" asp-for="UserInfo.Website" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel">دربارهٔ من: </span>
+                </td>
+                <td>
+                    <textarea asp-for="UserInfo.Bio"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <button type="submit" name="approve" id="approve" style="width:100%;color:white;background-color:green">ذخیره</button>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+}
