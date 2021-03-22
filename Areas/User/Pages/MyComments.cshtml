@@ -1,0 +1,64 @@
+﻿@page
+@model GanjooRazor.Areas.User.Pages.MyCommentsModel
+@using DNTPersianUtils.Core
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "حاشیه‌های من";
+    await GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, Response, ViewData);
+    string color = "gray";
+}
+<h1>@ViewData["Title"]</h1>
+@if (Model.LastError != "")
+{
+    <h2>@Model.LastError</h2>
+}
+else
+{
+    <p style="text-align:center">
+        @foreach (var paginationLink in Model.PaginationLinks)
+        {
+            if (!string.IsNullOrEmpty(paginationLink.Url))
+            {
+                <a href="@paginationLink.Url">@paginationLink.Name</a>
+            }
+            else
+            {
+                @paginationLink.Name
+            }
+        }
+    </p>
+
+    @foreach (var comment in Model.Comments)
+    {
+        if (color == "gray")
+            color = "white";
+        else
+            color = "gray";
+
+        <div style="background-color:@color" id="comment-@comment.Id">
+            <blockquote>
+                @Html.Raw(comment.HtmlComment)
+                <p>
+                    @comment.AuthorName <small>در @comment.CommentDate.ToFriendlyPersianDateTextify()</small> دربارهٔ <a href="@comment.Poem.UrlSlug">@comment.Poem.Title</a>
+                </p>
+            </blockquote>
+        </div>
+
+
+        <hr />
+    }
+
+    <p style="text-align:center">
+        @foreach (var paginationLink in Model.PaginationLinks)
+        {
+            if (!string.IsNullOrEmpty(paginationLink.Url))
+            {
+                <a href="@paginationLink.Url">@paginationLink.Name</a>
+            }
+            else
+            {
+                @paginationLink.Name
+            }
+        }
+    </p>
+}
