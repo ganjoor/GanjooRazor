@@ -202,7 +202,7 @@ namespace GanjooRazor.Pages
 
                 }
             }
-            return await OnGet();
+            return new JsonResult(true);
         }
 
         public async Task<IActionResult> OnPutMyComment(int id, string comment)
@@ -218,7 +218,7 @@ namespace GanjooRazor.Pages
                     }
                 }
             }
-            return await OnGet();
+            return new JsonResult(true);
         }
 
         /// <summary>
