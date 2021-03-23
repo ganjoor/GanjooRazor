@@ -13,7 +13,50 @@
 }
 else
 {
-    <form method="post">
+    <form method="post" asp-page-handler="SetMyPass">
+        <table style="width:100%" class="noborder">
+            <tr>
+                <td colspan="2">
+                    <h2>تغییر گذرواژه</h2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel">گذرواژهٔ کنونی: </span>
+                </td>
+                <td>
+                    <input type="password" style="width:100%" asp-for="ChangePasswordModel.OldPassword" /><br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel">گذرواژهٔ جدید: </span>
+                </td>
+                <td>
+                    <input type="password" style="width:100%" asp-for="ChangePasswordModel.NewPassword" /><br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="inputlabel">تکرار گذرواژهٔ جدید: </span>
+                </td>
+                <td>
+                    <input type="password" style="width:100%" asp-for="ChangePasswordModel.NewPasswordRepeat" /><br />
+                </td>
+            </tr>
+            
+            <tr>
+                <td>
+                    @Model.PasswordChanged
+                </td>
+                <td>
+                    <button type="submit" name="approve" id="approve" style="width:100%;color:white;background-color:green">تغییر گذرواژه</button>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+    <form method="post" asp-page-handler="SetMyInfo">
         <table style="width:100%" class="noborder">
             <tr>
                 <td colspan="2">

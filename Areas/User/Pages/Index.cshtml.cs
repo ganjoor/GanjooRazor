@@ -1,4 +1,5 @@
-﻿using GanjooRazor.Utils;
+﻿using GanjooRazor.Models.User;
+using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -18,10 +19,18 @@ namespace GanjooRazor.Areas.Panel.Pages
         [BindProperty]
         public RegisterRAppUser UserInfo { get; set; }
 
+        [BindProperty]
+        public ChangePasswordModel ChangePasswordModel { get; set; }
+
         /// <summary>
         /// Last Error
         /// </summary>
         public string LastError { get; set; }
+
+        /// <summary>
+        /// password changed
+        /// </summary>
+        public string PasswordChanged { get; set; }
 
         /// <summary>
         /// get
@@ -29,12 +38,18 @@ namespace GanjooRazor.Areas.Panel.Pages
         public async Task OnGetAsync()
         {
             LastError = "";
+            PasswordChanged = "";
+            await _PreparePage();
+        }
+
+        private async Task _PreparePage()
+        {
             using (HttpClient client = new HttpClient())
             {
                 if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
                 {
                     var userInfoResponse = await client.GetAsync($"{APIRoot.Url}/api/users/{Request.Cookies["UserId"]}");
-                    if(userInfoResponse.IsSuccessStatusCode)
+                    if (userInfoResponse.IsSuccessStatusCode)
                     {
                         PublicRAppUser userInfo = JsonConvert.DeserializeObject<PublicRAppUser>(await userInfoResponse.Content.ReadAsStringAsync());
 
@@ -67,9 +82,10 @@ namespace GanjooRazor.Areas.Panel.Pages
             }
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostSetMyInfoAsync(RegisterRAppUser UserInfo)
         {
             LastError = "";
+            PasswordChanged = "";
             using (HttpClient client = new HttpClient())
             {
                 if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
@@ -96,7 +112,53 @@ namespace GanjooRazor.Areas.Panel.Pages
                     LastError = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
                 }
             }
+            await _PreparePage();
+            return Page();
+        }
 
+        public async Task<IActionResult> OnPostSetMyPassAsync(ChangePasswordModel ChangePasswordModel)
+        {
+            LastError = "";
+            PasswordChanged = "";
+            if (ChangePasswordModel.NewPasswordRepeat != ChangePasswordModel.NewPassword)
+            {
+                LastError = "گذرواژهٔ جدید با تکرار آن همسان نیست.";
+                return Page();
+            }
+            if(ChangePasswordModel.NewPassword == ChangePasswordModel.OldPassword)
+            {
+                LastError = "گذرواژهٔ جدید با گذرواژهٔ کنونی یکسان است.";
+                return Page();
+            }
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var changePassResp = await client.PostAsync($"{APIRoot.Url}/api/users/setmypassword", 
+                        new StringContent(JsonConvert.SerializeObject
+                            (
+                            new SetPasswordModel()
+                            {
+                                OldPassword = ChangePasswordModel.OldPassword,
+                                NewPassword = ChangePasswordModel.NewPassword
+                            }
+                            ), 
+                        Encoding.UTF8, "application/json"));
+                    if (!changePassResp.IsSuccessStatusCode)
+                    {
+                        LastError = await changePassResp.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        PasswordChanged = "گذرواژهٔ شما به درستی تغییر کرد.";
+                    }
+                }
+                else
+                {
+                    LastError = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
+                }
+            }
+            await _PreparePage();
             return Page();
         }
     }
