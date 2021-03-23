@@ -479,11 +479,6 @@ namespace GanjooRazor.Pages
                     {
                         await _GenerateHashiehaHtmlText();
                     }
-
-                    if(GanjoorPage.UrlSlug == "about" && !string.IsNullOrEmpty(Request.Query["userid"]))
-                    {
-                        await _GenerateUserProfileHtmlText();
-                    }
                 }
                 breadCrumbList.AddItem(GanjoorPage.Title, GanjoorPage.FullUrl, "https://i.ganjoor.net/cat.png");
             }

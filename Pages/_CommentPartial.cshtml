@@ -16,7 +16,7 @@ else
 <div class="item" id="comment-@Model.Comment.Id">
     @if (Model.Comment.UserId != null)
     {
-        <p><a href="/about/?userid=@Model.Comment.UserId">@Model.Comment.AuthorName</a> <small>در @Html.Raw($"{Model.Comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
+        <p><a href="/hashieha/?userid=@Model.Comment.UserId">@Model.Comment.AuthorName</a> <small>در @Html.Raw($"{Model.Comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
     }
     else
     {

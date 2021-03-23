@@ -111,7 +111,7 @@
                     if (Model.GanjoorPage.PoetOrCat == null)
                     {
                         <h2>
-                            <a href="@Html.Raw(Model.GanjoorPage.FullUrl)" rel="bookmark">
+                            <a href="@Html.Raw(Model.Request.Path)" rel="bookmark">
                                 @Html.Raw(Model.GanjoorPage.Title)
                             </a>
                         </h2>
@@ -365,7 +365,7 @@
                                 <div class="item" id="comment-@comment.Id">
                                      @if (comment.UserId != null)
                                     {
-                                        <p><a href="/about/?userid=@comment.UserId">@comment.AuthorName</a> <small>در @Html.Raw($"{comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
+                                        <p><a href="/hashieha/?userid=@comment.UserId">@comment.AuthorName</a> <small>در @Html.Raw($"{comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
                                     }
                                     else
                                     {
