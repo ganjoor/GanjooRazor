@@ -110,6 +110,11 @@ namespace GanjooRazor.Pages
             return Redirect(Request.Path);
         }
 
+        public async Task<ActionResult> OnPostReply(string replyCommentText, int refPoemId, int refCommentId)
+        {
+            return await OnPostComment(replyCommentText, refPoemId, refCommentId);
+        }
+
         /// <summary>
         /// comment
         /// </summary>

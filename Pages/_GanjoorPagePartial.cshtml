@@ -363,7 +363,7 @@
                             @foreach (var comment in Model.GanjoorPage.Poem.Comments)
                             {
                                 <div class="item" id="comment-@comment.Id">
-                                     @if (comment.UserId != null)
+                                    @if (comment.UserId != null)
                                     {
                                         <p><a href="/hashieha/?userid=@comment.UserId">@comment.AuthorName</a> <small>در @Html.Raw($"{comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
                                     }
@@ -380,6 +380,7 @@
                                             <a role="button" onclick="deleteMyComment(@comment.Id)" class="actionlink" title="حذف حاشیه">🗑</a>
                                             <a role="button" onclick="editMyComment(@comment.Id)" class="actionlink" title="ویرایش حاشیه">✎</a>
                                         }
+                                        <a role="button" onclick="replyComment(@comment.Id)" class="actionlink" title="پاسخگویی به این حاشیه">⤶</a>
                                         <a href="/ReportComment/?CommentId=@comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="گزارش حاشیهٔ نامناسب">⚐</a>
                                     </p>
                                 </div>
@@ -440,6 +441,34 @@
                                         <tr>
                                             <td>
                                                 <button name="editcomment" id="editcomment" class="inputSubmit" onclick="return editComment();" style="width:100%">ویرایش حاشیه</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </form>
+                            </div>
+
+                            <div id="id03" class="modal">
+                                <span onclick="document.getElementById('id03').style.display='none'"
+                                      class="close" title="بستن">&times;</span>
+                                <form class="modal-content animate" method="post" id="replycommentform" action="?handler=Reply">
+                                    <table style="max-width:100%; width:100%; margin:0">
+                                        <tr>
+                                            <td>
+                                                <textarea name="replyCommentText" id="replyCommentText" class="inputTextarea" tabindex="4" rows="10" style="width:100%"></textarea>
+                                                <input type="hidden" name="refPoemId" id="refPoemId" value="@Model.GanjoorPage.Id" />
+                                                <input type="hidden" name="refCommentId" id="refCommentId" value="" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <button name="replycomment" id="replycomment" class="inputSubmit" onclick="return postReplyComment();" style="width:100%">درج پاسخ به حاشیه</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p>در پاسخ به:</p>
+                                                <div id="refComment"></div>
                                             </td>
                                         </tr>
                                     </table>

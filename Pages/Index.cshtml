@@ -131,6 +131,37 @@
             });
         }
 
+        function replyComment(commentId) {
+            $("#refComment").html($('#comment-text-' + commentId).html());
+            $("#refCommentId").val(commentId);
+            document.getElementById('id03').style.display = 'block';
+        }
+
+        function postReplyComment() {
+            parent = $('#comment-' + $("#refCommentId").val());
+            $("#replycommentform").unbind('submit').bind('submit', function (e) {
+
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                $('#comment-error').remove();
+
+                var form = $(this);
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function (data) {
+                        document.getElementById('id03').style.display = 'none';
+                        $(data).appendTo(parent);
+                        $("#replycommentform")[0].reset();
+                    },
+                });
+
+            });
+        }
+
         function deleteMyComment(commentId) {
             if (!confirm('آیا از حذف این حاشیه اطمینان دارید؟'))
                 return;
@@ -157,6 +188,8 @@
             $("#editCommentId").val(commentId);
             document.getElementById('id02').style.display = 'block';
         }
+
+        
 
         function editComment() {
             $("#editcommentform").unbind('submit').bind('submit', function (e) {
