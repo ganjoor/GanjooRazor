@@ -110,6 +110,16 @@ namespace GanjooRazor.Pages
             return Redirect(Request.Path);
         }
 
+        public _CommentPartialModel GetCommentModel(GanjoorCommentSummaryViewModel comment)
+        {
+            return new _CommentPartialModel()
+            {
+                Comment = comment,
+                Error = "",
+                InReplyTo = null
+            };
+        }
+
         public async Task<ActionResult> OnPostReply(string replyCommentText, int refPoemId, int refCommentId)
         {
             return await OnPostComment(replyCommentText, refPoemId, refCommentId);
@@ -144,7 +154,7 @@ namespace GanjooRazor.Pages
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         GanjoorCommentSummaryViewModel resComment = JsonConvert.DeserializeObject<GanjoorCommentSummaryViewModel>(await response.Content.ReadAsStringAsync());
-
+                        resComment.MyComment = true;
 
                         return new PartialViewResult()
                         {
@@ -153,7 +163,9 @@ namespace GanjooRazor.Pages
                             {
                                 Model = new _CommentPartialModel()
                                 {
-                                    Comment = resComment
+                                    Comment = resComment,
+                                    Error = "",
+                                    InReplyTo = inReplytoId == 0 ? null : new GanjoorCommentSummaryViewModel()
                                 }
                             }
                         };
@@ -168,7 +180,8 @@ namespace GanjooRazor.Pages
                                 Model = new _CommentPartialModel()
                                 {
                                     Comment = null,
-                                    Error = await response.Content.ReadAsStringAsync()
+                                    Error = await response.Content.ReadAsStringAsync(),
+                                    InReplyTo = null
                                 }
                             }
                         };
@@ -184,13 +197,15 @@ namespace GanjooRazor.Pages
                             Model = new _CommentPartialModel()
                             {
                                 Comment = null,
-                                Error = "لطفا از گنجور خارج و مجددا به آن وارد شوید."
+                                Error = "لطفا از گنجور خارج و مجددا به آن وارد شوید.",
+                                InReplyTo = null
                             }
                         }
                     };
                 }
             }
         }
+
 
         public async Task<IActionResult> OnDeleteMyComment(int id)
         {
@@ -316,6 +331,16 @@ namespace GanjooRazor.Pages
             foreach (GanjoorCommentSummaryViewModel comment in GanjoorPage.Poem.Comments)
             {
                 comment.MyComment = comment.UserId == userId;
+                _markMyReplies(comment, userId);
+            }
+        }
+
+        private void _markMyReplies(GanjoorCommentSummaryViewModel parent, Guid userId)
+        {
+            foreach(var reply in parent.Replies)
+            {
+                reply.MyComment = reply.UserId == userId;
+                _markMyReplies(reply, userId);
             }
         }
 

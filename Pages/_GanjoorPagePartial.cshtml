@@ -359,33 +359,12 @@
                                 break;
                         }
 
-                        <div id="comments-block">
-                            @foreach (var comment in Model.GanjoorPage.Poem.Comments)
-                            {
-                                <div class="item" id="comment-@comment.Id">
-                                    @if (comment.UserId != null)
-                                    {
-                                        <p><a href="/hashieha/?userid=@comment.UserId">@comment.AuthorName</a> <small>در @Html.Raw($"{comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
-                                    }
-                                    else
-                                    {
-                                        <p>@comment.AuthorName <small>در @Html.Raw($"{comment.CommentDate.ToFriendlyPersianDateTextify()}")</small> نوشته:</p>
-                                    }
-                                    <div id="comment-text-@comment.Id">
-                                        @Html.Raw(comment.HtmlComment)
-                                    </div>
-                                    <p>
-                                        @if (comment.MyComment)
-                                        {
-                                            <a role="button" onclick="deleteMyComment(@comment.Id)" class="actionlink" title="حذف حاشیه">🗑</a>
-                                            <a role="button" onclick="editMyComment(@comment.Id)" class="actionlink" title="ویرایش حاشیه">✎</a>
-                                        }
-                                        <a role="button" onclick="replyComment(@comment.Id)" class="actionlink" title="پاسخگویی به این حاشیه">⤶</a>
-                                        <a href="/ReportComment/?CommentId=@comment.Id" onclick="wpopen(this.href); return false" class="comments-link" title="گزارش حاشیهٔ نامناسب">⚐</a>
-                                    </p>
-                                </div>
-                            }
-                        </div>
+                    <div id="comments-block">
+                        @foreach (var comment in Model.GanjoorPage.Poem.Comments)
+                        {
+                            <partial name="_CommentPartial" model=Model.GetCommentModel(comment) />
+                        }
+                    </div>
 
 
                         @if (Model.LoggedIn)
