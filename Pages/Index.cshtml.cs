@@ -505,9 +505,18 @@ namespace GanjooRazor.Pages
                 {
                     ViewData["Title"] = $"گنجور &raquo; {GanjoorPage.FullTitle}";
 
-                    if (GanjoorPage.UrlSlug == "hashieha")
+
+                    switch(GanjoorPage.UrlSlug)
                     {
-                        await _GenerateHashiehaHtmlText();
+                        case "hashieha":
+                            await _GenerateHashiehaHtmlText();
+                            break;
+                        case "vazn":
+                            await _GenerateVaznHtmlText();
+                            break;
+                        case "simi":
+                            
+                            break;
                     }
                 }
                 breadCrumbList.AddItem(GanjoorPage.Title, GanjoorPage.FullUrl, "https://i.ganjoor.net/cat.png");
