@@ -66,8 +66,7 @@ namespace GanjooRazor.Pages
                     url += $"&filterUserId={filterUserId}";
                 }
 
-                GanjoorPage.Title += $" - صفحهٔ {pageNumber.ToPersianNumbers()}";
-                ViewData["Title"] += $" - صفحهٔ {pageNumber.ToPersianNumbers()}";
+               
 
                 var response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
@@ -92,6 +91,9 @@ namespace GanjooRazor.Pages
 
                     if (paginationMetadata.totalPages > 1)
                     {
+                        GanjoorPage.Title += $" - صفحهٔ {pageNumber.ToPersianNumbers()}";
+                        ViewData["Title"] += $" - صفحهٔ {pageNumber.ToPersianNumbers()}";
+
                         if (paginationMetadata.currentPage > 3)
                         {
                             htmlText += $"[<a href=\"/hashieha/?page=1{queryFilterUserId}\">صفحهٔ اول</a>] …";

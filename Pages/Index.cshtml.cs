@@ -515,7 +515,7 @@ namespace GanjooRazor.Pages
                             await _GenerateVaznHtmlText();
                             break;
                         case "simi":
-                            
+                            await _GenerateSimiHtmlText();
                             break;
                     }
                 }

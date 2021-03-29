@@ -15,13 +15,17 @@ namespace GanjooRazor.Pages
     public partial class IndexModel : PageModel
     {
         /// <summary>
-        /// صفحهٔ اشعار با وزن خاص
+        /// اشعار مشابه
         /// </summary>
         /// <returns></returns>
-        private async Task _GenerateVaznHtmlText()
+        private async Task _GenerateSimiHtmlText()
         {
-            if (string.IsNullOrEmpty(Request.Query["v"]))
-                return;
+            if (string.IsNullOrEmpty(Request.Query["v"]) || string.IsNullOrEmpty(Request.Query["g"]))
+            {
+                GanjoorPage.HtmlText = "<p>شعری با مشخصات انتخاب شده یافت نشد.</p>";
+
+            }
+                
             using (HttpClient client = new HttpClient())
             {
                 int pageNumber = 1;
@@ -31,35 +35,26 @@ namespace GanjooRazor.Pages
                 }
 
                 string metre = Request.Query["v"];
-                int poetId = string.IsNullOrEmpty(Request.Query["a"]) ? 0 : int.Parse(Request.Query["a"]);
+                string rhyme = Request.Query["g"];
 
-                string url = $"{APIRoot.Url}/api/ganjoor/poems/similar?PageNumber={pageNumber}&PageSize=20&metre={metre}&poetId={poetId}";
+                string url = $"{APIRoot.Url}/api/ganjoor/poems/similar?PageNumber={pageNumber}&PageSize=20&metre={metre}&rhyme={rhyme}";
 
 
                 var response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();
 
                 GanjoorPage.Title = "شعرهای ";
-                if(poetId != 0)
-                {
-                    GanjoorPage.Title += $"{Poets.Where(p => p.Id == poetId).Single().Name} ";
-                }
 
                 GanjoorPage.Title += $"با وزن «{metre}»";
 
+                GanjoorPage.Title += $" و حروف قافیهٔ «{rhyme}»";
+
                
+                
 
 
                 string htmlText = "";
 
-                if (poetId != 0)
-                {
-                    htmlText += $"<div class=\"sitem\" id=\"all\">{Environment.NewLine}";
-                    htmlText += $"<h2>{Environment.NewLine}";
-                    htmlText += $"<a href=\"/vazn/?v={Uri.EscapeUriString(metre)}\">مشاهدهٔ فهرست شعرهای همهٔ شاعران با این وزن</a>{Environment.NewLine}";
-                    htmlText += $"</h2>{Environment.NewLine}";
-                    htmlText += $"</div>{Environment.NewLine}";
-                }
 
                 var poems = JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoemCompleteViewModel>>();
 
@@ -87,18 +82,17 @@ namespace GanjooRazor.Pages
                 string paginnationMetadata = response.Headers.GetValues("paging-headers").FirstOrDefault();
                 if (!string.IsNullOrEmpty(paginnationMetadata))
                 {
+                    
 
                     PaginationMetadata paginationMetadata = JsonConvert.DeserializeObject<PaginationMetadata>(paginnationMetadata);
 
-                    string queryPoetId = poetId == 0 ? "" : $"&a={poetId}";
 
                     if (paginationMetadata.totalPages > 1)
                     {
                         GanjoorPage.Title += $" - صفحهٔ {pageNumber.ToPersianNumbers()}";
-                       
                         if (paginationMetadata.currentPage > 3)
                         {
-                            htmlText += $"[<a href=\"/vazn/?v={Uri.EscapeUriString(metre)}&page=1{queryPoetId}\">صفحهٔ اول</a>] …";
+                            htmlText += $"[<a href=\"/simi/?v={Uri.EscapeUriString(metre)}&g={Uri.EscapeUriString(rhyme)}&page=1\">صفحهٔ اول</a>] …";
                         }
                         for (int i = (paginationMetadata.currentPage - 2); i <= (paginationMetadata.currentPage + 2); i++)
                         {
@@ -111,14 +105,14 @@ namespace GanjooRazor.Pages
                                 }
                                 else
                                 {
-                                    htmlText += $"<a href=\"/vazn/?v={Uri.EscapeUriString(metre)}&page={i}{queryPoetId}\">{i.ToPersianNumbers()}</a>";
+                                    htmlText += $"<a href=\"/simi/?v={Uri.EscapeUriString(metre)}&g={Uri.EscapeUriString(rhyme)}&page={i}\">{i.ToPersianNumbers()}</a>";
                                 }
                                 htmlText += "] ";
                             }
                         }
                         if (paginationMetadata.totalPages > (paginationMetadata.currentPage + 2))
                         {
-                            htmlText += $"… [<a href=\"/vazn/?v={Uri.EscapeUriString(metre)}&page={paginationMetadata.totalPages}{queryPoetId}\">صفحهٔ آخر</a>]";
+                            htmlText += $"… [<a href=\"/simi/?v={Uri.EscapeUriString(metre)}&g={Uri.EscapeUriString(rhyme)}&page={paginationMetadata.totalPages}\">صفحهٔ آخر</a>]";
                         }
                     }
                 }
@@ -131,27 +125,6 @@ namespace GanjooRazor.Pages
 
 
             }
-        }
-
-        private string _GetPoemTextExcerpt(string poemText)
-        {
-            poemText = poemText.Replace("<div class=\"b\">", "").Replace("<div class=\"b2\">", "").Replace("<div class=\"m1\">", "").Replace("<div class=\"m2\">", "").Replace("</div>", "");
-
-            int index = poemText.IndexOf("<p>");
-            int count = 0;
-            while(index != -1 && count < 5 )
-            {
-                index = poemText.IndexOf("<p>", index + 1);
-                count++;
-            }
-
-            if(index != -1)
-            {
-                poemText = poemText.Substring(0, index);
-                poemText += "<p>[...]</p>";
-            }
-
-            return poemText;
         }
     }
 }
