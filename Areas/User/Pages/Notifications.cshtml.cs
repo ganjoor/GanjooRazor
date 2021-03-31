@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -134,6 +135,24 @@ namespace GanjooRazor.Areas.User.Pages
                     LastError = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
                 }
             return Page();
+        }
+
+        public async Task<IActionResult> OnDeleteNotification(Guid id)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var response = await client.DeleteAsync($"{APIRoot.Url}/api/notifications/{id}");
+
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");
+                    }
+
+                }
+            }
+            return new JsonResult(true);
         }
     }
 }
