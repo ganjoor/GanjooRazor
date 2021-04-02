@@ -26,6 +26,11 @@ namespace GanjooRazor.Pages
         public LoginViewModel LoginViewModel { get; set; }
 
         /// <summary>
+        /// last error
+        /// </summary>
+        public string LastError { get; set; }
+
+        /// <summary>
         /// Login
         /// </summary>
         /// <returns></returns>
@@ -412,7 +417,8 @@ namespace GanjooRazor.Pages
 
                 if(!response.IsSuccessStatusCode)
                 {
-                    return BadRequest(await response.Content.ReadAsStringAsync());
+                    LastError = await response.Content.ReadAsStringAsync();
+                    return new StatusCodeResult((int)response.StatusCode);
                 }
 
                 response.EnsureSuccessStatusCode();
@@ -428,7 +434,8 @@ namespace GanjooRazor.Pages
                         {
                             return NotFound();
                         }
-                        return BadRequest(await pageQuery.Content.ReadAsStringAsync());
+                        LastError = await response.Content.ReadAsStringAsync();
+                        return new StatusCodeResult((int)response.StatusCode);
                     }
                     GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
                     GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/").Replace("http://ganjoor.net/", "/");
