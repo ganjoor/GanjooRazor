@@ -409,6 +409,12 @@ namespace GanjooRazor.Pages
                 }
 
                 var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poets?includeBio=false");
+
+                if(!response.IsSuccessStatusCode)
+                {
+                    return BadRequest(await response.Content.ReadAsStringAsync());
+                }
+
                 response.EnsureSuccessStatusCode();
 
                 Poets = JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoetViewModel>>();
@@ -416,30 +422,33 @@ namespace GanjooRazor.Pages
                 if (!IsHomePage)
                 {
                     var pageQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/page?url={Request.Path}");
-                    if (pageQuery.IsSuccessStatusCode)
+                    if (!pageQuery.IsSuccessStatusCode)
                     {
-                        GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
-                        GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/").Replace("http://ganjoor.net/", "/");
-                        switch (GanjoorPage.GanjoorPageType)
+                        if (pageQuery.StatusCode == HttpStatusCode.NotFound)
                         {
-                            case GanjoorPageType.PoemPage:
-                                _markMyComments();
-                                _preparePoemExcerpt(GanjoorPage.Poem.Next);
-                                _preparePoemExcerpt(GanjoorPage.Poem.Previous);
-                                GanjoorPage.PoetOrCat = GanjoorPage.Poem.Category;
-                                IsPoemPage = true;
-                                break;
-                            case GanjoorPageType.PoetPage:
-                                IsPoetPage = true;
-                                break;
-                            case GanjoorPageType.CatPage:
-                                IsCatPage = true;
-                                break;
+                            return NotFound();
                         }
+                        return BadRequest(await pageQuery.Content.ReadAsStringAsync());
+                    }
+                    GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
+                    GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/").Replace("http://ganjoor.net/", "/");
+                    switch (GanjoorPage.GanjoorPageType)
+                    {
+                        case GanjoorPageType.PoemPage:
+                            _markMyComments();
+                            _preparePoemExcerpt(GanjoorPage.Poem.Next);
+                            _preparePoemExcerpt(GanjoorPage.Poem.Previous);
+                            GanjoorPage.PoetOrCat = GanjoorPage.Poem.Category;
+                            IsPoemPage = true;
+                            break;
+                        case GanjoorPageType.PoetPage:
+                            IsPoetPage = true;
+                            break;
+                        case GanjoorPageType.CatPage:
+                            IsCatPage = true;
+                            break;
                     }
                 }
-
-
             }
 
             if (IsHomePage)
@@ -481,7 +490,7 @@ namespace GanjooRazor.Pages
                 breadCrumbList.AddItem(GanjoorPage.Poem.Title, GanjoorPage.Poem.FullUrl, "https://i.ganjoor.net/poem.png");
 
             }
-            else if (GanjoorPage != null)
+            else
             {
                 if (GanjoorPage.PoetOrCat != null)
                 {
@@ -521,10 +530,7 @@ namespace GanjooRazor.Pages
                 }
                 breadCrumbList.AddItem(GanjoorPage.Title, GanjoorPage.FullUrl, "https://i.ganjoor.net/cat.png");
             }
-            else
-            {
-                return RedirectToPage("404");
-            }
+            
 
             ViewData["BrearCrumpList"] = breadCrumbList.ToString();
 

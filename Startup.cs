@@ -42,6 +42,8 @@ namespace GanjooRazor
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
             app.UseStaticFiles();
 
             app.UseRouting();
