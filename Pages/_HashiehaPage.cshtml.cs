@@ -69,6 +69,13 @@ namespace GanjooRazor.Pages
                
 
                 var response = await client.GetAsync(url);
+
+                if(!response.IsSuccessStatusCode)
+                {
+                    LastError = await response.Content.ReadAsStringAsync();
+                    return; 
+                }
+
                 response.EnsureSuccessStatusCode();
 
                
