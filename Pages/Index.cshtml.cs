@@ -395,6 +395,7 @@ namespace GanjooRazor.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnGet()
         {
+            LastError = "";
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
             IsPoetPage = false;
             IsCatPage = false;
@@ -541,6 +542,11 @@ namespace GanjooRazor.Pages
 
             ViewData["BrearCrumpList"] = breadCrumbList.ToString();
 
+            if(!string.IsNullOrEmpty(LastError))
+            {
+                var result = StatusCode(StatusCodes.Status500InternalServerError, LastError);
+                return result;
+            }
             return Page();
         }
     }

@@ -33,14 +33,19 @@
 </head>
 <body>
 
-    @if(!string.IsNullOrEmpty(Model.LastError))
-    { 
-        @Model.LastError
-    }
-    else
+
     @if (Model.IsHomePage)
     {
-        <partial name="_HomePagePartial" model="Model" />
+        @if (!string.IsNullOrEmpty(Model.LastError))
+        {
+            <div class="poem">
+                @Model.LastError
+            </div>
+        }
+        else
+        {
+            <partial name="_HomePagePartial" model="Model" />
+        }
     }
     else
     {
@@ -194,7 +199,7 @@
             document.getElementById('id02').style.display = 'block';
         }
 
-        
+
 
         function editComment() {
             $("#editcommentform").unbind('submit').bind('submit', function (e) {
