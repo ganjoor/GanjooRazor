@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
+using RMuseum.Models.Auth.Memory;
 using RSecurityBackend.Models.Auth.Memory;
 using RSecurityBackend.Models.Auth.ViewModels;
 using System;
@@ -60,6 +61,19 @@ namespace GanjooRazor.Utils
                 response.Cookies.Append("Username", loggedOnUser.User.Username, cookieOption);
                 response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
                 response.Cookies.Append("NickName", $"{loggedOnUser.User.NickName}", cookieOption);
+
+                bool canEditContent = false;
+                var ganjoorEntity = loggedOnUser.SecurableItem.Where(s => s.ShortName == RMuseumSecurableItem.GanjoorEntityShortName).SingleOrDefault();
+                if(ganjoorEntity != null)
+                {
+                    var op = ganjoorEntity.Operations.Where(o => o.ShortName == SecurableItem.ModifyOperationShortName).SingleOrDefault();
+                    if(op != null)
+                    {
+                        canEditContent = op.Status;
+                    }
+                }
+
+                response.Cookies.Append("CanEdit", canEditContent.ToString(), cookieOption);
 
 
                 return true;

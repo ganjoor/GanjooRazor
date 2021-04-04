@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using RMuseum.Models.Auth.Memory;
+using RSecurityBackend.Models.Auth.Memory;
 using RSecurityBackend.Models.Auth.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -72,7 +75,7 @@ namespace GanjooRazor.Pages
                     {
                         Expires = DateTime.Now.AddDays(-1)
                     };
-                    foreach (var cookieName in new string[] { "UserId", "SessionId", "Token", "Username", "Name", "NickName" })
+                    foreach (var cookieName in new string[] { "UserId", "SessionId", "Token", "Username", "Name", "NickName", "CanEdit" })
                     {
                         if(Request.Cookies[cookieName] != null)
                         {
@@ -109,6 +112,19 @@ namespace GanjooRazor.Pages
                     Response.Cookies.Append("Username", loggedOnUser.User.Username, cookieOption);
                     Response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
                     Response.Cookies.Append("NickName", $"{loggedOnUser.User.NickName}", cookieOption);
+
+                    bool canEditContent = false;
+                    var ganjoorEntity = loggedOnUser.SecurableItem.Where(s => s.ShortName == RMuseumSecurableItem.GanjoorEntityShortName).SingleOrDefault();
+                    if (ganjoorEntity != null)
+                    {
+                        var op = ganjoorEntity.Operations.Where(o => o.ShortName == SecurableItem.ModifyOperationShortName).SingleOrDefault();
+                        if (op != null)
+                        {
+                            canEditContent = op.Status;
+                        }
+                    }
+
+                    Response.Cookies.Append("CanEdit", canEditContent.ToString(), cookieOption);
 
                 }
 
