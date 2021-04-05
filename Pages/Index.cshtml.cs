@@ -297,6 +297,11 @@ namespace GanjooRazor.Pages
         public bool LoggedIn { get; set; }
 
         /// <summary>
+        /// can edit
+        /// </summary>
+        public bool CanEdit { get; set; }
+
+        /// <summary>
         /// pinterest url
         /// </summary>
         public string PinterestUrl { get; set; }
@@ -413,6 +418,7 @@ namespace GanjooRazor.Pages
         {
             LastError = "";
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
+            CanEdit = Request.Cookies["CanEdit"] == "True";
             IsPoetPage = false;
             IsCatPage = false;
             IsPoemPage = false;
