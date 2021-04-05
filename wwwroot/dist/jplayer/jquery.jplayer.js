@@ -595,6 +595,52 @@
 			},
 			keyEnabled: false, // Enables keyboard controls.
 			audioFullScreen: false, // Enables keyboard controls to enter full screen with audio media.
+			keyBindings: { // The key control object, defining the key codes and the functions to execute.
+				// The parameter, f = $.jPlayer.focus, will be checked truethy before attempting to call any of these functions.
+				// Properties may be added to this object, in key/fn pairs, to enable other key controls. EG, for the playlist add-on.
+				play: {
+					key: 80, // p
+					fn: function(f) {
+						if(f.status.paused) {
+							f.play();
+						} else {
+							f.pause();
+						}
+					}
+				},
+				fullScreen: {
+					key: 70, // f
+					fn: function(f) {
+						if(f.status.video || f.options.audioFullScreen) {
+							f._setOption("fullScreen", !f.options.fullScreen);
+						}
+					}
+				},
+				muted: {
+					key: 77, // m
+					fn: function(f) {
+						f._muted(!f.options.muted);
+					}
+				},
+				volumeUp: {
+					key: 190, // .
+					fn: function(f) {
+						f.volume(f.options.volume + 0.1);
+					}
+				},
+				volumeDown: {
+					key: 188, // ,
+					fn: function(f) {
+						f.volume(f.options.volume - 0.1);
+					}
+				},
+				loop: {
+					key: 76, // l
+					fn: function(f) {
+						f._loop(!f.options.loop);
+					}
+				}
+			},
 			verticalVolume: false, // Calculate volume from the bottom of the volume bar. Default is from the left. Also volume affects either width or height.
 			verticalPlaybackRate: false,
 			globalVolume: false, // Set to make volume and muted changes affect all jPlayer instances with this option enabled
@@ -2259,7 +2305,7 @@
 				if(this.options.verticalVolume) {
 					this.volume(y/h);
 				} else {
-					this.volume(x/w);
+					this.volume(((this.css.jq.volumeBar.closest("[dir]").attr("dir") === "rtl") ? 1 - (x/w) : x/w));
 				}
 			}
 			if(this.options.muted) {
@@ -2397,7 +2443,7 @@
 					offset = $bar.offset(),
 					x = e.pageX - offset.left,
 					w = $bar.width(),
-					p = 100 * x / w;
+					p = 100 * ((this.css.jq.seekBar.closest("[dir]").attr("dir") === "rtl") ? 1 - (x/w) : x/w);
 				this.playHead(p);
 			}
 		},

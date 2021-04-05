@@ -117,6 +117,10 @@
               height: 40px;
             }
 
+            .icon-material_edit {
+                background: url('/image/edit.svg') center no-repeat;
+            }
+
             .icon-material_exit {
                 background: url('/image/logout.svg') center no-repeat;
             }

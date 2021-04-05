@@ -4,7 +4,7 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = "آهنگ‌های پیشنهادی";
-    GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, ViewData);
+    await GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, Response, ViewData);
 }
 <h1>@ViewData["Title"]</h1>
 @if (Model.LastError != "")

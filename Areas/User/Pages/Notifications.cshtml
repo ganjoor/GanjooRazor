@@ -1,9 +1,9 @@
 ﻿@page
-@model GanjooRazor.Areas.User.Pages.ReportedCommentsModel
+@model GanjooRazor.Areas.User.Pages.NotificationsModel
 @using DNTPersianUtils.Core
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "حاشیه‌های گزارش شده";
+    ViewData["Title"] = "اعلان‌های من";
     await GanjooRazor.Utils.GanjoorSessionChecker.ApplyPermissionsToViewData(Request, Response, ViewData);
     string color = "gray";
 }
@@ -28,32 +28,26 @@ else
         }
     </p>
 
-    @foreach (var report in Model.Reports)
+    @foreach (var notification in Model.Notifications)
     {
         if (color == "gray")
             color = "white";
         else
             color = "gray";
 
-<div style="background-color:@color" id="comment-@report.Comment.Id">
-    <p style="color:red">
-        @report.ReasonCode
-    </p>
-    <hr />
-    <p style="color:red">
-        @report.ReasonText
-    </p>
-    <hr />
-    <blockquote>
-        @Html.Raw(report.Comment.HtmlComment)
-        <p>
-            @report.Comment.AuthorName <small>در @report.Comment.CommentDate.ToFriendlyPersianDateTextify()</small> دربارهٔ <a href="@report.Comment.Poem.UrlSlug">@report.Comment.Poem.Title</a>
-        </p>
-    </blockquote>
-    <a role="button" onclick="deleteComment(@report.Comment.Id, '@report.ReasonCode', '@report.ReasonText')" class="actionlink" style="color:green" title="تأیید و حذف حاشیه">✓ درست می‌گوید</a>
-    &nbsp;&nbsp;&nbsp;
-    <a role="button" onclick="deleteReport(@report.Id, @report.Comment.Id)" class="actionlink" style="color:red" title="حذف گزارش">گزارش نابجا ❌</a>
-</div>
+        <div style="background-color:@color" id="notification-@notification.Id">
+            <blockquote>
+                <p>
+                    @notification.Subject <small>در @notification.DateTime.ToFriendlyPersianDateTextify()</small>
+                </p>
+                <div id="notification-text-@notification.Id">
+                    @Html.Raw(notification.HtmlText)
+                </div>
+            </blockquote>
+            <p>
+                <a role="button" onclick="deleteNotification('@notification.Id')" class="actionlink" title="حذف">🗑</a>
+            </p>
+        </div>
 
 
         <hr />
@@ -72,4 +66,6 @@ else
             }
         }
     </p>
+
+    
 }

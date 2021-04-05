@@ -79,6 +79,21 @@ namespace RSecurityBackend.Models.Auth.ViewModels
         /// </summary>
         public Guid? RImageId { get; set; }
 
+        /// <summary>
+        /// nick name
+        /// </summary>
+        public string NickName { get; set; }
+
+        /// <summary>
+        /// biography
+        /// </summary>
+        public string Bio { get; set; }
+
+        /// <summary>
+        /// web site
+        /// </summary>
+        public string Website { get; set; }
+
 
     }
 }

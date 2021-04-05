@@ -8,6 +8,26 @@ namespace GanjooRazor.Pages
         public GanjoorCommentSummaryViewModel Comment { get; set; }
 
         public string Error { get; set; }
+
+        public GanjoorCommentSummaryViewModel InReplyTo { get; set; }
+
+        public string Wrote
+        {
+            get
+            {
+                return InReplyTo == null ? "‰Ê‘ Â" : "Å«”Œ œ«œÂ";
+            }
+        }
+
+        public _CommentPartialModel GetCommentModel(GanjoorCommentSummaryViewModel comment)
+        {
+            return new _CommentPartialModel()
+            {
+                Comment = comment,
+                Error = "",
+                InReplyTo = Comment
+            };
+        }
         public void OnGet()
         {
         }

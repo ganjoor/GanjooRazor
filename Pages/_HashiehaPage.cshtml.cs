@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RMuseum.Models.Auth.ViewModel;
 using RMuseum.Models.Ganjoor.ViewModels;
 using RSecurityBackend.Models.Generic;
 using System;
@@ -27,10 +28,57 @@ namespace GanjooRazor.Pages
                 {
                     pageNumber = int.Parse(Request.Query["page"]);
                 }
-                var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/comments?PageNumber={pageNumber}&PageSize=20");
+                
+                string url = $"{APIRoot.Url}/api/ganjoor/comments?PageNumber={pageNumber}&PageSize=20";
+                string filterUserId = Request.Query["userid"];
+                string htmlText = "";
+                if (!string.IsNullOrEmpty(filterUserId))
+                {
+                    var responseUserProfile = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/user/profile/{filterUserId}");
+                    responseUserProfile.EnsureSuccessStatusCode();
+
+                    GanjoorUserPublicProfile profile = JsonConvert.DeserializeObject<GanjoorUserPublicProfile>(await responseUserProfile.Content.ReadAsStringAsync());
+
+                    ViewData["Title"] = $"گنجور &raquo; حاشیه‌های {profile.NickName}";
+
+                    GanjoorPage.Title = $"حاشیه‌های {profile.NickName}";
+
+                    htmlText += $"<div id=\"profile\">{Environment.NewLine}";
+
+                    if(!string.IsNullOrEmpty(profile.Website))
+                    {
+                        htmlText += $"<p><a href=\"{profile.Website}\">{profile.NickName}</a></p>{Environment.NewLine}";
+                    }
+                    else
+                    {
+                        htmlText += $"<p>{profile.NickName}</p>{Environment.NewLine}";
+                    }
+
+                    if(!string.IsNullOrEmpty(profile.Bio))
+                    {
+                        htmlText += $"<p>{profile.Bio}</p>{Environment.NewLine}";
+                    }
+
+                    htmlText += $"</div>{Environment.NewLine}";
+                    htmlText += $"<hr />{Environment.NewLine}";
+
+
+                    url += $"&filterUserId={filterUserId}";
+                }
+
+               
+
+                var response = await client.GetAsync(url);
+
+                if(!response.IsSuccessStatusCode)
+                {
+                    LastError = await response.Content.ReadAsStringAsync();
+                    return; 
+                }
+
                 response.EnsureSuccessStatusCode();
 
-                string htmlText = "";
+               
 
                 foreach (var comment in JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorCommentFullViewModel>>())
                 {
@@ -46,11 +94,16 @@ namespace GanjooRazor.Pages
                 {
                     PaginationMetadata paginationMetadata = JsonConvert.DeserializeObject<PaginationMetadata>(paginnationMetadata);
 
+                    string queryFilterUserId = string.IsNullOrEmpty(filterUserId) ? "" : $"&userid={filterUserId}";
+
                     if (paginationMetadata.totalPages > 1)
                     {
+                        GanjoorPage.Title += $" - صفحهٔ {pageNumber.ToPersianNumbers()}";
+                        ViewData["Title"] += $" - صفحهٔ {pageNumber.ToPersianNumbers()}";
+
                         if (paginationMetadata.currentPage > 3)
                         {
-                            htmlText += $"[<a href=\"/hashieha/?page=1\">صفحهٔ اول</a>] …";
+                            htmlText += $"[<a href=\"/hashieha/?page=1{queryFilterUserId}\">صفحهٔ اول</a>] …";
                         }
                         for (int i = (paginationMetadata.currentPage - 2); i <= (paginationMetadata.currentPage + 2); i++)
                         {
@@ -63,14 +116,14 @@ namespace GanjooRazor.Pages
                                 }
                                 else
                                 {
-                                    htmlText += $"<a href=\"/hashieha/?page={i}\">{i.ToPersianNumbers()}</a>";
+                                    htmlText += $"<a href=\"/hashieha/?page={i}{queryFilterUserId}\">{i.ToPersianNumbers()}</a>";
                                 }
                                 htmlText += "] ";
                             }
                         }
                         if (paginationMetadata.totalPages > (paginationMetadata.currentPage + 2))
                         {
-                            htmlText += $"… [<a href=\"/hashieha/?page={paginationMetadata.totalPages}\">صفحهٔ آخر</a>]";
+                            htmlText += $"… [<a href=\"/hashieha/?page={paginationMetadata.totalPages}{queryFilterUserId}\">صفحهٔ آخر</a>]";
                         }
                     }
                 }
@@ -78,6 +131,8 @@ namespace GanjooRazor.Pages
                 htmlText += $"</p>{Environment.NewLine}";
 
                 GanjoorPage.HtmlText = htmlText;
+
+               
             }
         }
     }

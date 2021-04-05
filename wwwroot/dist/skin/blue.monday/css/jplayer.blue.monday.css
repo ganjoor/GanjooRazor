@@ -30,7 +30,7 @@
 .jp-audio-stream,
 .jp-video {
   font-size: 16px;
-  font-family: Tahoma, Verdana, Arial, sans-serif;
+  font-family: Verdana, Arial, sans-serif;
   line-height: 1.6;
   color: #666;
   border: 1px solid #009be3;
@@ -232,8 +232,8 @@
 .jp-volume-controls {
   position: absolute;
   top: 32px;
-  left: 290px;
-  width: 115px; }
+  left: 308px;
+  width: 200px; }
 
 .jp-audio-stream .jp-volume-controls {
   left: 70px; }

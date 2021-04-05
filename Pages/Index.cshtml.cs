@@ -6,12 +6,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RMuseum.Models.Auth.Memory;
 using RMuseum.Models.Ganjoor;
 using RMuseum.Models.Ganjoor.ViewModels;
 using RMuseum.Models.GanjoorAudio.ViewModels;
+using RSecurityBackend.Models.Auth.Memory;
 using RSecurityBackend.Models.Auth.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -24,6 +27,11 @@ namespace GanjooRazor.Pages
     {
         [BindProperty]
         public LoginViewModel LoginViewModel { get; set; }
+
+        /// <summary>
+        /// last error
+        /// </summary>
+        public string LastError { get; set; }
 
         /// <summary>
         /// Login
@@ -62,17 +70,21 @@ namespace GanjooRazor.Pages
                 Response.Cookies.Append("Token", loggedOnUser.Token, cookieOption);
                 Response.Cookies.Append("Username", loggedOnUser.User.Username, cookieOption);
                 Response.Cookies.Append("Name", $"{loggedOnUser.User.FirstName} {loggedOnUser.User.SureName}", cookieOption);
+                Response.Cookies.Append("NickName", $"{loggedOnUser.User.NickName}", cookieOption);
 
-                List<string> permissions = new List<string>();
-                foreach (var securableItem in loggedOnUser.SecurableItem)
-                    foreach (var operation in securableItem.Operations)
+                bool canEditContent = false;
+                var ganjoorEntity = loggedOnUser.SecurableItem.Where(s => s.ShortName == RMuseumSecurableItem.GanjoorEntityShortName).SingleOrDefault();
+                if (ganjoorEntity != null)
+                {
+                    var op = ganjoorEntity.Operations.Where(o => o.ShortName == SecurableItem.ModifyOperationShortName).SingleOrDefault();
+                    if (op != null)
                     {
-                        if (operation.Status)
-                        {
-                            permissions.Add($"{securableItem.ShortName}-{operation.ShortName}");
-                        }
+                        canEditContent = op.Status;
                     }
-                Response.Cookies.Append("Permissions", JsonConvert.SerializeObject(permissions.ToArray()), cookieOption);
+                }
+
+                Response.Cookies.Append("CanEdit", canEditContent.ToString(), cookieOption);
+
             }
 
 
@@ -107,7 +119,7 @@ namespace GanjooRazor.Pages
             {
                 Expires = DateTime.Now.AddDays(-1)
             };
-            foreach (var cookieName in new string[] { "UserId", "SessionId", "Token", "Username", "Name", "Permissions" })
+            foreach (var cookieName in new string[] { "UserId", "SessionId", "Token", "Username", "Name", "NickName", "CanEdit" })
             {
                 if (Request.Cookies[cookieName] != null)
                 {
@@ -117,6 +129,21 @@ namespace GanjooRazor.Pages
 
 
             return Redirect(Request.Path);
+        }
+
+        public _CommentPartialModel GetCommentModel(GanjoorCommentSummaryViewModel comment)
+        {
+            return new _CommentPartialModel()
+            {
+                Comment = comment,
+                Error = "",
+                InReplyTo = null
+            };
+        }
+
+        public async Task<ActionResult> OnPostReply(string replyCommentText, int refPoemId, int refCommentId)
+        {
+            return await OnPostComment(replyCommentText, refPoemId, refCommentId);
         }
 
         /// <summary>
@@ -148,7 +175,7 @@ namespace GanjooRazor.Pages
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         GanjoorCommentSummaryViewModel resComment = JsonConvert.DeserializeObject<GanjoorCommentSummaryViewModel>(await response.Content.ReadAsStringAsync());
-
+                        resComment.MyComment = true;
 
                         return new PartialViewResult()
                         {
@@ -157,7 +184,9 @@ namespace GanjooRazor.Pages
                             {
                                 Model = new _CommentPartialModel()
                                 {
-                                    Comment = resComment
+                                    Comment = resComment,
+                                    Error = "",
+                                    InReplyTo = inReplytoId == 0 ? null : new GanjoorCommentSummaryViewModel()
                                 }
                             }
                         };
@@ -172,7 +201,8 @@ namespace GanjooRazor.Pages
                                 Model = new _CommentPartialModel()
                                 {
                                     Comment = null,
-                                    Error = await response.Content.ReadAsStringAsync()
+                                    Error = await response.Content.ReadAsStringAsync(),
+                                    InReplyTo = null
                                 }
                             }
                         };
@@ -188,13 +218,15 @@ namespace GanjooRazor.Pages
                             Model = new _CommentPartialModel()
                             {
                                 Comment = null,
-                                Error = "لطفا از گنجور خارج و مجددا به آن وارد شوید."
+                                Error = "لطفا از گنجور خارج و مجددا به آن وارد شوید.",
+                                InReplyTo = null
                             }
                         }
                     };
                 }
             }
         }
+
 
         public async Task<IActionResult> OnDeleteMyComment(int id)
         {
@@ -211,7 +243,7 @@ namespace GanjooRazor.Pages
 
                 }
             }
-            return await OnGet();
+            return new JsonResult(true);
         }
 
         public async Task<IActionResult> OnPutMyComment(int id, string comment)
@@ -227,7 +259,7 @@ namespace GanjooRazor.Pages
                     }
                 }
             }
-            return await OnGet();
+            return new JsonResult(true);
         }
 
         /// <summary>
@@ -263,6 +295,11 @@ namespace GanjooRazor.Pages
         /// is logged on
         /// </summary>
         public bool LoggedIn { get; set; }
+
+        /// <summary>
+        /// can edit
+        /// </summary>
+        public bool CanEdit { get; set; }
 
         /// <summary>
         /// pinterest url
@@ -320,6 +357,16 @@ namespace GanjooRazor.Pages
             foreach (GanjoorCommentSummaryViewModel comment in GanjoorPage.Poem.Comments)
             {
                 comment.MyComment = comment.UserId == userId;
+                _markMyReplies(comment, userId);
+            }
+        }
+
+        private void _markMyReplies(GanjoorCommentSummaryViewModel parent, Guid userId)
+        {
+            foreach(var reply in parent.Replies)
+            {
+                reply.MyComment = reply.UserId == userId;
+                _markMyReplies(reply, userId);
             }
         }
 
@@ -369,7 +416,9 @@ namespace GanjooRazor.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnGet()
         {
+            LastError = "";
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
+            CanEdit = Request.Cookies["CanEdit"] == "True";
             IsPoetPage = false;
             IsCatPage = false;
             IsPoemPage = false;
@@ -388,6 +437,13 @@ namespace GanjooRazor.Pages
                 }
 
                 var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poets?includeBio=false");
+
+                if(!response.IsSuccessStatusCode)
+                {
+                    LastError = await response.Content.ReadAsStringAsync();
+                    return new StatusCodeResult((int)response.StatusCode);
+                }
+
                 response.EnsureSuccessStatusCode();
 
                 Poets = JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoetViewModel>>();
@@ -395,30 +451,34 @@ namespace GanjooRazor.Pages
                 if (!IsHomePage)
                 {
                     var pageQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/page?url={Request.Path}");
-                    if (pageQuery.IsSuccessStatusCode)
+                    if (!pageQuery.IsSuccessStatusCode)
                     {
-                        GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
-                        GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/").Replace("http://ganjoor.net/", "/");
-                        switch (GanjoorPage.GanjoorPageType)
+                        if (pageQuery.StatusCode == HttpStatusCode.NotFound)
                         {
-                            case GanjoorPageType.PoemPage:
-                                _markMyComments();
-                                _preparePoemExcerpt(GanjoorPage.Poem.Next);
-                                _preparePoemExcerpt(GanjoorPage.Poem.Previous);
-                                GanjoorPage.PoetOrCat = GanjoorPage.Poem.Category;
-                                IsPoemPage = true;
-                                break;
-                            case GanjoorPageType.PoetPage:
-                                IsPoetPage = true;
-                                break;
-                            case GanjoorPageType.CatPage:
-                                IsCatPage = true;
-                                break;
+                            return NotFound();
                         }
+                        LastError = await response.Content.ReadAsStringAsync();
+                        return new StatusCodeResult((int)response.StatusCode);
+                    }
+                    GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
+                    GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/").Replace("http://ganjoor.net/", "/");
+                    switch (GanjoorPage.GanjoorPageType)
+                    {
+                        case GanjoorPageType.PoemPage:
+                            _markMyComments();
+                            _preparePoemExcerpt(GanjoorPage.Poem.Next);
+                            _preparePoemExcerpt(GanjoorPage.Poem.Previous);
+                            GanjoorPage.PoetOrCat = GanjoorPage.Poem.Category;
+                            IsPoemPage = true;
+                            break;
+                        case GanjoorPageType.PoetPage:
+                            IsPoetPage = true;
+                            break;
+                        case GanjoorPageType.CatPage:
+                            IsCatPage = true;
+                            break;
                     }
                 }
-
-
             }
 
             if (IsHomePage)
@@ -429,7 +489,7 @@ namespace GanjooRazor.Pages
             if (IsPoetPage)
             {
                 ViewData["Title"] = $"گنجور &raquo; {GanjoorPage.PoetOrCat.Poet.Name}";
-                breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Poet.Name, GanjoorPage.PoetOrCat.Cat.FullUrl, $"/image/poets/{GanjoorPage.PoetOrCat.Poet.Id}.png");
+                breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Poet.Name, GanjoorPage.PoetOrCat.Cat.FullUrl, $"{GanjooRazor.APIRoot.Url+GanjoorPage.PoetOrCat.Poet.ImageUrl}");
             }
             else
             if (IsCatPage)
@@ -439,7 +499,7 @@ namespace GanjooRazor.Pages
                 foreach (var gran in GanjoorPage.PoetOrCat.Cat.Ancestors)
                 {
                     title += $"{gran.Title} &raquo; ";
-                    breadCrumbList.AddItem(gran.Title, gran.FullUrl, poetCat ? $"/image/poets/{GanjoorPage.PoetOrCat.Poet.Id}.png" : "https://i.ganjoor.net/cat.png");
+                    breadCrumbList.AddItem(gran.Title, gran.FullUrl, poetCat ? $"{GanjooRazor.APIRoot.Url+GanjoorPage.PoetOrCat.Poet.ImageUrl}" : "https://i.ganjoor.net/cat.png");
                     poetCat = false;
                 }
                 breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Cat.Title, GanjoorPage.PoetOrCat.Cat.FullUrl, "https://i.ganjoor.net/cat.png");
@@ -453,14 +513,14 @@ namespace GanjooRazor.Pages
                 bool poetCat = true;
                 foreach (var gran in GanjoorPage.Poem.Category.Cat.Ancestors)
                 {
-                    breadCrumbList.AddItem(gran.Title, gran.FullUrl, poetCat ? $"/image/poets/{GanjoorPage.Poem.Category.Poet.Id}.png" : "https://i.ganjoor.net/cat.png");
+                    breadCrumbList.AddItem(gran.Title, gran.FullUrl, poetCat ? $"{GanjooRazor.APIRoot.Url+GanjoorPage.PoetOrCat.Poet.ImageUrl}" : "https://i.ganjoor.net/cat.png");
                     poetCat = false;
                 }
                 breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Cat.Title, GanjoorPage.PoetOrCat.Cat.FullUrl, "https://i.ganjoor.net/cat.png");
                 breadCrumbList.AddItem(GanjoorPage.Poem.Title, GanjoorPage.Poem.FullUrl, "https://i.ganjoor.net/poem.png");
 
             }
-            else if (GanjoorPage != null)
+            else
             {
                 if (GanjoorPage.PoetOrCat != null)
                 {
@@ -473,31 +533,42 @@ namespace GanjooRazor.Pages
                     else
                         foreach (var gran in GanjoorPage.PoetOrCat.Cat.Ancestors)
                         {
-                            breadCrumbList.AddItem(gran.Title, gran.FullUrl, poetCat ? $"/image/poets/{GanjoorPage.Poem.Category.Poet.Id}.png" : "https://i.ganjoor.net/cat.png");
+                            breadCrumbList.AddItem(gran.Title, gran.FullUrl, poetCat ? $"{GanjooRazor.APIRoot.Url+GanjoorPage.PoetOrCat.Poet.ImageUrl}" : "https://i.ganjoor.net/cat.png");
                             poetCat = false;
                             fullTitle += $"{gran.Title} &raquo; ";
                         }
                     ViewData["Title"] = $"{fullTitle}{GanjoorPage.Title}";
-                    breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Poet.Name, GanjoorPage.PoetOrCat.Cat.FullUrl, $"/image/poets/{GanjoorPage.PoetOrCat.Poet.Id}.png");
+                    breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Poet.Name, GanjoorPage.PoetOrCat.Cat.FullUrl, $"{GanjooRazor.APIRoot.Url+GanjoorPage.PoetOrCat.Poet.ImageUrl}");
                 }
                 else
                 {
                     ViewData["Title"] = $"گنجور &raquo; {GanjoorPage.FullTitle}";
 
-                    if (GanjoorPage.UrlSlug == "hashieha")
+
+                    switch(GanjoorPage.UrlSlug)
                     {
-                        await _GenerateHashiehaHtmlText();
+                        case "hashieha":
+                            await _GenerateHashiehaHtmlText();
+                            break;
+                        case "vazn":
+                            await _GenerateVaznHtmlText();
+                            break;
+                        case "simi":
+                            await _GenerateSimiHtmlText();
+                            break;
                     }
                 }
                 breadCrumbList.AddItem(GanjoorPage.Title, GanjoorPage.FullUrl, "https://i.ganjoor.net/cat.png");
             }
-            else
-            {
-                return RedirectToPage("404");
-            }
+            
 
             ViewData["BrearCrumpList"] = breadCrumbList.ToString();
 
+            if(!string.IsNullOrEmpty(LastError))
+            {
+                var result = StatusCode(StatusCodes.Status500InternalServerError, LastError);
+                return result;
+            }
             return Page();
         }
     }
