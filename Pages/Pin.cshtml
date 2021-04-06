@@ -81,7 +81,7 @@
                     <span class="inputlabel">نشانی تصویر (در مرحلهٔ بعد با توجه به این نشانی باید تصویر نمایش داده شود): </span><input type="text" asp-for="RelatedImageSuggestionModel.PinterestImageUrl" style="direction:ltr" size="50">
                     <br />
                     <span class="inputlabel">توضیحات (<small>می‌توانید اطلاعاتی مانند نام هنرمند و ... را اضافه کنید.</small>):</span>
-                    <textarea asp-for="RelatedImageSuggestionModel.AltText" rows="10" cols="50"></textarea>
+                    <textarea asp-for="RelatedImageSuggestionModel.AltText" class="editor" rows="10" cols="50"></textarea>
                     <br />
                     <input type="submit" name="pinterest_suggest" value="پیشنهاد" style="background-color:red;color:white">
                 </form>
