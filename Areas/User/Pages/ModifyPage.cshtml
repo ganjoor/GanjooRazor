@@ -8,3 +8,31 @@
 
 <h1>@ViewData["Title"]</h1>
 
+<form method="post">
+    <table style="width:100%" class="noborder">
+        <tr>
+            <td>
+                <span class="inputlabel">شناسهٔ صفحه: </span>
+            </td>
+            <td>
+                <input asp-for="GanjoorPage.Id" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">عنوان: </span>
+            </td>
+            <td>
+                <input asp-for="GanjoorPage.Title" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">متن: </span>
+            </td>
+            <td>
+                <textarea asp-for="GanjoorPage.HtmlText"></textarea>
+            </td>
+        </tr>
+    </table>
+</form>

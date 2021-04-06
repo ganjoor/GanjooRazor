@@ -414,7 +414,7 @@ namespace GanjooRazor.Pages
         /// Get
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             LastError = "";
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
