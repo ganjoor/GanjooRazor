@@ -28,10 +28,23 @@
         </tr>
         <tr>
             <td>
+                <span class="inputlabel">نامک: </span>
+            </td>
+            <td>
+                <input style="text-align:left;direction:ltr;" asp-for="GanjoorPage.UrlSlug" />
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <span class="inputlabel">متن: </span>
             </td>
             <td>
-                <textarea asp-for="GanjoorPage.HtmlText"  tabindex="4" rows="20" cols="80"></textarea>
+                <textarea asp-for="GanjoorPage.HtmlText" tabindex="4" rows="20" cols="80"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="submit" name="approve" id="approve" style="width:100%;color:white;background-color:green">ذخیره</button>
             </td>
         </tr>
     </table>
