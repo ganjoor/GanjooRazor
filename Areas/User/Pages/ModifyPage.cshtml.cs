@@ -19,7 +19,12 @@ namespace GanjooRazor.Areas.User.Pages
         /// api model
         /// </summary>
         [BindProperty]
-        public GanjoorPageCompleteViewModel GanjoorPage { get; set; }
+        public GanjoorModifyPageViewModel ModifyModel { get; set; }
+
+        /// <summary>
+        /// page id
+        /// </summary>
+        public int PageId { get; set; }
 
 
         public async Task<IActionResult> OnGetAsync()
@@ -46,7 +51,22 @@ namespace GanjooRazor.Areas.User.Pages
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, await pageQuery.Content.ReadAsStringAsync());
                 }
-                GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
+                GanjoorPageCompleteViewModel page = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
+
+                ModifyModel = new GanjoorModifyPageViewModel()
+                {
+                    Title = page.Title,
+                    UrlSlug = page.UrlSlug,
+                    HtmlText = page.HtmlText,
+                    Note = "",
+                    SourceName = page.Poem == null ? null : page.Poem.SourceName,
+                    SourceUrlSlug = page.Poem == null ? null : page.Poem.SourceUrlSlug,
+                    OldTag = page.Poem == null ? null : page.Poem.OldTag,
+                    OldTagPageUrl = page.Poem == null ? null : page.Poem.OldTagPageUrl,
+                    RhymeLetters = page.Poem == null ? null : page.Poem.RhymeLetters,
+                    Rhythm = page.Poem == null ? null : page.Poem.GanjoorMetre == null ? null : page.Poem.GanjoorMetre.Rhythm
+                };
+
             }
 
             return Page();

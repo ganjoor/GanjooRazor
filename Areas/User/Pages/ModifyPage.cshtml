@@ -15,7 +15,7 @@
                 <span class="inputlabel">شناسهٔ صفحه: </span>
             </td>
             <td>
-                <input asp-for="GanjoorPage.Id" />
+                <span class="inputlabel">@Request.Query["id"]</span>
             </td>
         </tr>
         <tr>
@@ -23,7 +23,7 @@
                 <span class="inputlabel">عنوان: </span>
             </td>
             <td>
-                <input asp-for="GanjoorPage.Title" />
+                <input asp-for="ModifyModel.Title" />
             </td>
         </tr>
         <tr>
@@ -31,7 +31,7 @@
                 <span class="inputlabel">نامک: </span>
             </td>
             <td>
-                <input style="text-align:left;direction:ltr;" asp-for="GanjoorPage.UrlSlug" />
+                <input style="text-align:left;direction:ltr;" asp-for="ModifyModel.UrlSlug" />
             </td>
         </tr>
         <tr>
@@ -39,7 +39,7 @@
                 <span class="inputlabel">متن: </span>
             </td>
             <td>
-                <textarea asp-for="GanjoorPage.HtmlText" tabindex="4" rows="20" cols="80"></textarea>
+                <textarea asp-for="ModifyModel.HtmlText" tabindex="4" rows="20" cols="80"></textarea>
             </td>
         </tr>
         <tr>
