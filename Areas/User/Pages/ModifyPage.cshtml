@@ -8,6 +8,8 @@
 
 <h1>@ViewData["Title"]</h1>
 
+<p>@Model.LastMessage</p>
+
 <form method="post">
     <table style="width:100%" class="noborder">
         <tr>
@@ -15,7 +17,7 @@
                 <span class="inputlabel">شناسهٔ صفحه: </span>
             </td>
             <td>
-                <span class="inputlabel">@Request.Query["id"]</span>
+                <span class="inputlabel"><a href="/?p=@Request.Query["id"]">@Request.Query["id"]</a></span>
             </td>
         </tr>
         <tr>

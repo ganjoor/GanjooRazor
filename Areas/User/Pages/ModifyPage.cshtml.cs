@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GanjooRazor.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Ganjoor.ViewModels;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GanjooRazor.Areas.User.Pages
@@ -21,11 +23,15 @@ namespace GanjooRazor.Areas.User.Pages
         [BindProperty]
         public GanjoorModifyPageViewModel ModifyModel { get; set; }
 
-
+        /// <summary>
+        /// last message
+        /// </summary>
+        public string LastMessage { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if(string.IsNullOrEmpty(Request.Query["id"]))
+            LastMessage = Request.Query["edit"] == "true" ? "ویرایش انجام شد." : "";
+            if (string.IsNullOrEmpty(Request.Query["id"]))
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "شناسهٔ صفحه مشخص نیست.");
             }
@@ -66,6 +72,34 @@ namespace GanjooRazor.Areas.User.Pages
             }
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var putResponse = await client.PutAsync($"{APIRoot.Url}/api/ganjoor/page/{Request.Query["id"]}", new StringContent(JsonConvert.SerializeObject(ModifyModel), Encoding.UTF8, "application/json"));
+                    if (!putResponse.IsSuccessStatusCode)
+                    {
+                        LastMessage = await putResponse.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        return Redirect($"/User/ModifyPage?id={Request.Query["id"]}&edit=true");
+                    }
+                }
+                else
+                {
+                    LastMessage = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
+                }
+
+            }
+
+
+            return Page();
+
         }
     }
 }
