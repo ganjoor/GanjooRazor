@@ -21,10 +21,6 @@ namespace GanjooRazor.Areas.User.Pages
         [BindProperty]
         public GanjoorModifyPageViewModel ModifyModel { get; set; }
 
-        /// <summary>
-        /// page id
-        /// </summary>
-        public int PageId { get; set; }
 
 
         public async Task<IActionResult> OnGetAsync()

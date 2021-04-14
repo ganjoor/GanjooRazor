@@ -43,6 +43,65 @@
             </td>
         </tr>
         <tr>
+            <td>
+                <span class="inputlabel">منبع (شعر): </span>
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <td><span>نام:</span> <input asp-for="ModifyModel.SourceName" /></td>
+                    </tr>
+                    <tr>
+                        <td><span>نشانی:</span> <input style="text-align:left;direction:ltr;" asp-for="ModifyModel.SourceUrlSlug" /></td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">دسته‌بندی کهن (شعر): </span>
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <td><span>نام:</span> <input asp-for="ModifyModel.OldTag" /></td>
+                    </tr>
+                    <tr>
+                        <td><span>نشانی:</span> <input style="text-align:left;direction:ltr;" asp-for="ModifyModel.OldTagPageUrl" /></td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">وزن (شعر): </span>
+            </td>
+            <td>
+                <input asp-for="ModifyModel.Rhythm" />
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">حروف قافیه (شعر): </span>
+            </td>
+            <td>
+                <input asp-for="ModifyModel.RhymeLetters" />
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="inputlabel">توضیح این ویرایش: </span>
+            </td>
+            <td>
+                <input asp-for="ModifyModel.Note" />
+
+            </td>
+        </tr>
+        <tr>
             <td colspan="2">
                 <button type="submit" name="approve" id="approve" style="width:100%;color:white;background-color:green">ذخیره</button>
             </td>
