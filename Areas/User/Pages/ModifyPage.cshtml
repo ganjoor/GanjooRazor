@@ -81,7 +81,13 @@
                 <span class="inputlabel">وزن (شعر): </span>
             </td>
             <td>
-                <input asp-for="ModifyModel.Rhythm" />
+                <input asp-for="ModifyModel.Rhythm" list="rythms" />
+                <datalist id="rythms">
+                    @foreach(var rythm in Model.Rhythms)
+                    {
+                    <option value="@rythm.Rhythm">@rythm.Rhythm</option>
+                    }
+                </datalist>
 
             </td>
         </tr>

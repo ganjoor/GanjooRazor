@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RMuseum.Models.Ganjoor;
 using RMuseum.Models.Ganjoor.ViewModels;
 using System.Net.Http;
 using System.Text;
@@ -24,6 +25,11 @@ namespace GanjooRazor.Areas.User.Pages
         public GanjoorModifyPageViewModel ModifyModel { get; set; }
 
         /// <summary>
+        /// rythm
+        /// </summary>
+        public GanjoorMetre[] Rhythms { get; set; }
+
+        /// <summary>
         /// last message
         /// </summary>
         public string LastMessage { get; set; }
@@ -37,6 +43,17 @@ namespace GanjooRazor.Areas.User.Pages
             }
             using (HttpClient client = new HttpClient())
             {
+
+                var rhythmResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/rhythms");
+                if(!rhythmResponse.IsSuccessStatusCode)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, await rhythmResponse.Content.ReadAsStringAsync());
+                }
+                rhythmResponse.EnsureSuccessStatusCode();
+
+                Rhythms = JsonConvert.DeserializeObject<GanjoorMetre[]>(await rhythmResponse.Content.ReadAsStringAsync());
+
+
                 var pageUrlResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/pageurl?id={Request.Query["id"]}");
 
                 if(!pageUrlResponse.IsSuccessStatusCode)
