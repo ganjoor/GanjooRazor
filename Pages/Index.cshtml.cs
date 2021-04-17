@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RMuseum.Models.Auth.Memory;
@@ -25,6 +26,18 @@ namespace GanjooRazor.Pages
     [IgnoreAntiforgeryToken(Order = 1001)]
     public partial class IndexModel : PageModel
     {
+
+        private readonly IConfiguration _configuration;
+
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="configuration"></param>
+        public IndexModel(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [BindProperty]
         public LoginViewModel LoginViewModel { get; set; }
 
@@ -424,6 +437,7 @@ namespace GanjooRazor.Pages
             IsPoemPage = false;
             IsHomePage = Request.Path == "/";
             PinterestUrl = Request.Query["pinterest_url"];
+            ViewData["GoogleAnalyticsCode"] = _configuration["GoogleAnalyticsCode"];
             GoogleBreadCrumbList breadCrumbList = new GoogleBreadCrumbList();
 
             using (HttpClient client = new HttpClient())
