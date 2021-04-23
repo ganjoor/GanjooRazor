@@ -7,6 +7,7 @@ using RMuseum.Models.Ganjoor.ViewModels;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GanjooRazor.Areas.Admin.Pages
@@ -61,9 +62,40 @@ namespace GanjooRazor.Areas.Admin.Pages
         }
 
         /// <summary>
-        /// post
+        /// edit
         /// </summary>
         /// <returns></returns>
+        public async Task<IActionResult> OnPutEditAsync(int id, string alt, string url, bool active)
+        {
+            LastMessage = "";
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    GanjoorSiteBannerModifyViewModel model = new GanjoorSiteBannerModifyViewModel()
+                    {
+                        AlternateText = alt,
+                        TargetUrl = url,
+                        Active = active
+                    };
+                    HttpResponseMessage response = await client.PutAsync($"{APIRoot.Url}/api/ganjoor/site/banner/{id}", new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json"));
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        LastMessage = await response.Content.ReadAsStringAsync();
+                    }
+
+
+                }
+                else
+                {
+                    LastMessage = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
+                }
+
+            }
+
+            return new JsonResult(true);
+        }
+
         public async Task<IActionResult> OnPostAsync(BannerUploadModel Upload)
         {
             LastMessage = "";
@@ -73,9 +105,9 @@ namespace GanjooRazor.Areas.Admin.Pages
                 {
                     MultipartFormDataContent form = new MultipartFormDataContent();
 
-                    using(MemoryStream stream = new MemoryStream())
+                    using (MemoryStream stream = new MemoryStream())
                     {
-    
+
                         form.Add(new StringContent(Upload.Alt), "alt");
                         form.Add(new StringContent(Upload.Url), "url");
 
@@ -88,10 +120,10 @@ namespace GanjooRazor.Areas.Admin.Pages
                         {
                             LastMessage = await response.Content.ReadAsStringAsync();
                         }
-                      
+
                     }
-                    
-                    
+
+
                 }
                 else
                 {

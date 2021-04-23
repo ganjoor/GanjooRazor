@@ -15,6 +15,29 @@
     <link rel="search" type="application/opensearchdescription+xml" title="گنجور" href="https://ganjoor.net/search.xml" />
     <script src="/lib/tinymce/tinymce.min.js"></script>
     <script>tinymce.init({ selector: 'textarea.editor', language: 'fa_IR' });</script>
+    <script>
+        function editBanner(bannerId) {
+            var url = '?handler=Edit';
+            var altInput = '#alt-' + bannerId.toString();
+            var urlInput = '#url-' + bannerId.toString();
+            var activeInput = '#active-' + bannerId.toString();
+
+            $.ajax({
+                type: "PUT",
+                url: url,
+                data: {
+                    id: bannerId,
+                    alt: $(altInput).val(),
+                    url: $(urlInput).val(),
+                    active: $(activeInput).is(":checked")
+                },
+                success: function () {
+                    alert('آگاهی به درستی ویرایش شد.')
+                },
+
+            });
+        }
+    </script>
 </head>
 
 <body>

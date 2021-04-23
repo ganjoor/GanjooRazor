@@ -21,30 +21,34 @@
 @if (Model.Banners != null)
 {
 <table>
-    <tr>
-        <td>کد</td>
-        <td>متن</td>
-        <td>نشانی</td>
-        <td>تصویر</td>
-        <td>فعال</td>
-    </tr>
+    
     @foreach (var banner in Model.Banners)
     {
-<tr>
-    <td>@banner.Id</td>
-    <td>@banner.AlternateText</td>
-    <td>@banner.TargetUrl</td>
-    <td><img src="@($"{GanjooRazor.APIRoot.Url}/{banner.ImageUrl}")" alt="@banner.AlternateText" width="200" /></td>
-    @if (banner.Active)
-    {
-        <td><input type="checkbox" checked /> </td>
-    }
-    else
-    {
-        <td><input type="checkbox" /> </td>
-    }
-
-</tr>
+    <tr>
+        <td>متن جایگزین: <input type="text" name="alt-@banner.Id" id="alt-@banner.Id" value="@banner.AlternateText" /> </td>
+        <td>نشانی مقصد:<input type="text" name="url-@banner.Id" id="url-@banner.Id" style="text-align:left;direction:ltr;" value=@banner.TargetUrl /> </td>
+        <td><img src="@($"{GanjooRazor.APIRoot.Url}/{banner.ImageUrl}")" alt="@banner.AlternateText" width="200" /></td>
+        @if (banner.Active)
+        {
+            <td>فعال <input type="checkbox" name="active-@banner.Id" id="active-@banner.Id" checked /> </td>
+        }
+        else
+        {
+            <td>فعال <input type="checkbox" name="active-@banner.Id" id="active-@banner.Id" /> </td>
+        }
+    <td>
+        <a role="button" onclick="editBanner(@banner.Id)" class="actionlink" title="ویرایش آگاهی">✎</a>
+    </td>
+    </tr>
     }
 </table>
+
+<div style="visibility:hidden">
+    <form method="post" id="editbannerform">
+        <input type="text" name="id" id="id" />
+        <input type="text" name="alt" id="alt" />
+        <input type="text" name="url" id="url" />
+        <input type="checkbox" name="active" id="active" />
+    </form>
+</div>
 }
