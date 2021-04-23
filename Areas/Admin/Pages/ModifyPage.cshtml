@@ -83,6 +83,7 @@
             <td>
                 <input asp-for="ModifyModel.Rhythm" list="rythms" />
                 <datalist id="rythms">
+                    @if(Model.Rhythms != null)
                     @foreach(var rythm in Model.Rhythms)
                     {
                     <option value="@rythm.Rhythm">@rythm.Rhythm</option>

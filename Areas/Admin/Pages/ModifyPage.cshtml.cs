@@ -104,7 +104,7 @@ namespace GanjooRazor.Areas.User.Pages
                     }
                     else
                     {
-                        return Redirect($"/User/ModifyPage?id={Request.Query["id"]}&edit=true");
+                        return Redirect($"/Admin/ModifyPage?id={Request.Query["id"]}&edit=true");
                     }
                 }
                 else
