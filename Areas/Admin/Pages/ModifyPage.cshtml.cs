@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GanjooRazor.Areas.User.Pages
+namespace GanjooRazor.Areas.Admin.Pages
 {
     public class ModifyPageModel : PageModel
     {
