@@ -24,7 +24,7 @@
     
     @foreach (var banner in Model.Banners)
     {
-    <tr>
+    <tr id="tr-@banner.Id">
         <td>متن جایگزین: <input type="text" name="alt-@banner.Id" id="alt-@banner.Id" value="@banner.AlternateText" /> </td>
         <td>نشانی مقصد:<input type="text" name="url-@banner.Id" id="url-@banner.Id" style="text-align:left;direction:ltr;" value=@banner.TargetUrl /> </td>
         <td><img src="@($"{GanjooRazor.APIRoot.Url}/{banner.ImageUrl}")" alt="@banner.AlternateText" width="200" /></td>
@@ -38,6 +38,7 @@
         }
     <td>
         <a role="button" onclick="editBanner(@banner.Id)" class="actionlink" title="ویرایش آگاهی">✎</a>
+        <a role="button" onclick="deleteBanner(@banner.Id)" class="actionlink" title="حذف آگاهی">🗑</a>
     </td>
     </tr>
     }

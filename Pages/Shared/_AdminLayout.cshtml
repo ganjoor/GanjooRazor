@@ -37,6 +37,25 @@
 
             });
         }
+
+        function deleteBanner(bannerId) {
+
+            if (!confirm('آیا از حذف این آگاهی اطمینان دارید؟'))
+                return;
+
+
+            $.ajax({
+                type: "DELETE",
+                url: '',
+                data: {
+                    id: bannerId
+                },
+                success: function () {
+                    var bannerIdBlockId = '#tr-' + bannerId;
+                    $(bannerIdBlockId).remove();
+                },
+            });
+        }
     </script>
 </head>
 

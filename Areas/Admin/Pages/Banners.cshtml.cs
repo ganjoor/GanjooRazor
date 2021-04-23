@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using RMuseum.Models.Ganjoor.ViewModels;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -93,6 +94,24 @@ namespace GanjooRazor.Areas.Admin.Pages
 
             }
 
+            return new JsonResult(true);
+        }
+
+        public async Task<IActionResult> OnDeleteAsync(int id)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var response = await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/site/banner?id={id}");
+
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");
+                    }
+
+                }
+            }
             return new JsonResult(true);
         }
 
