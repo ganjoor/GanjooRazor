@@ -17,3 +17,34 @@
     <input style="text-align:left;direction:ltr;" asp-for="Upload.Url" />
     <input type="submit" value="بارگذاری" />
 </form>
+
+@if (Model.Banners != null)
+{
+<table>
+    <tr>
+        <td>کد</td>
+        <td>متن</td>
+        <td>نشانی</td>
+        <td>تصویر</td>
+        <td>فعال</td>
+    </tr>
+    @foreach (var banner in Model.Banners)
+    {
+<tr>
+    <td>@banner.Id</td>
+    <td>@banner.AlternateText</td>
+    <td>@banner.TargetUrl</td>
+    <td><img src="@($"{GanjooRazor.APIRoot.Url}/{banner.ImageUrl}")" alt="@banner.AlternateText" width="200" /></td>
+    @if (banner.Active)
+    {
+        <td><input type="checkbox" checked /> </td>
+    }
+    else
+    {
+        <td><input type="checkbox" /> </td>
+    }
+
+</tr>
+    }
+</table>
+}

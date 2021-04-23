@@ -2,6 +2,8 @@
 using GanjooRazor.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
+using RMuseum.Models.Ganjoor.ViewModels;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -23,9 +25,39 @@ namespace GanjooRazor.Areas.Admin.Pages
         /// </summary>
         public string LastMessage { get; set; }
 
-        public void OnGet()
+
+        /// <summary>
+        /// banners
+        /// </summary>
+        public GanjoorSiteBannerViewModel[] Banners { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
             LastMessage = "";
+
+            using (HttpClient client = new HttpClient())
+            {
+                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                {
+                    var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/site/banners");
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        LastMessage = await response.Content.ReadAsStringAsync();
+                    }
+
+                    response.EnsureSuccessStatusCode();
+
+                    Banners = JsonConvert.DeserializeObject<GanjoorSiteBannerViewModel[]>(await response.Content.ReadAsStringAsync());
+
+                }
+                else
+                {
+                    LastMessage = "لطفا از گنجور خارج و مجددا به آن وارد شوید.";
+                }
+
+            }
+
+            return Page();
         }
 
         /// <summary>
