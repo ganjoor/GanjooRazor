@@ -502,6 +502,13 @@
 
                 <div class="spacer">&nbsp;</div>
 
+                @if(Model.Banner != null)
+                {
+                    <div style="margin:auto">
+                        <a href="@Model.Banner.TargetUrl"><img src="@($"{GanjooRazor.APIRoot.Url}/{Model.Banner.ImageUrl}")" alt="@Model.Banner.AlternateText" /></a>
+                    </div>
+                }
+
                 <div class="helpers">
 
                     <div class="cat">

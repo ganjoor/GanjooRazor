@@ -47,6 +47,11 @@ namespace GanjooRazor.Pages
         public string LastError { get; set; }
 
         /// <summary>
+        /// banner
+        /// </summary>
+        public GanjoorSiteBannerViewModel Banner { get; set; }
+
+        /// <summary>
         /// Login
         /// </summary>
         /// <returns></returns>
@@ -240,7 +245,11 @@ namespace GanjooRazor.Pages
             }
         }
 
-
+        /// <summary>
+        /// delete my comment
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> OnDeleteMyComment(int id)
         {
             using (HttpClient client = new HttpClient())
@@ -259,6 +268,12 @@ namespace GanjooRazor.Pages
             return new JsonResult(true);
         }
 
+        /// <summary>
+        /// edit my comment
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="comment"></param>
+        /// <returns></returns>
         public async Task<IActionResult> OnPutMyComment(int id, string comment)
         {
             using (HttpClient client = new HttpClient())
@@ -344,7 +359,9 @@ namespace GanjooRazor.Pages
             }
         }
 
-
+        /// <summary>
+        /// specify which comments belong to current user
+        /// </summary>
         private void _markMyComments()
         {
             if (GanjoorPage == null)
@@ -439,6 +456,7 @@ namespace GanjooRazor.Pages
             PinterestUrl = Request.Query["pinterest_url"];
             ViewData["GoogleAnalyticsCode"] = _configuration["GoogleAnalyticsCode"];
             GoogleBreadCrumbList breadCrumbList = new GoogleBreadCrumbList();
+            Banner = null;
 
             using (HttpClient client = new HttpClient())
             {
@@ -471,8 +489,8 @@ namespace GanjooRazor.Pages
                         {
                             return NotFound();
                         }
-                        LastError = await response.Content.ReadAsStringAsync();
-                        return new StatusCodeResult((int)response.StatusCode);
+                        LastError = await pageQuery.Content.ReadAsStringAsync();
+                        return new StatusCodeResult((int)pageQuery.StatusCode);
                     }
                     GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
                     GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/").Replace("http://ganjoor.net/", "/");
@@ -491,6 +509,22 @@ namespace GanjooRazor.Pages
                         case GanjoorPageType.CatPage:
                             IsCatPage = true;
                             break;
+                    }
+
+                    if(IsPoemPage)
+                    {
+                        var bannerQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/site/banner");
+                        if (!bannerQuery.IsSuccessStatusCode)
+                        { 
+                            LastError = await bannerQuery.Content.ReadAsStringAsync();
+                            return new StatusCodeResult((int)bannerQuery.StatusCode);
+                        }
+                        string bannerResponse = await bannerQuery.Content.ReadAsStringAsync();
+                        if(!string.IsNullOrEmpty(bannerResponse))
+                        {
+                            Banner = JObject.Parse(bannerResponse).ToObject<GanjoorSiteBannerViewModel>();
+                        }
+                        
                     }
                 }
             }
@@ -532,6 +566,7 @@ namespace GanjooRazor.Pages
                 }
                 breadCrumbList.AddItem(GanjoorPage.PoetOrCat.Cat.Title, GanjoorPage.PoetOrCat.Cat.FullUrl, "https://i.ganjoor.net/cat.png");
                 breadCrumbList.AddItem(GanjoorPage.Poem.Title, GanjoorPage.Poem.FullUrl, "https://i.ganjoor.net/poem.png");
+
 
             }
             else
