@@ -24,7 +24,9 @@ namespace GanjooRazor.Pages
         public string Query { get; set; }
         public int AuthorId { get; set; }
 
-        public List<GanjoorSearchVerseViewModel> Verses { get; set; }
+        public int CatId { get; set; }
+
+        public List<GanjoorPoemCompleteViewModel> Poems { get; set; }
 
         public string PagingToolsHtml { get; set; }
 
@@ -32,7 +34,8 @@ namespace GanjooRazor.Pages
         public async Task<IActionResult> OnGet()
         {
             Query = Request.Query["s"];
-            AuthorId = int.Parse(Request.Query["author"]);
+            AuthorId = string.IsNullOrEmpty(Request.Query["author"]) ? 0 : int.Parse(Request.Query["author"]);
+            CatId = string.IsNullOrEmpty(Request.Query["cat"]) ? 0 : int.Parse(Request.Query["cat"]);
 
             using (HttpClient client = new HttpClient())
             {
@@ -58,16 +61,46 @@ namespace GanjooRazor.Pages
                     pageNumber = int.Parse(Request.Query["page"]);
                 }
 
-                var searchQueryResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/verse/search?query={Query}&poetId={AuthorId}&PageNumber={pageNumber}&PageSize=20");
+                var searchQueryResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poems/search?term={Query}&poetId={AuthorId}&catId={CatId}&PageNumber={pageNumber}&PageSize=20");
+                if (!searchQueryResponse.IsSuccessStatusCode)
+                {
+                    return new StatusCodeResult((int)searchQueryResponse.StatusCode);
+                }
                 searchQueryResponse.EnsureSuccessStatusCode();
 
-                Verses = JArray.Parse(await searchQueryResponse.Content.ReadAsStringAsync()).ToObject<List<GanjoorSearchVerseViewModel>>();
-                if (Verses != null)
+                Poems = JArray.Parse(await searchQueryResponse.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoemCompleteViewModel>>();
+                if (Poems != null)
                 {
                     // highlight searched word
-                    foreach (var ganjoorSearchVerseViewModel in Verses)
+                    foreach (var poem in Poems)
                     {
-                        ganjoorSearchVerseViewModel.Text = Regex.Replace(ganjoorSearchVerseViewModel.Text, Query, $"<span class=\"hilite\">{Query}</span>", RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
+                        string[] queryParts = Query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                        int firstIndex = poem.PlainText.Length;
+                        for(int i=0; i<queryParts.Length; i++)
+                        {
+                            if(poem.PlainText.IndexOf(queryParts[i]) < firstIndex)
+                            {
+                                firstIndex = poem.PlainText.IndexOf(queryParts[i]);
+                            }
+                            
+                           
+                        }
+
+
+                       
+
+                        _preparePoemExcerpt(poem, firstIndex);
+
+
+
+                        for (int i = 0; i < queryParts.Length; i++)
+                        {
+                            string cssClass = i % 3 == 0 ? "hilite" : i % 3 == 1 ? "hilite2" : "hilite3";
+                            poem.PlainText = Regex.Replace(poem.PlainText, queryParts[i], $"<span class=\"{cssClass}\">{queryParts[i]}</span>", RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
+                        }
+
+                        
                     }
 
                     string paginationMetadata = searchQueryResponse.Headers.GetValues("paging-headers").FirstOrDefault();
@@ -77,6 +110,33 @@ namespace GanjooRazor.Pages
             }
 
             return Page();
+        }
+
+        private void _preparePoemExcerpt(GanjoorPoemCompleteViewModel poem, int leastIndex)
+        {
+            if (poem == null)
+            {
+                return;
+            }
+            if (leastIndex > 10)
+            {
+                leastIndex -= 10;
+            }
+            poem.PlainText = "..." +poem.PlainText.Substring(leastIndex);
+
+            if (poem.PlainText.Length > 300)
+            {
+                poem.PlainText = poem.PlainText.Substring(0, 250);
+                int n = poem.PlainText.LastIndexOf(' ');
+                if (n >= 0)
+                {
+                    poem.PlainText = poem.PlainText.Substring(0, n) + " ...";
+                }
+                else
+                {
+                    poem.PlainText += "...";
+                }
+            }
         }
 
         private string GeneratePagingBarHtml(string paginationMetadataJsonValue, string routeStartWithQueryStrings)

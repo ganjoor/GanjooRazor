@@ -69,28 +69,28 @@
 
       <div class="spacer">&nbsp;</div>
 
-      @foreach (var verse in Model.Verses)
+      @foreach (var poem in Model.Poems)
       {
 
-        <div class="sitem">
-          <h2>
-            <a href="@verse.PoemFullUrl">@verse.PoemFullTitle</a>
-          </h2>
-          <div class="spacer">&nbsp;</div>
-          <div class="sit">
+    <div class="sitem">
+        <h2>
+            <a href="@poem.FullUrl">@poem.FullTitle</a>
+        </h2>
+        <div class="spacer">&nbsp;</div>
+        <div class="sit">
 
-            @Html.Raw(verse.Text)
+            @Html.Raw(poem.PlainText)
 
             <p>
-              <br>
-              <a href="@verse.PoemFullUrl">متن کامل شعر را ببینید ...</a>
+                <br>
+                <a href="@poem.FullUrl">متن کامل شعر را ببینید ...</a>
             </p>
-          </div>
-
-          <img src="/image/poets/@(verse.PoetId).png" />
-
-          <div class="spacer">&nbsp;</div>
         </div>
+
+        <img src="@($"{GanjooRazor.APIRoot.Url}{poem.Category.Poet.ImageUrl}")" alt=@("{poem.Category.Poet.Name}") />
+
+        <div class="spacer">&nbsp;</div>
+    </div>
       }
 
       <div class="spacer">&nbsp;</div>
