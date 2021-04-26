@@ -15,7 +15,7 @@
                     }
                     else
                     {
-                        <option value="0" selected="selected">در آثار همه شاعران</option>
+                        <option value="0" selected>در آثار همه شاعران</option>
                     }
 
                     if (Model.Poets != null)
@@ -24,7 +24,7 @@
                         {
                             if (Model.GanjoorPage.PoetOrCat != null && poet.Id == Model.GanjoorPage.PoetOrCat.Poet.Id)
                             {
-                            <option value="@poet.Id" selected="selected">@Html.Raw(poet.Name)</option>
+                            <option value="@poet.Id" selected>@Html.Raw(poet.Name)</option>
                             }
                             else
                             {
@@ -45,7 +45,7 @@
                             {
                                 <option value="@Html.Raw(gran.Id)">@Html.Raw(gran.Title)</option>
                             }
-                            <option value="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Id)" selected="selected">@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)</option>
+                            <option value="@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Id)" selected>@Html.Raw(Model.GanjoorPage.PoetOrCat.Cat.Title)</option>
 
                             foreach (var child in Model.GanjoorPage.PoetOrCat.Cat.Children)
                             {

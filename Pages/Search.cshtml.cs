@@ -22,19 +22,17 @@ namespace GanjooRazor.Pages
         public List<GanjoorPoetViewModel> Poets { get; set; }
 
         public string Query { get; set; }
-        public int AuthorId { get; set; }
-
+        public int PoetId { get; set; }
         public int CatId { get; set; }
-
+        public GanjoorPoetCompleteViewModel Poet { get; set; }
         public List<GanjoorPoemCompleteViewModel> Poems { get; set; }
-
         public string PagingToolsHtml { get; set; }
 
 
         public async Task<IActionResult> OnGet()
         {
             Query = Request.Query["s"];
-            AuthorId = string.IsNullOrEmpty(Request.Query["author"]) ? 0 : int.Parse(Request.Query["author"]);
+            PoetId = string.IsNullOrEmpty(Request.Query["author"]) ? 0 : int.Parse(Request.Query["author"]);
             CatId = string.IsNullOrEmpty(Request.Query["cat"]) ? 0 : int.Parse(Request.Query["cat"]);
 
             using (HttpClient client = new HttpClient())
@@ -44,7 +42,7 @@ namespace GanjooRazor.Pages
                 var poetsResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poets?includeBio=false");
                 poetsResponse.EnsureSuccessStatusCode();
                 Poets = JArray.Parse(await poetsResponse.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoetViewModel>>();
-                var poetName = Poets.SingleOrDefault(p => p.Id == AuthorId);
+                var poetName = Poets.SingleOrDefault(p => p.Id == PoetId);
                 if (poetName != null)
                 {
                     ViewData["Title"] = $"گنجور &raquo; نتایج جستجو برای {Query} &raquo; {poetName?.Name}";
@@ -54,6 +52,14 @@ namespace GanjooRazor.Pages
                     ViewData["Title"] = $"گنجور &raquo; نتایج جستجو برای {Query}";
                 }
 
+                if(PoetId != 0)
+                {
+                    var poetResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poet/{PoetId}");
+                    poetResponse.EnsureSuccessStatusCode();
+
+                    Poet = JObject.Parse(await poetResponse.Content.ReadAsStringAsync()).ToObject<GanjoorPoetCompleteViewModel>();
+                }
+
                 // 2. search verses
                 int pageNumber = 1;
                 if (!string.IsNullOrEmpty(Request.Query["page"]))
@@ -61,7 +67,7 @@ namespace GanjooRazor.Pages
                     pageNumber = int.Parse(Request.Query["page"]);
                 }
 
-                var searchQueryResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poems/search?term={Query}&poetId={AuthorId}&catId={CatId}&PageNumber={pageNumber}&PageSize=20");
+                var searchQueryResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poems/search?term={Query}&poetId={PoetId}&catId={CatId}&PageNumber={pageNumber}&PageSize=20");
                 if (!searchQueryResponse.IsSuccessStatusCode)
                 {
                     return new StatusCodeResult((int)searchQueryResponse.StatusCode);
@@ -105,7 +111,7 @@ namespace GanjooRazor.Pages
 
                     string paginationMetadata = searchQueryResponse.Headers.GetValues("paging-headers").FirstOrDefault();
 
-                    PagingToolsHtml = GeneratePagingBarHtml(paginationMetadata, $"/search?s={Query}&author={AuthorId}");
+                    PagingToolsHtml = GeneratePagingBarHtml(paginationMetadata, $"/search?s={Query}&author={PoetId}");
                 }
             }
 
