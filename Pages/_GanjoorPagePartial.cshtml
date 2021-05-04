@@ -24,11 +24,11 @@
                         {
                             if (Model.GanjoorPage.PoetOrCat != null && poet.Id == Model.GanjoorPage.PoetOrCat.Poet.Id)
                             {
-                            <option value="@poet.Id" selected>@Html.Raw(poet.Name)</option>
+                            <option value="@poet.Id" selected>@Html.Raw(poet.Nickname)</option>
                             }
                             else
                             {
-                            <option value="@poet.Id">@Html.Raw(poet.Name)</option>
+                            <option value="@poet.Id">@Html.Raw(poet.Nickname)</option>
                                 }
 
                             }
