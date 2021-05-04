@@ -1,4 +1,7 @@
-﻿namespace GanjooRazor
+﻿using Microsoft.Extensions.Configuration;
+using System.IO;
+
+namespace GanjooRazor
 {
     /// <summary>
     /// API Root
@@ -12,8 +15,16 @@
         {
             get
             {
-                return "http://localhost:3439";
+                if (!string.IsNullOrEmpty(_url))
+                    return _url;
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json")
+                    .Build();
+                _url = configuration["APIRoot"];
+                return _url;
             }
         }
+
+        private static string _url = "";
     }
 }
