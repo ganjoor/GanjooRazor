@@ -31,7 +31,7 @@ namespace GanjooRazor.Pages
 
         public async Task<IActionResult> OnGet()
         {
-            Query = Request.Query["s"];
+            Query = Request.Query["s"].ApplyCorrectYeKe().Trim();
             PoetId = string.IsNullOrEmpty(Request.Query["author"]) ? 0 : int.Parse(Request.Query["author"]);
             CatId = string.IsNullOrEmpty(Request.Query["cat"]) ? 0 : int.Parse(Request.Query["cat"]);
 
@@ -80,22 +80,24 @@ namespace GanjooRazor.Pages
                     // highlight searched word
                     foreach (var poem in Poems)
                     {
-                        string[] queryParts = Query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        string[] queryParts = Query.Replace("\"", "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
                         int firstIndex = poem.PlainText.Length;
                         for(int i=0; i<queryParts.Length; i++)
                         {
                             if(poem.PlainText.IndexOf(queryParts[i]) < firstIndex)
                             {
-                                firstIndex = poem.PlainText.IndexOf(queryParts[i]);
+                                if(firstIndex >= 0)
+                                {
+                                    firstIndex = poem.PlainText.IndexOf(queryParts[i]);
+                                }
                             }
-                            
-                           
                         }
 
 
-                       
 
+                        if (firstIndex < 0)
+                            firstIndex = 0;
                         _preparePoemExcerpt(poem, firstIndex);
 
 
@@ -153,32 +155,33 @@ namespace GanjooRazor.Pages
             {
                 PaginationMetadata paginationMetadata = JsonConvert.DeserializeObject<PaginationMetadata>(paginationMetadataJsonValue);
 
-                if (paginationMetadata.totalPages > 1)
+                if (paginationMetadata.currentPage > 3)
                 {
-                    if (paginationMetadata.currentPage > 3)
+                    htmlText += $"[<a href=\"{routeStartWithQueryStrings}&page=1\">صفحهٔ اول</a>] …";
+                }
+                for (int i = (paginationMetadata.currentPage - 2); i <= (paginationMetadata.currentPage + 1); i++)
+                {
+                    if (i >= 1)
                     {
-                        htmlText += $"[<a href=\"{routeStartWithQueryStrings}&page=1\">صفحهٔ اول</a>] …";
-                    }
-                    for (int i = (paginationMetadata.currentPage - 2); i <= (paginationMetadata.currentPage + 2); i++)
-                    {
-                        if (i >= 1 && i <= paginationMetadata.totalPages)
+                        if(i == (paginationMetadata.currentPage + 1) && !paginationMetadata.hasNextPage)
                         {
-                            htmlText += " [";
-                            if (i == paginationMetadata.currentPage)
-                            {
-                                htmlText += i.ToPersianNumbers();
-                            }
-                            else
-                            {
-                                htmlText += $"<a href=\"{routeStartWithQueryStrings}&page={i}\">{i.ToPersianNumbers()}</a>";
-                            }
-                            htmlText += "] ";
+                            break;
                         }
+                        htmlText += " [";
+                        if (i == paginationMetadata.currentPage)
+                        {
+                            htmlText += i.ToPersianNumbers();
+                        }
+                        else
+                        {
+                            htmlText += $"<a href=\"{routeStartWithQueryStrings}&page={i}\">{i.ToPersianNumbers()}</a>";
+                        }
+                        htmlText += "] ";
                     }
-                    if (paginationMetadata.totalPages > (paginationMetadata.currentPage + 2))
-                    {
-                        htmlText += $"… [<a href=\"{routeStartWithQueryStrings}&page={paginationMetadata.totalPages}\">صفحهٔ آخر</a>]";
-                    }
+                }
+                if (paginationMetadata.hasNextPage)
+                {
+                    htmlText += $"… [<a href=\"{routeStartWithQueryStrings}&page={(paginationMetadata.currentPage + 1)}\">صفحهٔ بعد</a>]";
                 }
             }
 
