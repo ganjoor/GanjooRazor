@@ -27,7 +27,7 @@
     <tr id="tr-@banner.Id">
         <td>متن جایگزین: <input type="text" name="alt-@banner.Id" id="alt-@banner.Id" value="@banner.AlternateText" /> </td>
         <td>نشانی مقصد:<input type="text" name="url-@banner.Id" id="url-@banner.Id" style="text-align:left;direction:ltr;" value=@banner.TargetUrl /> </td>
-        <td><img src="@($"{GanjooRazor.APIRoot.Url}/{banner.ImageUrl}")" alt="@banner.AlternateText" width="200" /></td>
+        <td><img src="@($"{GanjooRazor.APIRoot.InternetUrl}/{banner.ImageUrl}")" alt="@banner.AlternateText" width="200" /></td>
         @if (banner.Active)
         {
             <td>فعال <input type="checkbox" name="active-@banner.Id" id="active-@banner.Id" checked /> </td>

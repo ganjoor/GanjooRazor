@@ -26,5 +26,24 @@ namespace GanjooRazor
         }
 
         private static string _url = "";
+
+        private static string _InternetUrl = "";
+
+        /// <summary>
+        /// internet accessible end point
+        /// </summary>
+        public static string InternetUrl
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_InternetUrl))
+                    return _InternetUrl;
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json")
+                    .Build();
+                _InternetUrl = configuration["GlobalAPIRoot"];
+                return _InternetUrl;
+            }
+        }
     }
 }

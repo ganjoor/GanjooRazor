@@ -137,8 +137,8 @@
                             @if (Model.GanjoorPage.SecondPoet != null)
                             {
                                 <div style="width:164px;margin:auto">
-                                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="@(GanjooRazor.APIRoot.Url + Model.GanjoorPage.PoetOrCat.Poet.ImageUrl)" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" style="width:auto;float:right" /></a>
-                                    <a href="@Html.Raw(Model.GanjoorPage.SecondPoet.FullUrl)"><img src="@(GanjooRazor.APIRoot.Url + Model.GanjoorPage.SecondPoet.ImageUrl)" alt="@Html.Raw(Model.GanjoorPage.SecondPoet.Name)" style="width:auto;float:right" /></a>
+                                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="@(GanjooRazor.APIRoot.InternetUrl + Model.GanjoorPage.PoetOrCat.Poet.ImageUrl)" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" style="width:auto;float:right" /></a>
+                                    <a href="@Html.Raw(Model.GanjoorPage.SecondPoet.FullUrl)"><img src="@(GanjooRazor.APIRoot.InternetUrl + Model.GanjoorPage.SecondPoet.ImageUrl)" alt="@Html.Raw(Model.GanjoorPage.SecondPoet.Name)" style="width:auto;float:right" /></a>
                                 </div>
                                 <div style="width:164px;margin:auto">
                                     @{
@@ -151,7 +151,7 @@
                             else
                             {
                                 <div style="width:82px;margin:auto">
-                                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="@(GanjooRazor.APIRoot.Url + Model.GanjoorPage.PoetOrCat.Poet.ImageUrl)" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" /></a>
+                                    <a href="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.FullUrl)"><img src="@(GanjooRazor.APIRoot.InternetUrl + Model.GanjoorPage.PoetOrCat.Poet.ImageUrl)" alt="@Html.Raw(Model.GanjoorPage.PoetOrCat.Poet.Name)" /></a>
                                 </div>
                                 <div style="width:100%;margin:auto">
                                     @{
@@ -509,7 +509,7 @@
                 @if(Model.Banner != null)
                 {
                     <div style="margin:auto">
-                        <a href="@Model.Banner.TargetUrl"><img src="@($"{GanjooRazor.APIRoot.Url}/{Model.Banner.ImageUrl}")" alt="@Model.Banner.AlternateText" /></a>
+                        <a href="@Model.Banner.TargetUrl"><img src="@($"{GanjooRazor.APIRoot.InternetUrl}/{Model.Banner.ImageUrl}")" alt="@Model.Banner.AlternateText" /></a>
                     </div>
                 }
 
