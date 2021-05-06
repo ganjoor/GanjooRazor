@@ -53,6 +53,7 @@ function isMember(element, classname) {
          if (classes == classname) return true; 
          var whitespace = /\s+/;
          if (!whitespace.test(classes)) return false;
+		 if (typeof classes != 'string') return false;
          var c = classes.split(whitespace);
          for(var i = 0; i < c.length; i++) {
              if (c[i] == classname) return true;
