@@ -504,9 +504,8 @@ namespace GanjooRazor.Pages
                         {
                             return NotFound();
                         }
-                        LastError = await pageQuery.Content.ReadAsStringAsync();
-                        return new StatusCodeResult((int)pageQuery.StatusCode);
                     }
+                    pageQuery.EnsureSuccessStatusCode();
                     GanjoorPage = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
                     GanjoorPage.HtmlText = GanjoorPage.HtmlText.Replace("https://ganjoor.net/", "/").Replace("http://ganjoor.net/", "/");
                     switch (GanjoorPage.GanjoorPageType)
@@ -529,11 +528,7 @@ namespace GanjooRazor.Pages
                     if(IsPoemPage)
                     {
                         var bannerQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/site/banner");
-                        if (!bannerQuery.IsSuccessStatusCode)
-                        { 
-                            LastError = await bannerQuery.Content.ReadAsStringAsync();
-                            return new StatusCodeResult((int)bannerQuery.StatusCode);
-                        }
+                        bannerQuery.EnsureSuccessStatusCode();
                         string bannerResponse = await bannerQuery.Content.ReadAsStringAsync();
                         if(!string.IsNullOrEmpty(bannerResponse))
                         {
@@ -628,11 +623,7 @@ namespace GanjooRazor.Pages
 
             ViewData["BrearCrumpList"] = breadCrumbList.ToString();
 
-            if(!string.IsNullOrEmpty(LastError))
-            {
-                var result = StatusCode(StatusCodes.Status500InternalServerError, LastError);
-                return result;
-            }
+            
             return Page();
         }
     }
