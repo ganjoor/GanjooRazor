@@ -30,7 +30,6 @@ namespace GanjooRazor.Pages
             _memoryCache = memoryCache;
         }
 
-
         public List<GanjoorPoetViewModel> Poets { get; set; }
 
         public string Query { get; set; }
@@ -91,10 +90,10 @@ namespace GanjooRazor.Pages
                     ViewData["Title"] = $"گنجور &raquo; نتایج جستجو برای {Query}";
                 }
 
-                if(PoetId != 0)
+                if (PoetId != 0)
                 {
                     await preparePoet(client);
-                   
+
                 }
 
                 // 2. search verses
@@ -105,10 +104,7 @@ namespace GanjooRazor.Pages
                 }
 
                 var searchQueryResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poems/search?term={Query}&poetId={PoetId}&catId={CatId}&PageNumber={pageNumber}&PageSize=20");
-                if (!searchQueryResponse.IsSuccessStatusCode)
-                {
-                    return new StatusCodeResult((int)searchQueryResponse.StatusCode);
-                }
+               
                 searchQueryResponse.EnsureSuccessStatusCode();
 
                 Poems = JArray.Parse(await searchQueryResponse.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoemCompleteViewModel>>();
@@ -120,11 +116,11 @@ namespace GanjooRazor.Pages
                         string[] queryParts = Query.Replace("\"", "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
                         int firstIndex = poem.PlainText.Length;
-                        for(int i=0; i<queryParts.Length; i++)
+                        for (int i = 0; i < queryParts.Length; i++)
                         {
-                            if(poem.PlainText.IndexOf(queryParts[i]) < firstIndex)
+                            if (poem.PlainText.IndexOf(queryParts[i]) < firstIndex)
                             {
-                                if(firstIndex >= 0)
+                                if (firstIndex >= 0)
                                 {
                                     firstIndex = poem.PlainText.IndexOf(queryParts[i]);
                                 }
@@ -145,7 +141,7 @@ namespace GanjooRazor.Pages
                             poem.PlainText = Regex.Replace(poem.PlainText, queryParts[i], $"<span class=\"{cssClass}\">{queryParts[i]}</span>", RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
                         }
 
-                        
+
                     }
 
                     string paginationMetadata = searchQueryResponse.Headers.GetValues("paging-headers").FirstOrDefault();
@@ -167,7 +163,7 @@ namespace GanjooRazor.Pages
             {
                 leastIndex -= 10;
             }
-            poem.PlainText = "..." +poem.PlainText.Substring(leastIndex);
+            poem.PlainText = "..." + poem.PlainText.Substring(leastIndex);
 
             if (poem.PlainText.Length > 300)
             {
@@ -192,39 +188,38 @@ namespace GanjooRazor.Pages
             {
                 PaginationMetadata paginationMetadata = JsonConvert.DeserializeObject<PaginationMetadata>(paginationMetadataJsonValue);
 
-                if (paginationMetadata.currentPage > 3)
+                if (paginationMetadata.totalPages > 1)
                 {
-                    htmlText += $"[<a href=\"{routeStartWithQueryStrings}&page=1\">صفحهٔ اول</a>] …";
-                }
-                for (int i = (paginationMetadata.currentPage - 2); i <= (paginationMetadata.currentPage + 1); i++)
-                {
-                    if (i >= 1)
+                    if (paginationMetadata.currentPage > 3)
                     {
-                        if(i == (paginationMetadata.currentPage + 1) && !paginationMetadata.hasNextPage)
-                        {
-                            break;
-                        }
-                        htmlText += " [";
-                        if (i == paginationMetadata.currentPage)
-                        {
-                            htmlText += i.ToPersianNumbers();
-                        }
-                        else
-                        {
-                            htmlText += $"<a href=\"{routeStartWithQueryStrings}&page={i}\">{i.ToPersianNumbers()}</a>";
-                        }
-                        htmlText += "] ";
+                        htmlText += $"[<a href=\"{routeStartWithQueryStrings}&page=1\">صفحهٔ اول</a>] …";
                     }
-                }
-                if (paginationMetadata.hasNextPage)
-                {
-                    htmlText += $"… [<a href=\"{routeStartWithQueryStrings}&page={(paginationMetadata.currentPage + 1)}\">صفحهٔ بعد</a>]";
+                    for (int i = (paginationMetadata.currentPage - 2); i <= (paginationMetadata.currentPage + 2); i++)
+                    {
+                        if (i >= 1 && i <= paginationMetadata.totalPages)
+                        {
+                            htmlText += " [";
+                            if (i == paginationMetadata.currentPage)
+                            {
+                                htmlText += i.ToPersianNumbers();
+                            }
+                            else
+                            {
+                                htmlText += $"<a href=\"{routeStartWithQueryStrings}&page={i}\">{i.ToPersianNumbers()}</a>";
+                            }
+                            htmlText += "] ";
+                        }
+                    }
+                    if (paginationMetadata.totalPages > (paginationMetadata.currentPage + 2))
+                    {
+                        htmlText += $"… [<a href=\"{routeStartWithQueryStrings}&page={paginationMetadata.totalPages}\">صفحهٔ آخر</a>]";
+                    }
                 }
             }
 
             htmlText += $"</p>{Environment.NewLine}";
             return htmlText;
         }
-
     }
+
 }
