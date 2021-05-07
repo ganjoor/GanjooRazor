@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -26,16 +27,25 @@ namespace GanjooRazor.Pages
     [IgnoreAntiforgeryToken(Order = 1001)]
     public partial class IndexModel : PageModel
     {
-
+        /// <summary>
+        /// configration file reader (appsettings.json)
+        /// </summary>
         private readonly IConfiguration _configuration;
+
+        /// <summary>
+        /// IMemoryCache
+        /// </summary>
+        protected readonly IMemoryCache _memoryCache;
 
         /// <summary>
         /// constructor
         /// </summary>
         /// <param name="configuration"></param>
-        public IndexModel(IConfiguration configuration)
+        /// <param name="memoryCache"></param>
+        public IndexModel(IConfiguration configuration, IMemoryCache memoryCache)
         {
             _configuration = configuration;
+            _memoryCache = memoryCache;
         }
 
         [BindProperty]
@@ -440,6 +450,21 @@ namespace GanjooRazor.Pages
             return audiodesc;
         }
 
+        private async Task preparePoets(HttpClient client, bool includeBio)
+        {
+            var cacheKey = $"/api/ganjoor/poets?includeBio={includeBio}";
+            if(!_memoryCache.TryGetValue(cacheKey, out List<GanjoorPoetViewModel> poets))
+            {
+                var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poets?includeBio={includeBio}");
+                response.EnsureSuccessStatusCode();
+                poets = JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoetViewModel>>();
+
+                _memoryCache.Set(cacheKey, poets);
+            }
+
+            Poets = poets;
+        }
+
         /// <summary>
         /// Get
         /// </summary>
@@ -468,17 +493,7 @@ namespace GanjooRazor.Pages
                     return Redirect(pageUrl);
                 }
 
-                var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poets?includeBio=false");
-
-                if(!response.IsSuccessStatusCode)
-                {
-                    LastError = await response.Content.ReadAsStringAsync();
-                    return new StatusCodeResult((int)response.StatusCode);
-                }
-
-                response.EnsureSuccessStatusCode();
-
-                Poets = JArray.Parse(await response.Content.ReadAsStringAsync()).ToObject<List<GanjoorPoetViewModel>>();
+                await preparePoets(client, false);
 
                 if (!IsHomePage)
                 {
