@@ -14,6 +14,19 @@ namespace GanjooRazor.Areas.Admin.Pages
 {
     public class ModifyPageModel : PageModel
     {
+        /// <summary>
+        /// HttpClient instance
+        /// </summary>
+        private readonly HttpClient _httpClient;
+
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="httpClient"></param>
+        public ModifyPageModel(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
 
         /// <summary>
         /// Corresponding Ganojoor Page
@@ -41,63 +54,55 @@ namespace GanjooRazor.Areas.Admin.Pages
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "شناسهٔ صفحه مشخص نیست.");
             }
-            using (HttpClient client = new HttpClient())
+            var rhythmResponse = await _httpClient.GetAsync($"{APIRoot.Url}/api/ganjoor/rhythms");
+
+            rhythmResponse.EnsureSuccessStatusCode();
+
+            Rhythms = JsonConvert.DeserializeObject<GanjoorMetre[]>(await rhythmResponse.Content.ReadAsStringAsync());
+
+
+            var pageUrlResponse = await _httpClient.GetAsync($"{APIRoot.Url}/api/ganjoor/pageurl?id={Request.Query["id"]}");
+
+            if (!pageUrlResponse.IsSuccessStatusCode)
             {
-
-                var rhythmResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/rhythms");
-                if(!rhythmResponse.IsSuccessStatusCode)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, await rhythmResponse.Content.ReadAsStringAsync());
-                }
-                rhythmResponse.EnsureSuccessStatusCode();
-
-                Rhythms = JsonConvert.DeserializeObject<GanjoorMetre[]>(await rhythmResponse.Content.ReadAsStringAsync());
-
-
-                var pageUrlResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/pageurl?id={Request.Query["id"]}");
-
-                if(!pageUrlResponse.IsSuccessStatusCode)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, await pageUrlResponse.Content.ReadAsStringAsync());
-                }
-
-                pageUrlResponse.EnsureSuccessStatusCode();
-
-                var pageUrl = JsonConvert.DeserializeObject<string>(await pageUrlResponse.Content.ReadAsStringAsync());
-
-                var pageQuery = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/page?url={pageUrl}");
-                if (!pageQuery.IsSuccessStatusCode)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, await pageQuery.Content.ReadAsStringAsync());
-                }
-                GanjoorPageCompleteViewModel page = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
-
-                ModifyModel = new GanjoorModifyPageViewModel()
-                {
-                    Title = page.Title,
-                    UrlSlug = page.UrlSlug,
-                    HtmlText = page.HtmlText,
-                    Note = "",
-                    SourceName = page.Poem == null ? null : page.Poem.SourceName,
-                    SourceUrlSlug = page.Poem == null ? null : page.Poem.SourceUrlSlug,
-                    OldTag = page.Poem == null ? null : page.Poem.OldTag,
-                    OldTagPageUrl = page.Poem == null ? null : page.Poem.OldTagPageUrl,
-                    RhymeLetters = page.Poem == null ? null : page.Poem.RhymeLetters,
-                    Rhythm = page.Poem == null ? null : page.Poem.GanjoorMetre == null ? null : page.Poem.GanjoorMetre.Rhythm
-                };
-
+                return StatusCode(StatusCodes.Status500InternalServerError, await pageUrlResponse.Content.ReadAsStringAsync());
             }
+
+            pageUrlResponse.EnsureSuccessStatusCode();
+
+            var pageUrl = JsonConvert.DeserializeObject<string>(await pageUrlResponse.Content.ReadAsStringAsync());
+
+            var pageQuery = await _httpClient.GetAsync($"{APIRoot.Url}/api/ganjoor/page?url={pageUrl}");
+            if (!pageQuery.IsSuccessStatusCode)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, await pageQuery.Content.ReadAsStringAsync());
+            }
+            GanjoorPageCompleteViewModel page = JObject.Parse(await pageQuery.Content.ReadAsStringAsync()).ToObject<GanjoorPageCompleteViewModel>();
+
+            ModifyModel = new GanjoorModifyPageViewModel()
+            {
+                Title = page.Title,
+                UrlSlug = page.UrlSlug,
+                HtmlText = page.HtmlText,
+                Note = "",
+                SourceName = page.Poem == null ? null : page.Poem.SourceName,
+                SourceUrlSlug = page.Poem == null ? null : page.Poem.SourceUrlSlug,
+                OldTag = page.Poem == null ? null : page.Poem.OldTag,
+                OldTagPageUrl = page.Poem == null ? null : page.Poem.OldTagPageUrl,
+                RhymeLetters = page.Poem == null ? null : page.Poem.RhymeLetters,
+                Rhythm = page.Poem == null ? null : page.Poem.GanjoorMetre == null ? null : page.Poem.GanjoorMetre.Rhythm
+            };
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var putResponse = await client.PutAsync($"{APIRoot.Url}/api/ganjoor/page/{Request.Query["id"]}", new StringContent(JsonConvert.SerializeObject(ModifyModel), Encoding.UTF8, "application/json"));
+                    var putResponse = await secureClient.PutAsync($"{APIRoot.Url}/api/ganjoor/page/{Request.Query["id"]}", new StringContent(JsonConvert.SerializeObject(ModifyModel), Encoding.UTF8, "application/json"));
                     if (!putResponse.IsSuccessStatusCode)
                     {
                         LastMessage = await putResponse.Content.ReadAsStringAsync();

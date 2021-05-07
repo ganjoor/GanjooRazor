@@ -13,6 +13,19 @@ namespace GanjooRazor.Pages
 {
     public class AudioClipModel : PageModel
     {
+        /// <summary>
+        /// HttpClient instance
+        /// </summary>
+        private readonly HttpClient _httpClient;
+
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="httpClient"></param>
+        public AudioClipModel(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
 
         /// <summary>
         /// recitation
@@ -31,19 +44,15 @@ namespace GanjooRazor.Pages
                 return BadRequest();
             }
 
-            using (HttpClient client = new HttpClient())
-            {
-                var response = await client.GetAsync($"{APIRoot.Url}/api/audio/published/{Request.Query["a"]}");
-                response.EnsureSuccessStatusCode();
+            var response = await _httpClient.GetAsync($"{APIRoot.Url}/api/audio/published/{Request.Query["a"]}");
+            response.EnsureSuccessStatusCode();
 
-                Recitation = JsonConvert.DeserializeObject<PublicRecitationViewModel>(await response.Content.ReadAsStringAsync());
+            Recitation = JsonConvert.DeserializeObject<PublicRecitationViewModel>(await response.Content.ReadAsStringAsync());
 
-                var responsePoem = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{Recitation.PoemId}?rhymes=false&recitations=false&images=false&songs=false&comments=false&navigation=false");
-                responsePoem.EnsureSuccessStatusCode();
+            var responsePoem = await _httpClient.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{Recitation.PoemId}?rhymes=false&recitations=false&images=false&songs=false&comments=false&navigation=false");
+            responsePoem.EnsureSuccessStatusCode();
 
-                Poem = JsonConvert.DeserializeObject<GanjoorPoemCompleteViewModel>(await responsePoem.Content.ReadAsStringAsync());
-
-            }
+            Poem = JsonConvert.DeserializeObject<GanjoorPoemCompleteViewModel>(await responsePoem.Content.ReadAsStringAsync());
 
             return Page();
 

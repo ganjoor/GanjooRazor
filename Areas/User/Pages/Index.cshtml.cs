@@ -44,11 +44,11 @@ namespace GanjooRazor.Areas.Panel.Pages
 
         private async Task _PreparePage()
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var userInfoResponse = await client.GetAsync($"{APIRoot.Url}/api/users/{Request.Cookies["UserId"]}");
+                    var userInfoResponse = await secureClient.GetAsync($"{APIRoot.Url}/api/users/{Request.Cookies["UserId"]}");
                     if (userInfoResponse.IsSuccessStatusCode)
                     {
                         PublicRAppUser userInfo = JsonConvert.DeserializeObject<PublicRAppUser>(await userInfoResponse.Content.ReadAsStringAsync());
@@ -86,16 +86,16 @@ namespace GanjooRazor.Areas.Panel.Pages
         {
             LastError = "";
             PasswordChanged = "";
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var isAdminResponse = await client.GetAsync($"{APIRoot.Url}/api/users/isadmin?userId={Request.Cookies["UserId"]}");
+                    var isAdminResponse = await secureClient.GetAsync($"{APIRoot.Url}/api/users/isadmin?userId={Request.Cookies["UserId"]}");
                     if (isAdminResponse.IsSuccessStatusCode)
                     {
                         UserInfo.IsAdmin = JsonConvert.DeserializeObject<bool>(await isAdminResponse.Content.ReadAsStringAsync());
 
-                        var putResponse = await client.PutAsync($"{APIRoot.Url}/api/users/{Request.Cookies["UserId"]}", new StringContent(JsonConvert.SerializeObject(UserInfo), Encoding.UTF8, "application/json"));
+                        var putResponse = await secureClient.PutAsync($"{APIRoot.Url}/api/users/{Request.Cookies["UserId"]}", new StringContent(JsonConvert.SerializeObject(UserInfo), Encoding.UTF8, "application/json"));
 
                         if(!putResponse.IsSuccessStatusCode)
                         {
@@ -130,11 +130,11 @@ namespace GanjooRazor.Areas.Panel.Pages
                 LastError = "گذرواژهٔ جدید با گذرواژهٔ کنونی یکسان است.";
                 return Page();
             }
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var changePassResp = await client.PostAsync($"{APIRoot.Url}/api/users/setmypassword", 
+                    var changePassResp = await secureClient.PostAsync($"{APIRoot.Url}/api/users/setmypassword", 
                         new StringContent(JsonConvert.SerializeObject
                             (
                             new SetPasswordModel()

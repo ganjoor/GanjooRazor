@@ -39,8 +39,8 @@ namespace GanjooRazor.Areas.User.Pages
         public async Task<IActionResult> OnGetAsync()
         {
             LastError = "";
-            using (HttpClient client = new HttpClient())
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+            using (HttpClient secureClient = new HttpClient())
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
                     {
                         int pageNumber = 1;
@@ -48,7 +48,7 @@ namespace GanjooRazor.Areas.User.Pages
                         {
                             pageNumber = int.Parse(Request.Query["page"]);
                         }
-                        var response = await client.GetAsync($"{APIRoot.Url}/api/notifications/paginated?PageNumber={pageNumber}&PageSize=20");
+                        var response = await secureClient.GetAsync($"{APIRoot.Url}/api/notifications/paginated?PageNumber={pageNumber}&PageSize=20");
                         if (!response.IsSuccessStatusCode)
                         {
                             LastError = await response.Content.ReadAsStringAsync();
@@ -139,11 +139,11 @@ namespace GanjooRazor.Areas.User.Pages
 
         public async Task<IActionResult> OnDeleteNotification(Guid id)
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var response = await client.DeleteAsync($"{APIRoot.Url}/api/notifications/{id}");
+                    var response = await secureClient.DeleteAsync($"{APIRoot.Url}/api/notifications/{id}");
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {

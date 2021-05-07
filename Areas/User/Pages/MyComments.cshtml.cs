@@ -38,8 +38,8 @@ namespace GanjooRazor.Areas.User.Pages
         public async Task<IActionResult> OnGetAsync()
         {
             LastError = "";
-            using (HttpClient client = new HttpClient())
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+            using (HttpClient secureClient = new HttpClient())
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
                     {
                         int pageNumber = 1;
@@ -47,7 +47,7 @@ namespace GanjooRazor.Areas.User.Pages
                         {
                             pageNumber = int.Parse(Request.Query["page"]);
                         }
-                        var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/comments/mine?PageNumber={pageNumber}&PageSize=20");
+                        var response = await secureClient.GetAsync($"{APIRoot.Url}/api/ganjoor/comments/mine?PageNumber={pageNumber}&PageSize=20");
                         if (!response.IsSuccessStatusCode)
                         {
                             LastError = await response.Content.ReadAsStringAsync();
@@ -139,11 +139,11 @@ namespace GanjooRazor.Areas.User.Pages
 
         public async Task<IActionResult> OnDeleteMyComment(int id)
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var response = await client.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment?id={id}");
+                    var response = await secureClient.DeleteAsync($"{APIRoot.Url}/api/ganjoor/comment?id={id}");
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
@@ -157,11 +157,11 @@ namespace GanjooRazor.Areas.User.Pages
 
         public async Task<IActionResult> OnPutMyComment(int id, string comment)
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var response = await client.PutAsync($"{APIRoot.Url}/api/ganjoor/comment/{id}", new StringContent(JsonConvert.SerializeObject(comment), Encoding.UTF8, "application/json"));
+                    var response = await secureClient.PutAsync($"{APIRoot.Url}/api/ganjoor/comment/{id}", new StringContent(JsonConvert.SerializeObject(comment), Encoding.UTF8, "application/json"));
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
                         return Redirect($"/login?redirect={Request.Path}&error={await response.Content.ReadAsStringAsync()}");

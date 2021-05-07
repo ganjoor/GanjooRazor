@@ -17,6 +17,19 @@ namespace GanjooRazor.Pages
     public class GolhaModel : PageModel
     {
         /// <summary>
+        /// HttpClient instance
+        /// </summary>
+        private readonly HttpClient _httpClient;
+
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="httpClient"></param>
+        public GolhaModel(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+        /// <summary>
         /// is logged on
         /// </summary>
         public bool LoggedIn { get; set; }
@@ -52,9 +65,9 @@ namespace GanjooRazor.Pages
         [BindProperty]
         public PoemMusicTrackViewModel PoemMusicTrackViewModel { get; set; }
 
-        private async Task _GetSuggestedSongs(HttpClient client)
+        private async Task _GetSuggestedSongs()
         {
-            var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{PoemId}/songs/?approved=false&trackType={(int)PoemMusicTrackType.Golha}");
+            var response = await _httpClient.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{PoemId}/songs/?approved=false&trackType={(int)PoemMusicTrackType.Golha}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -81,10 +94,7 @@ namespace GanjooRazor.Pages
                 PoemId = 0;
             }
 
-            using (HttpClient client = new HttpClient())
-            {
-                await _GetSuggestedSongs(client);
-            }
+            await _GetSuggestedSongs();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -96,13 +106,13 @@ namespace GanjooRazor.Pages
             PoemMusicTrackViewModel.TrackType = PoemMusicTrackType.Golha;
             InsertedSongId = 0;
 
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
                     var stringContent = new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json");
                     var methodUrl = $"{APIRoot.Url}/api/ganjoor/song";
-                    var response = await client.PostAsync(methodUrl, stringContent);
+                    var response = await secureClient.PostAsync(methodUrl, stringContent);
                     if (!response.IsSuccessStatusCode)
                     {
                         LastError = await response.Content.ReadAsStringAsync();
@@ -120,7 +130,7 @@ namespace GanjooRazor.Pages
                 }
                 
 
-                await _GetSuggestedSongs(client);
+                await _GetSuggestedSongs();
             }
 
             return Page();
@@ -133,18 +143,15 @@ namespace GanjooRazor.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPostFillProgramsAsync(int collection)
         {
-            using (HttpClient client = new HttpClient())
+            var response = await _httpClient.GetAsync($"{APIRoot.Url}/api/musiccatalogue/golha/collection/{collection}/programs");
+
+            GolhaProgramViewModel[] programs = new GolhaProgramViewModel[] { };
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                var response = await client.GetAsync($"{APIRoot.Url}/api/musiccatalogue/golha/collection/{collection}/programs");
-
-                GolhaProgramViewModel[] programs = new GolhaProgramViewModel[] { };
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    programs = JsonConvert.DeserializeObject<GolhaProgramViewModel[]>(await response.Content.ReadAsStringAsync());
-                }
-                return new OkObjectResult(programs);
+                programs = JsonConvert.DeserializeObject<GolhaProgramViewModel[]>(await response.Content.ReadAsStringAsync());
             }
+            return new OkObjectResult(programs);
         }
 
         /// <summary>
@@ -154,18 +161,15 @@ namespace GanjooRazor.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPostFillTracksAsync(int program)
         {
-            using (HttpClient client = new HttpClient())
+            var response = await _httpClient.GetAsync($"{APIRoot.Url}/api/musiccatalogue/golha/program/{program}/tracks");
+
+            GolhaTrackViewModel[] tracks = new GolhaTrackViewModel[] { };
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                var response = await client.GetAsync($"{APIRoot.Url}/api/musiccatalogue/golha/program/{program}/tracks");
-
-                GolhaTrackViewModel[] tracks = new GolhaTrackViewModel[] { };
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    tracks = JsonConvert.DeserializeObject<GolhaTrackViewModel[]>(await response.Content.ReadAsStringAsync());
-                }
-                return new OkObjectResult(tracks);
+                tracks = JsonConvert.DeserializeObject<GolhaTrackViewModel[]>(await response.Content.ReadAsStringAsync());
             }
+            return new OkObjectResult(tracks);
         }
     }
 }

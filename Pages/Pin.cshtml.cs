@@ -47,9 +47,9 @@ namespace GanjooRazor.Pages
             else
             if (Request.Query["final"] == "1")
             {
-                using (HttpClient client = new HttpClient())
+                using (HttpClient secureClient = new HttpClient())
                 {
-                    if(await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                    if(await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                     {
                         PinterestLinkViewModel model = new PinterestLinkViewModel()
                         {
@@ -62,7 +62,7 @@ namespace GanjooRazor.Pages
                             PinterestImageUrl = RelatedImageSuggestionModel.PinterestImageUrl
                         };
                         var stringContent = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-                        var response = await client.PostAsync($"{APIRoot.Url}/api/artifacts/pinterest", stringContent);
+                        var response = await secureClient.PostAsync($"{APIRoot.Url}/api/artifacts/pinterest", stringContent);
 
                         if (response.StatusCode != HttpStatusCode.OK)
                         {

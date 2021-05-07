@@ -60,14 +60,14 @@ namespace GanjooRazor.Pages
             LoginViewModel.ClientAppName = "GanjooRazor";
             LoginViewModel.Language = "fa-IR";
 
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
                 if(string.IsNullOrEmpty(LoginViewModel.Username))
                 {
-                    if(await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                    if(await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                     {
                         var logoutUrl = $"{APIRoot.Url}/api/users/delsession?userId={Request.Cookies["UserId"]}&sessionId={Request.Cookies["SessionId"]}";
-                        await client.DeleteAsync(logoutUrl);
+                        await secureClient.DeleteAsync(logoutUrl);
                     }
                     
 
@@ -91,7 +91,7 @@ namespace GanjooRazor.Pages
                 {
                     var stringContent = new StringContent(JsonConvert.SerializeObject(LoginViewModel), Encoding.UTF8, "application/json");
                     var loginUrl = $"{APIRoot.Url}/api/users/login";
-                    var response = await client.PostAsync(loginUrl, stringContent);
+                    var response = await secureClient.PostAsync(loginUrl, stringContent);
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {

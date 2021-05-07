@@ -22,6 +22,20 @@ namespace GanjooRazor.Pages
     public class BpModel : PageModel
     {
         /// <summary>
+        /// HttpClient instance
+        /// </summary>
+        private readonly HttpClient _httpClient;
+
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="httpClient"></param>
+        public BpModel(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        /// <summary>
         /// is logged on
         /// </summary>
         public bool LoggedIn { get; set; }
@@ -58,9 +72,9 @@ namespace GanjooRazor.Pages
         [BindProperty]
         public PoemMusicTrackViewModel PoemMusicTrackViewModel { get; set; }
 
-        private async Task _GetSuggestedSongs(HttpClient client)
+        private async Task _GetSuggestedSongs()
         {
-            var response = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{PoemId}/songs/?approved=false&trackType={(int)PoemMusicTrackType.BeepTunesOrKhosousi}");
+            var response = await _httpClient.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{PoemId}/songs/?approved=false&trackType={(int)PoemMusicTrackType.BeepTunesOrKhosousi}");
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -88,10 +102,7 @@ namespace GanjooRazor.Pages
                 PoemMusicTrackViewModel.PoemId = 0;
             }
 
-            using (HttpClient client = new HttpClient())
-            {
-                await _GetSuggestedSongs(client);
-            }
+            await _GetSuggestedSongs();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -103,13 +114,13 @@ namespace GanjooRazor.Pages
             PoemMusicTrackViewModel.TrackType = PoemMusicTrackType.BeepTunesOrKhosousi;
             InsertedSongId = 0;
 
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
                     var stringContent = new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json");
                     var methodUrl = $"{APIRoot.Url}/api/ganjoor/song";
-                    var response = await client.PostAsync(methodUrl, stringContent);
+                    var response = await secureClient.PostAsync(methodUrl, stringContent);
                     if (!response.IsSuccessStatusCode)
                     {
                         LastError = await response.Content.ReadAsStringAsync();
@@ -127,8 +138,10 @@ namespace GanjooRazor.Pages
                 }
                
 
-                await _GetSuggestedSongs(client);
+                
             }
+
+            await _GetSuggestedSongs();
 
             return Page();
         }
@@ -141,45 +154,41 @@ namespace GanjooRazor.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPostSearchByArtistNameAsync(string search)
         {
-            using (HttpClient client = new HttpClient())
+            var response = await _httpClient.GetAsync($"https://newapi.beeptunes.com/public/search?albumCount=0&artistCount=100&text={search}&trackCount=0");
+
+            List<NameIdUrlImage> artists = new List<NameIdUrlImage>();
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                
-                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/search?albumCount=0&artistCount=100&text={search}&trackCount=0");
-
-                List<NameIdUrlImage> artists = new List<NameIdUrlImage>();
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                BpSearchResponseModel bpResponse = JsonConvert.DeserializeObject<BpSearchResponseModel>(await response.Content.ReadAsStringAsync());
+                foreach (var artist in bpResponse.Artists)
                 {
-                    BpSearchResponseModel bpResponse = JsonConvert.DeserializeObject<BpSearchResponseModel>(await response.Content.ReadAsStringAsync());
-                    foreach(var artist in bpResponse.Artists)
-                    {
-                        artists.Add
-                            (
-                            new NameIdUrlImage()
-                            {
-                                Id = artist.Id,
-                                Name = artist.ArtisticName,
-                                Url = artist.Url,
-                                Image = artist.Picture
-                            }
-                            );
-                    }
-
+                    artists.Add
+                        (
+                        new NameIdUrlImage()
+                        {
+                            Id = artist.Id,
+                            Name = artist.ArtisticName,
+                            Url = artist.Url,
+                            Image = artist.Picture
+                        }
+                        );
                 }
 
-
-                return new PartialViewResult()
-                {
-                    ViewName = "_SpotifySearchPartial",
-                    ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                    {
-                        Model = new _SpotifySearchPartialModel()
-                        {
-                            Artists = artists.ToArray()
-                        }
-                    }
-                };
             }
+
+
+            return new PartialViewResult()
+            {
+                ViewName = "_SpotifySearchPartial",
+                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = new _SpotifySearchPartialModel()
+                    {
+                        Artists = artists.ToArray()
+                    }
+                }
+            };
         }
 
         /// <summary>
@@ -189,22 +198,19 @@ namespace GanjooRazor.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPostFillAlbumsAsync(string artist)
         {
-            using (HttpClient client = new HttpClient())
+            var response = await _httpClient.GetAsync($"https://newapi.beeptunes.com/public/artist/albums?artistId={artist}&begin=0&size=1000");
+
+            NameIdUrlImage[] albums = new NameIdUrlImage[] { };
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/artist/albums?artistId={artist}&begin=0&size=1000");
-
-                NameIdUrlImage[] albums = new NameIdUrlImage[] { };
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                albums = JsonConvert.DeserializeObject<NameIdUrlImage[]>(await response.Content.ReadAsStringAsync());
+                foreach (var album in albums)
                 {
-                    albums = JsonConvert.DeserializeObject<NameIdUrlImage[]>(await response.Content.ReadAsStringAsync());
-                    foreach(var album in albums)
-                    {
-                        album.Url = $"https://beeptunes.com/album/{album.Id}";
-                    }
+                    album.Url = $"https://beeptunes.com/album/{album.Id}";
                 }
-                return new OkObjectResult(albums);
             }
+            return new OkObjectResult(albums);
         }
 
         /// <summary>
@@ -214,22 +220,19 @@ namespace GanjooRazor.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPostFillTracksAsync(string album)
         {
-            using (HttpClient client = new HttpClient())
+            var response = await _httpClient.GetAsync($"https://newapi.beeptunes.com/public/album/list-tracks/?albumId={album}");
+
+            NameIdUrlImage[] tracks = new NameIdUrlImage[] { };
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/album/list-tracks/?albumId={album}");
-
-                NameIdUrlImage[] tracks = new NameIdUrlImage[] { };
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                tracks = JsonConvert.DeserializeObject<NameIdUrlImage[]>(await response.Content.ReadAsStringAsync());
+                foreach (var track in tracks)
                 {
-                    tracks = JsonConvert.DeserializeObject<NameIdUrlImage[]>(await response.Content.ReadAsStringAsync());
-                    foreach(var track in tracks)
-                    {
-                        track.Url = $"https://beeptunes.com/track/{track.Id}";
-                    }
+                    track.Url = $"https://beeptunes.com/track/{track.Id}";
                 }
-                return new OkObjectResult(tracks);
             }
+            return new OkObjectResult(tracks);
         }
 
         /// <summary>
@@ -239,59 +242,56 @@ namespace GanjooRazor.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPostSearchByTrackTitleAsync(string search)
         {
-            using (HttpClient client = new HttpClient())
+            var response = await _httpClient.GetAsync($"https://newapi.beeptunes.com/public/search?albumCount=0&artistCount=0&text={search}&trackCount=100");
+
+            List<TrackQueryResult> tracks = new List<TrackQueryResult>();
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                var response = await client.GetAsync($"https://newapi.beeptunes.com/public/search?albumCount=0&artistCount=0&text={search}&trackCount=100");
-
-                List<TrackQueryResult> tracks = new List<TrackQueryResult>();
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                BpSearchResponseModel bpResponse = JsonConvert.DeserializeObject<BpSearchResponseModel>(await response.Content.ReadAsStringAsync());
+                foreach (var track in bpResponse.Tracks)
                 {
-                    BpSearchResponseModel bpResponse = JsonConvert.DeserializeObject<BpSearchResponseModel>(await response.Content.ReadAsStringAsync());
-                    foreach (var track in bpResponse.Tracks)
+                    if (track.FirstArtists != null && track.FirstArtists.Length > 0)
                     {
-                        if(track.FirstArtists != null && track.FirstArtists.Length > 0)
+                        string albumName = "";
+                        var responseAlbum = await _httpClient.GetAsync($"https://newapi.beeptunes.com/public/album/info/?albumId={track.Album_Id}");
+                        if (responseAlbum.StatusCode == HttpStatusCode.OK)
                         {
-                            string albumName = "";
-                            var responseAlbum = await client.GetAsync($"https://newapi.beeptunes.com/public/album/info/?albumId={track.Album_Id}");
-                            if (responseAlbum.StatusCode == HttpStatusCode.OK)
-                            {
-                                NameIdUrlImage nameIdUrl = JsonConvert.DeserializeObject<NameIdUrlImage>(await responseAlbum.Content.ReadAsStringAsync());
-                                albumName = nameIdUrl.Name;
-                            }
-
-                            tracks.Add
-                                (
-                                new TrackQueryResult()
-                                {
-                                    Id = track.Id,
-                                    Name = track.Name,
-                                    Url = track.Url,
-                                    AlbumId = track.Album_Id,
-                                    AlbumName = albumName,
-                                    AlbunUrl = $"https://beeptunes.com/album/{track.Album_Id}",
-                                    ArtistId = track.FirstArtists[0].Id,
-                                    ArtistName = track.FirstArtists[0].ArtisticName,
-                                    ArtistUrl = track.FirstArtists[0].Url,
-                                    Image = track.PrimaryImage
-                                }
-                                );
+                            NameIdUrlImage nameIdUrl = JsonConvert.DeserializeObject<NameIdUrlImage>(await responseAlbum.Content.ReadAsStringAsync());
+                            albumName = nameIdUrl.Name;
                         }
+
+                        tracks.Add
+                            (
+                            new TrackQueryResult()
+                            {
+                                Id = track.Id,
+                                Name = track.Name,
+                                Url = track.Url,
+                                AlbumId = track.Album_Id,
+                                AlbumName = albumName,
+                                AlbunUrl = $"https://beeptunes.com/album/{track.Album_Id}",
+                                ArtistId = track.FirstArtists[0].Id,
+                                ArtistName = track.FirstArtists[0].ArtisticName,
+                                ArtistUrl = track.FirstArtists[0].Url,
+                                Image = track.PrimaryImage
+                            }
+                            );
                     }
                 }
-
-                return new PartialViewResult()
-                {
-                    ViewName = "_SpotifySearchPartial",
-                    ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                    {
-                        Model = new _SpotifySearchPartialModel()
-                        {
-                            Tracks = tracks.ToArray()
-                        }
-                    }
-                };
             }
+
+            return new PartialViewResult()
+            {
+                ViewName = "_SpotifySearchPartial",
+                ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = new _SpotifySearchPartialModel()
+                    {
+                        Tracks = tracks.ToArray()
+                    }
+                }
+            };
         }
     }
 }

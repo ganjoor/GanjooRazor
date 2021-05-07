@@ -19,18 +19,18 @@ namespace GanjooRazor.Utils
     public class GanjoorSessionChecker
     {
         /// <summary>
-        /// if user is logged in adds user token to <paramref name="client"/> and then checks user session and if needs renewal, renews it
+        /// if user is logged in adds user token to <paramref name="secureClient"/> and then checks user session and if needs renewal, renews it
         /// </summary>
-        /// <param name="client"></param>
+        /// <param name="secureClient"></param>
         /// <param name="request"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public static async Task<bool> PrepareClient(HttpClient client, HttpRequest request, HttpResponse response)
+        public static async Task<bool> PrepareClient(HttpClient secureClient, HttpRequest request, HttpResponse response)
         {
             if (string.IsNullOrEmpty(request.Cookies["Token"]) || string.IsNullOrEmpty(request.Cookies["SessionId"]))
                 return false;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.Cookies["Token"]);
-            var r = await client.GetAsync($"{APIRoot.Url}/api/users/checkmysession/?sessionId={request.Cookies["SessionId"]}");
+            secureClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.Cookies["Token"]);
+            var r = await secureClient.GetAsync($"{APIRoot.Url}/api/users/checkmysession/?sessionId={request.Cookies["SessionId"]}");
             if (r.StatusCode == HttpStatusCode.OK)
             {
                 return true;
@@ -39,7 +39,7 @@ namespace GanjooRazor.Utils
             if(r.StatusCode == HttpStatusCode.Unauthorized)
             {
                 var reLoginUrl = $"{APIRoot.Url}/api/users/relogin/{request.Cookies["SessionId"]}";
-                var reLoginResponse = await client.PutAsync(reLoginUrl, null);
+                var reLoginResponse = await secureClient.PutAsync(reLoginUrl, null);
 
                 if (reLoginResponse.StatusCode != HttpStatusCode.OK)
                 {
@@ -48,7 +48,7 @@ namespace GanjooRazor.Utils
 
                 LoggedOnUserModel loggedOnUser = JsonConvert.DeserializeObject<LoggedOnUserModel>(await reLoginResponse.Content.ReadAsStringAsync());
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedOnUser.Token);
+                secureClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedOnUser.Token);
 
                 var cookieOption = new CookieOptions()
                 {
@@ -92,11 +92,11 @@ namespace GanjooRazor.Utils
         public static async Task<bool> IsPermitted(HttpRequest request, HttpResponse response, string secuableShortName, string operationShortName)
         {
 
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await PrepareClient(client, request, response))
+                if (await PrepareClient(secureClient, request, response))
                 {
-                    var res = await client.GetAsync($"{APIRoot.Url}/api/users/securableitems");
+                    var res = await secureClient.GetAsync($"{APIRoot.Url}/api/users/securableitems");
                     if (!res.IsSuccessStatusCode)
                     {
                         return false;
@@ -129,11 +129,11 @@ namespace GanjooRazor.Utils
         /// <param name="viewData"></param>
         public static async Task ApplyPermissionsToViewData(HttpRequest request, HttpResponse response, ViewDataDictionary viewData)
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await PrepareClient(client, request, response))
+                if (await PrepareClient(secureClient, request, response))
                 {
-                    var res = await client.GetAsync($"{APIRoot.Url}/api/users/securableitems");
+                    var res = await secureClient.GetAsync($"{APIRoot.Url}/api/users/securableitems");
                     if (!res.IsSuccessStatusCode)
                     {
                         return;

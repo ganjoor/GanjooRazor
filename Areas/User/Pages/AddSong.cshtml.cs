@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using GanjooRazor.Utils;
@@ -51,11 +48,11 @@ namespace GanjooRazor.Areas.User.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var putResponse = await client.PostAsync($"{APIRoot.Url}/api/ganjoor/song/add", new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json"));
+                    var putResponse = await secureClient.PostAsync($"{APIRoot.Url}/api/ganjoor/song/add", new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json"));
                     if (!putResponse.IsSuccessStatusCode)
                     {
                         LastError = await putResponse.Content.ReadAsStringAsync();

@@ -48,11 +48,11 @@ namespace GanjooRazor.Areas.User.Pages
             LastError = "";
             TotalCount = 0;
             Skip = string.IsNullOrEmpty(Request.Query["skip"]) ? 0 : int.Parse(Request.Query["skip"]);
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var trackResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/song?skip={Skip}&onlyMine=false");
+                    var trackResponse = await secureClient.GetAsync($"{APIRoot.Url}/api/ganjoor/song?skip={Skip}&onlyMine=false");
                     if (!trackResponse.IsSuccessStatusCode)
                     {
                         LastError = await trackResponse.Content.ReadAsStringAsync();
@@ -72,7 +72,7 @@ namespace GanjooRazor.Areas.User.Pages
                         PoemMusicTrackViewModel.TrackName = PoemMusicTrackViewModel.TrackName.ToPersianNumbers().ApplyCorrectYeKe();
 
 
-                        var poemResponse = await client.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{PoemMusicTrackViewModel.PoemId}?catInfo=false&rhymes=false&recitations=false&images=false&songs=false&comments=false&verseDetails=false&navigation=false");
+                        var poemResponse = await secureClient.GetAsync($"{APIRoot.Url}/api/ganjoor/poem/{PoemMusicTrackViewModel.PoemId}?catInfo=false&rhymes=false&recitations=false&images=false&songs=false&comments=false&verseDetails=false&navigation=false");
                         if (poemResponse.IsSuccessStatusCode)
                         {
                             Poem = JsonConvert.DeserializeObject<GanjoorPoemCompleteViewModel>(await poemResponse.Content.ReadAsStringAsync());
@@ -121,11 +121,11 @@ namespace GanjooRazor.Areas.User.Pages
                 }
             }
 
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
-                    var putResponse = await client.PutAsync($"{APIRoot.Url}/api/ganjoor/song", new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json"));
+                    var putResponse = await secureClient.PutAsync($"{APIRoot.Url}/api/ganjoor/song", new StringContent(JsonConvert.SerializeObject(PoemMusicTrackViewModel), Encoding.UTF8, "application/json"));
                     if (!putResponse.IsSuccessStatusCode)
                     {
                         LastError = await putResponse.Content.ReadAsStringAsync();

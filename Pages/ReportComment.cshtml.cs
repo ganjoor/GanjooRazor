@@ -60,13 +60,13 @@ namespace GanjooRazor.Pages
             LastError = "";
             LoggedIn = !string.IsNullOrEmpty(Request.Cookies["Token"]);
 
-            using (HttpClient client = new HttpClient())
+            using (HttpClient secureClient = new HttpClient())
             {
-                if (await GanjoorSessionChecker.PrepareClient(client, Request, Response))
+                if (await GanjoorSessionChecker.PrepareClient(secureClient, Request, Response))
                 {
                     var stringContent = new StringContent(JsonConvert.SerializeObject(Report), Encoding.UTF8, "application/json");
                     var methodUrl = $"{APIRoot.Url}/api/ganjoor/comment/report";
-                    var response = await client.PostAsync(methodUrl, stringContent);
+                    var response = await secureClient.PostAsync(methodUrl, stringContent);
                     if (!response.IsSuccessStatusCode)
                     {
                         LastError = await response.Content.ReadAsStringAsync();
